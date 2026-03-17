@@ -1,0 +1,9 @@
+name = "taiwan-news-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVER_NAME = "taiwan-news"
+SERVER_VERSION = "1.0.0"
+# No API key needed — RSS feeds are public

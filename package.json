@@ -15,6 +15,7 @@
     "test:air-quality": "cd servers/taiwan-air-quality && npm test",
     "test:electricity": "cd servers/taiwan-electricity && npm test",
     "test:stock": "cd servers/taiwan-stock && npm test",
+    "test:news": "cd servers/taiwan-news && npm test",
     "lint": "eslint packages/ servers/ --ext .ts"
   },
   "devDependencies": {
