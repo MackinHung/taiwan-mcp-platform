@@ -19,7 +19,7 @@
 
 **Repo**: `MackinHung/taiwan-mcp-platform` (private), branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
-**Current**: 756 tests, 0 failures
+**Current**: 814 tests, 0 failures
 
 ---
 
@@ -40,6 +40,7 @@ servers/
   taiwan-stock/       → Module J: 5 TWSE OpenAPI tools (48 tests)
   taiwan-news/        → Module K: 5 RSS news aggregation tools (55 tests)
   taiwan-hospital/    → Module L: 5 NHI facility lookup tools (57 tests)
+  taiwan-company/     → Module M: 5 GCIS company registry tools (58 tests)
 docs/
   cold-start/ → WG 詳細規格（本文件下方有索引）
   research/   → WG-3 研究產出

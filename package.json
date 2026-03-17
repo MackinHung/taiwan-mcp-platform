@@ -17,6 +17,7 @@
     "test:stock": "cd servers/taiwan-stock && npm test",
     "test:news": "cd servers/taiwan-news && npm test",
     "test:hospital": "cd servers/taiwan-hospital && npm test",
+    "test:company": "cd servers/taiwan-company && npm test",
     "lint": "eslint packages/ servers/ --ext .ts"
   },
   "devDependencies": {

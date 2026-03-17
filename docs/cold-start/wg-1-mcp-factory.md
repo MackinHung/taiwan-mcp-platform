@@ -54,7 +54,7 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 | # | Server | 資料來源 | API | 狀態 |
 |---|--------|---------|-----|------|
 | 1 | taiwan-transit | TDX 公共運輸 | TDX API (台鐵/高鐵/公車) | 待開發（需 TDX OAuth） |
-| 2 | taiwan-company | 經濟部商業司 | 公司登記查詢 API | 待開發 |
+| 2 | ~~taiwan-company~~ | 經濟部商業司 | GCIS 公司登記查詢 API | ✅ 58 tests |
 | 3 | ~~taiwan-stock~~ | 證交所 | TWSE OpenAPI | ✅ 48 tests |
 | 4 | ~~taiwan-electricity~~ | 台電 | Taipower open data | ✅ 49 tests |
 | 5 | ~~taiwan-air-quality~~ | 環境部 | MOENV API | ✅ 50 tests |
@@ -72,6 +72,7 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 | taiwan-stock | 5 | 48 | TWSE openapi.twse.com.tw/v1 | None |
 | taiwan-news | 5 | 55 | RSS feeds (CNA/LTN/PTS/Storm/NewsLens) | None |
 | taiwan-hospital | 5 | 57 | NHI info.nhi.gov.tw/api/iode0010/v1/rest/datastore | None |
+| taiwan-company | 5 | 58 | GCIS data.gcis.nat.gov.tw/od/data/api | IP whitelist (works without for low volume) |
 
 ---
 
@@ -88,6 +89,9 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 - **每個 tool 固定 4 測試**: success + empty/not-found + param-validation + API-error
 - **NHI API total=0 quirk**: `result.total` 永遠回傳 0，不能用來做分頁計數
 - **Promise.allSettled + error test**: `mockRejectedValue` 不會觸發外層 catch → 用 `mockImplementation(() => { throw })` 觸發同步 throw
+- **GCIS OData filter**: `like` 為模糊搜尋，`eq` 為精確匹配；中文關鍵字需 URL encode
+- **ROC 日期格式**: 商業司 `Company_Setup_Date` 為 `YYYMMDD`（民國年）→ +1911 轉西元
+- **GCIS 回傳 array**: 成功回傳 JSON array（非 object），空結果回傳 `[]`
 
 ## 參考實作
 
