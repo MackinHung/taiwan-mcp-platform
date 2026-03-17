@@ -1,63 +1,40 @@
-export interface ToolDefinition {
-  name: string;
-  description: string;
-  inputSchema: { type: 'object'; properties: Record<string, unknown>; required?: string[] };
-}
-
-export interface ServerMapping {
-  namespacePrefix: string;
-  serverId: string;
-  endpointUrl: string;
-  tools: ToolDefinition[];
-}
+import type { CompositionServerEntry, CompositionConfig } from './types.js';
 
 export interface ParsedTool {
-  prefix: string | null;
+  prefix: string;
   toolName: string;
 }
 
-export interface RouteResult {
-  mapping: ServerMapping;
-  toolName: string;
-}
-
-export function parseNamespacedTool(fullName: string): ParsedTool {
-  const dotIndex = fullName.indexOf('.');
-  if (dotIndex < 0) {
-    return { prefix: null, toolName: fullName };
-  }
+export function parseNamespacedTool(name: string): ParsedTool | null {
+  const dotIndex = name.indexOf('.');
+  if (dotIndex <= 0 || dotIndex === name.length - 1) return null;
   return {
-    prefix: fullName.slice(0, dotIndex),
-    toolName: fullName.slice(dotIndex + 1),
+    prefix: name.substring(0, dotIndex),
+    toolName: name.substring(dotIndex + 1),
   };
 }
 
-export function buildNamespacedName(prefix: string, toolName: string): string {
-  return `${prefix}.${toolName}`;
+export function findServer(
+  servers: CompositionServerEntry[],
+  prefix: string
+): CompositionServerEntry | null {
+  return servers.find(s => s.namespace_prefix === prefix && s.enabled) ?? null;
 }
 
-export function findServerForTool(
-  fullName: string,
-  mappings: ServerMapping[]
-): RouteResult | null {
-  const { prefix, toolName } = parseNamespacedTool(fullName);
-  if (!prefix) return null;
-
-  const mapping = mappings.find((m) => m.namespacePrefix === prefix);
-  if (!mapping) return null;
-
-  return { mapping, toolName };
-}
-
-export function aggregateTools(mappings: ServerMapping[]): ToolDefinition[] {
-  const tools: ToolDefinition[] = [];
-  for (const mapping of mappings) {
-    for (const tool of mapping.tools) {
-      tools.push({
-        ...tool,
-        name: buildNamespacedName(mapping.namespacePrefix, tool.name),
-      });
-    }
+export function routeToolCall(
+  composition: CompositionConfig,
+  toolName: string,
+  _args: Record<string, unknown>
+): { server: CompositionServerEntry; originalTool: string } | { error: string } {
+  const parsed = parseNamespacedTool(toolName);
+  if (!parsed) {
+    return { error: `Invalid tool name format: ${toolName}. Expected: namespace.tool_name` };
   }
-  return tools;
+
+  const server = findServer(composition.servers, parsed.prefix);
+  if (!server) {
+    return { error: `No server found for namespace: ${parsed.prefix}` };
+  }
+
+  return { server, originalTool: parsed.toolName };
 }

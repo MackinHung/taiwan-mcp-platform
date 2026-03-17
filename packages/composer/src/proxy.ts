@@ -1,67 +1,48 @@
-export interface ProxyInput {
-  endpointUrl: string;
-  toolName: string;
-  args: Record<string, unknown>;
-  requestId: string | number;
-}
+import type { CompositionServerEntry, McpResponse } from './types.js';
 
-export interface ProxyResult {
-  content: Array<{ type: 'text'; text: string }>;
-  isError?: boolean;
-}
+export async function proxyToServer(
+  server: CompositionServerEntry,
+  toolName: string,
+  args: Record<string, unknown>,
+  requestId: string | number
+): Promise<McpResponse> {
+  const rpcRequest = {
+    jsonrpc: '2.0' as const,
+    id: requestId,
+    method: 'tools/call',
+    params: { name: toolName, arguments: args },
+  };
 
-export async function proxyToolCall(input: ProxyInput): Promise<ProxyResult> {
   try {
-    const response = await fetch(input.endpointUrl, {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30_000);
+
+    const response = await fetch(server.endpoint_url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: input.requestId,
-        method: 'tools/call',
-        params: {
-          name: input.toolName,
-          arguments: input.args,
-        },
-      }),
+      body: JSON.stringify(rpcRequest),
+      signal: controller.signal,
     });
+
+    clearTimeout(timeout);
 
     if (!response.ok) {
       return {
-        content: [
-          {
-            type: 'text',
-            text: `Upstream error: ${response.status} ${response.statusText}`,
-          },
-        ],
-        isError: true,
+        jsonrpc: '2.0',
+        id: requestId,
+        error: { code: -32603, message: `Upstream server error: ${response.status}` },
       };
     }
 
-    const data = (await response.json()) as {
-      result?: ProxyResult;
-      error?: { code: number; message: string };
-    };
-
-    if (data.error) {
-      return {
-        content: [
-          { type: 'text', text: `Upstream error: ${data.error.message}` },
-        ],
-        isError: true,
-      };
-    }
-
-    return data.result ?? { content: [{ type: 'text', text: 'No result' }] };
+    return await response.json() as McpResponse;
   } catch (err) {
+    const message = err instanceof Error && err.name === 'AbortError'
+      ? 'Upstream server timeout'
+      : `Upstream server error: ${(err as Error).message}`;
     return {
-      content: [
-        {
-          type: 'text',
-          text: `Proxy error: ${(err as Error).message}`,
-        },
-      ],
-      isError: true,
+      jsonrpc: '2.0',
+      id: requestId,
+      error: { code: -32603, message },
     };
   }
 }

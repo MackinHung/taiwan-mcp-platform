@@ -1,42 +1,58 @@
-import type { ServerMapping, ToolDefinition } from './router.js';
+import type { NamespacedTool, CompositionServerEntry } from './types.js';
 
-const MODE_A_THRESHOLD = 5;
+export type LoadMode = 'full' | 'lazy';
 
-export type LoadMode = 'mode_a' | 'mode_b';
-
-export function selectMode(mappings: ServerMapping[]): LoadMode {
-  return mappings.length > MODE_A_THRESHOLD ? 'mode_b' : 'mode_a';
+export function selectMode(serverCount: number): LoadMode {
+  return serverCount <= 5 ? 'full' : 'lazy';
 }
 
-export function getMetaTools(): ToolDefinition[] {
+export async function loadAllTools(
+  servers: CompositionServerEntry[],
+  fetchToolsFromServer: (server: CompositionServerEntry) => Promise<any[]>
+): Promise<NamespacedTool[]> {
+  const allTools: NamespacedTool[] = [];
+
+  await Promise.all(servers.filter(s => s.enabled).map(async (server) => {
+    try {
+      const tools = await fetchToolsFromServer(server);
+      for (const tool of tools) {
+        allTools.push({
+          name: `${server.namespace_prefix}.${tool.name}`,
+          original_name: tool.name,
+          server_id: server.server_id,
+          namespace_prefix: server.namespace_prefix,
+          description: `[${server.server_name}] ${tool.description}`,
+          inputSchema: tool.inputSchema,
+        });
+      }
+    } catch (err) {
+      console.error(`Failed to load tools from ${server.server_slug}:`, err);
+    }
+  }));
+
+  return allTools;
+}
+
+export function getMetaTools(): any[] {
   return [
     {
       name: 'discover_tools',
-      description: '列出可用的工具（依分類篩選）',
+      description: '探索組合中可用的工具。可依 namespace 篩選。',
       inputSchema: {
         type: 'object',
         properties: {
-          category: {
-            type: 'string',
-            description: '按分類篩選（可選）',
-          },
+          namespace: { type: 'string', description: '篩選特定 namespace 的工具（選填）' },
         },
       },
     },
     {
       name: 'execute_tool',
-      description: '執行指定工具',
+      description: '執行指定的工具。需提供完整 namespace.tool_name 格式。',
       inputSchema: {
         type: 'object',
         properties: {
-          name: {
-            type: 'string',
-            description: '工具全名（含 namespace prefix）',
-          },
-          arguments: {
-            type: 'object',
-            description: '工具參數',
-          },
+          name: { type: 'string', description: '工具名稱，格式：namespace.tool_name' },
+          arguments: { type: 'object', description: '工具參數' },
         },
         required: ['name'],
       },
