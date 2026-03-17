@@ -20,22 +20,22 @@
 
 | # | Server | 資料來源 | API | 狀態 |
 |---|--------|----------|-----|------|
-| 4 | `taiwan-company` | 經濟部商工登記 GCIS | `https://data.gcis.nat.gov.tw/od/data/api/` | 待開發 |
-| 5 | `taiwan-exchange-rate` | 台灣銀行匯率 | `https://rate.bot.com.tw/xrt/flcsv/0/day` | 待開發 |
+| 4 | ~~`taiwan-company`~~ | 經濟部商工登記 GCIS | `https://data.gcis.nat.gov.tw/od/data/api/` | ✅ Module M (58 tests) — Batch 1 已完成 |
+| 5 | ~~`taiwan-exchange-rate`~~ | 台灣銀行匯率 | `https://rate.bot.com.tw/xrt/flcsv/0/day` | ✅ Module O (60 tests) — Batch 1 已完成 |
 | 6 | `taiwan-procurement` | 政府採購標案 | `https://pms.sme.gov.tw/PMSApi/v2/ODT/OPN` | 待開發 |
 
 ### Phase C：勞動/保險類 🛡️
 
 | # | Server | 資料來源 | API | 狀態 |
 |---|--------|----------|-----|------|
-| 7 | `taiwan-labor` | 勞動部開放資料 | `https://apiservice.mol.gov.tw/OdService/` | 待開發 |
+| 7 | ~~`taiwan-labor`~~ | 勞動部開放資料 | `https://apiservice.mol.gov.tw/OdService/` | ✅ Module V (47 tests) — Batch 1 已完成 |
 | 8 | `taiwan-insurance-calc` | 公式計算（勞保/健保/勞退） | 無外部 API — 純演算法 | 待開發 |
 
 ### Phase D：醫療/衛生類 🏥
 
 | # | Server | 資料來源 | API | 狀態 |
 |---|--------|----------|-----|------|
-| 9 | `taiwan-hospital` | 健保署特約院所 | `https://data.nhi.gov.tw/` | 待開發 |
+| 9 | ~~`taiwan-hospital`~~ | 健保署特約院所 | `https://data.nhi.gov.tw/` | ✅ Module L (57 tests) — Batch 1 已完成 |
 | 10 | `taiwan-drug` | 食藥署藥品許可證 | `https://data.fda.gov.tw/opendata/exportDataList.do` | 待開發 |
 | 11 | `taiwan-cdc` | 疾管署傳染病監測 | `https://data.cdc.gov.tw/api/action/datastore_search` | 待開發 |
 
@@ -499,10 +499,10 @@
 ```
 TeamCreate: mcp-factory-batch-2
 
-建議分組（6 phases 可拆 3 輪）:
+建議分組（排除 4 個已完成重複，實際新增 14 個）:
   輪次 1: Phase A（法律 3 個）+ Phase F（工具 2 個）= 5 servers
-  輪次 2: Phase B（企業 3 個）+ Phase C（勞動 2 個）= 5 servers
-  輪次 3: Phase D（醫療 3 個）+ Phase E（生活 5 個）= 8 servers
+  輪次 2: Phase B（採購 1 個）+ Phase C（保險 1 個）+ Phase D（藥品+疾管 2 個）= 4 servers
+  輪次 3: Phase E（生活 5 個）= 5 servers
 
 每輪角色:
   - factory-lead: 統籌 + 驗收

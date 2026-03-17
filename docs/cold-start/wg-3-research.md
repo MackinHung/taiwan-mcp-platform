@@ -21,16 +21,27 @@ docs/research/
 
 ## 研究議題庫
 
-| 領域 | 議題 | 產出對象 |
-|------|------|---------|
-| MCP 生態 | 現有 MCP server 數量/品質/分類普查 | WG-1（選擇開發方向） |
-| MCP 規範 | Protocol spec 演進 (2024-11-05 → next) | WG-2（架構調整） |
-| 搬運策略 | GitHub MCP servers → 本平台上架路徑 | WG-1 + WG-2 |
-| 競品分析 | Smithery, MCP Hub, Glama, mcp.run 功能對比 | WG-2（功能差異化） |
-| 合規 | 台灣個資法/PDPA 對 MCP server 的影響 | WG-4（安全標章） |
-| 商業模式 | 定價策略、企業需求、free-tier 邊界 | WG-2（plan limits） |
-| 規模化 | 如何批量產生/審核/上架 MCP servers | WG-1 + WG-4 |
-| 技術趨勢 | SSE, Streamable HTTP, OAuth 2.1 for MCP | WG-2（protocol） |
+| 領域 | 議題 | 產出對象 | 狀態 |
+|------|------|---------|------|
+| MCP 生態 | 現有 MCP server 數量/品質/分類普查 | WG-1（選擇開發方向） | ✅ 2026-03-17 |
+| MCP 規範 | Protocol spec 演進 (2024-11-05 → next) | WG-2（架構調整） | 待研究 |
+| 搬運策略 | GitHub MCP servers → 本平台上架路徑 | WG-1 + WG-2 | 待研究 |
+| 競品分析 | Smithery, MCP Hub, Glama, mcp.run 功能對比 | WG-2（功能差異化） | ✅ 2026-03-17 |
+| 合規 | 台灣個資法/PDPA 對 MCP server 的影響 | WG-4（安全標章） | 待研究 |
+| 商業模式 | 定價策略、企業需求、free-tier 邊界 | WG-2（plan limits） | ✅ 部分 2026-03-17 |
+| 規模化 | 如何批量產生/審核/上架 MCP servers | WG-1 + WG-4 | 待研究 |
+| 技術趨勢 | SSE, Streamable HTTP, OAuth 2.1 for MCP | WG-2（protocol） | 待研究 |
+| 台灣 Open Data API 調研 | 政府/民間可用 API 盤點與可行性分析 | WG-1（Batch 2 規格） | ✅ 2026-03-17 |
+| 組合 MCP Server | 跨 API 智慧組合方案（生活/通勤/供應鏈/投資） | WG-1 + WG-2 | 🔜 下次研究 |
+| taiwan-housing 可行性 | 實價登錄無 REST API，CSV 批次方案調研 | WG-1 | 🔜 下次討論 |
+
+---
+
+## 已完成研究產出
+
+| 日期 | 報告 | 建議 |
+|------|------|------|
+| 2026-03-17 | `2026-03-17-competitive-analysis.md` | `2026-03-17-competitive-analysis-rec.md` |
 
 ---
 
