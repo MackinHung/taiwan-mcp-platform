@@ -175,14 +175,22 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 
 **參考實作**: `servers/taiwan-weather/` (8 tools, 66 tests, CWA API)
 
+**流水線工廠（獨立專案）**: `C:\Users\water\Desktop\mcp-factory\`
+- 獨立資料夾，可冷啟動
+- `CLAUDE.md` + `PIPELINE.md`：完整 7 Stage 流水線規格
+- `scripts/security-scan.ts`：10 條安全掃描規則（自包含）
+- `scripts/token-check.ts`：Token 成本估算工具
+- 84 tests, 全部綠燈
+- 每個 server 通過 7 個品質關卡後「畢業」推送到獨立 Git repo
+
 **團隊模板**:
 ```
-TeamCreate: mcp-factory-{batch}
-Agents (parallel):
-  - server-dev-1 (general-purpose): server A — TDD
-  - server-dev-2 (general-purpose): server B — TDD
-  - server-dev-3 (general-purpose): server C — TDD
-  - qa-runner (general-purpose): 所有新 server 測試 + code review
+TeamCreate: mcp-factory-batch-{n}
+factory-lead (orchestrator)
+  |- researcher     (Explore)         — Stage 0: API 研究
+  |- builder-1      (general-purpose) — Stage 1+2: server A 骨架+TDD
+  |- builder-2      (general-purpose) — Stage 1+2: server B 骨架+TDD
+  |- qa-reviewer    (general-purpose) — Stage 3+4+5: 品質關卡
 QA: 每批完成後跑 `servers/` 下所有測試
 ```
 
