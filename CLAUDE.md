@@ -19,7 +19,7 @@
 
 **Repo**: `MackinHung/taiwan-mcp-platform` (private), branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
-**Current**: 1,145 tests, 0 failures
+**Current**: 1,440 tests, 0 failures
 
 ---
 
@@ -29,8 +29,8 @@
 packages/
   shared/    → Module S: 共用型別、常數、Zod 驗證、錯誤格式 (105 tests)
   db/        → Module A: D1 schema (15 tables), seed, migrations
-  gateway/   → Module B: Hono API gateway, GitHub+Google OAuth, rate limit (130 tests)
-  review/    → Module D: 5 掃描規則、4 維度標章計算、報告生成 (144 tests)
+  gateway/   → Module B: Hono API gateway, GitHub+Google OAuth, rate limit (146 tests)
+  review/    → Module D: 5 掃描規則、4+1 維度標章計算、第三方驗證、報告生成 (151 tests)
   composer/  → Module E: MCP proxy, namespace routing, lazy loading (76 tests)
   ui/        → Module F: 6 HTML pages, 7 JS modules, CSS design system (vanilla)
 servers/
@@ -47,6 +47,10 @@ servers/
   taiwan-weather-alert/ → Module Q: 5 CWA alert tools (51 tests)
   taiwan-invoice/     → Module R: 5 e-invoice tools (66 tests)
   taiwan-budget/      → Module T: 5 budget open data tools (53 tests)
+  taiwan-tax/         → Module U: 5 tax calculation tools (63 tests)
+  taiwan-labor/       → Module V: 5 labor law/insurance tools (47 tests)
+  taiwan-patent/      → Module W: 5 patent/trademark tools (73 tests)
+  taiwan-customs/     → Module X: 5 customs/trade tools (65 tests)
 docs/
   cold-start/ → WG 詳細規格（本文件下方有索引）
   research/   → WG-3 研究產出

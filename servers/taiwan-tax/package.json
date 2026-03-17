@@ -1,0 +1,19 @@
+{
+  "name": "@mcp-platform/taiwan-tax",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "hono": "^4.7.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.0.0",
+    "typescript": "^5.7.0",
+    "@cloudflare/workers-types": "^4.20250312.0",
+    "wrangler": "^4.0.0"
+  }
+}

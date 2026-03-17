@@ -81,10 +81,10 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 ### Phase 4: 企業級
 | # | Server | 資料來源 | API | 狀態 |
 |---|--------|---------|-----|------|
-| 16 | taiwan-tax | 財政部稅務 | etax.nat.gov.tw | 待開發 |
-| 17 | taiwan-labor | 勞動部 | data.mol.gov.tw | 待開發 |
-| 18 | taiwan-patent | TIPO 智慧財產局 | tiponet.tipo.gov.tw | 待開發 |
-| 19 | taiwan-customs | 海關進出口 | portal.sw.nat.gov.tw | 待開發 |
+| 16 | ~~taiwan-tax~~ | 財政部稅務 | FIA CSV + 硬編碼稅率 | ✅ 63 tests |
+| 17 | ~~taiwan-labor~~ | 勞動部 | data.gov.tw + 硬編碼法規 | ✅ 47 tests |
+| 18 | ~~taiwan-patent~~ | TIPO 智慧財產局 | tiponet CSV + data.gov.tw | ✅ 73 tests |
+| 19 | ~~taiwan-customs~~ | 海關進出口 | customs.gov.tw + trade.gov.tw | ✅ 65 tests |
 
 ## 已完成 MCP Servers
 
@@ -103,6 +103,10 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 | taiwan-weather-alert | 5 | 51 | CWA opendata.cwa.gov.tw (alerts/earthquake/typhoon) | Required (same as weather) |
 | taiwan-invoice | 5 | 66 | E-Invoice api.einvoice.nat.gov.tw/PB2CAPIVAN | Required (appID + UUID) |
 | taiwan-budget | 5 | 53 | data.gov.tw/api/v2/rest/datastore | None |
+| taiwan-tax | 5 | 63 | FIA eip.fia.gov.tw CSV + hardcoded brackets | None |
+| taiwan-labor | 5 | 47 | data.gov.tw + hardcoded labor laws/rates | None |
+| taiwan-patent | 5 | 73 | TIPO tiponet.tipo.gov.tw CSV + data.gov.tw | None |
+| taiwan-customs | 5 | 65 | customs.gov.tw + trade.gov.tw | None |
 
 ---
 

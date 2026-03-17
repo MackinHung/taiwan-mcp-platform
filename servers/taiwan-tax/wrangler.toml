@@ -1,0 +1,9 @@
+name = "taiwan-tax-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVER_NAME = "taiwan-tax"
+SERVER_VERSION = "1.0.0"
+# No API key needed — FIA and data.gov.tw are public
