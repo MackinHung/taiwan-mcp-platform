@@ -1,8 +1,11 @@
 // All shared types for the Taiwan MCP Platform
 
+export type OAuthProvider = 'github' | 'google';
+
 export interface User {
   id: string;
-  github_id: number;
+  github_id: number | null;
+  google_id: string | null;
   username: string;
   display_name: string | null;
   email: string | null;

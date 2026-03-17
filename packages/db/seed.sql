@@ -1,8 +1,8 @@
 -- Seed data for Taiwan MCP Platform
 
 -- Admin user
-INSERT INTO users (id, github_id, username, display_name, role, plan)
-VALUES ('admin001', 0, 'admin', 'Platform Admin', 'admin', 'enterprise');
+INSERT INTO users (id, github_id, google_id, username, display_name, role, plan)
+VALUES ('admin001', 0, NULL, 'admin', 'Platform Admin', 'admin', 'enterprise');
 
 -- Sample servers
 INSERT INTO servers (id, owner_id, slug, name, description, version, category, tags, is_official, is_published, review_status, badge_source, badge_data, badge_permission, badge_community)

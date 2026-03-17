@@ -6,7 +6,8 @@
 -- ============================================================
 CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
-  github_id INTEGER UNIQUE NOT NULL,
+  github_id INTEGER UNIQUE,
+  google_id TEXT UNIQUE,
   username TEXT UNIQUE NOT NULL,
   display_name TEXT,
   email TEXT,
@@ -15,8 +16,11 @@ CREATE TABLE IF NOT EXISTS users (
   plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'developer', 'team', 'enterprise')),
   scenario TEXT CHECK (scenario IN ('hobby', 'business', 'enterprise', 'regulated')),
   created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
-  updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
+  updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  CHECK (github_id IS NOT NULL OR google_id IS NOT NULL)
 );
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_google_id ON users(google_id);
 
 -- ============================================================
 -- API Keys

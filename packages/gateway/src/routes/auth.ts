@@ -2,10 +2,14 @@ import { Hono } from 'hono';
 import type { Env } from '../env.js';
 import { nanoid } from '../lib/nanoid.js';
 import { parseCookies } from '../lib/cookie.js';
+import { upsertOAuthUser, createUserSession } from '../lib/oauth.js';
+import type { ProviderUserInfo } from '../lib/oauth.js';
 
 type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 
 export const authRoutes = new Hono<HonoEnv>();
+
+// ── GitHub OAuth ─────────────────────────────────────────────
 
 // GET /github -> redirect to GitHub OAuth
 authRoutes.get('/github', (c) => {
@@ -68,46 +72,110 @@ authRoutes.get('/github/callback', async (c) => {
     return c.redirect(`${env.FRONTEND_URL}?error=auth_failed`);
   }
 
-  // Upsert user in D1
-  const now = new Date().toISOString();
-  const existingUser = await env.DB.prepare(
-    'SELECT id FROM users WHERE github_id = ?'
-  ).bind(ghUser.id).first<{ id: string }>();
+  // Upsert user via shared helper
+  const info: ProviderUserInfo = {
+    provider: 'github',
+    provider_id: String(ghUser.id),
+    username: ghUser.login,
+    display_name: ghUser.name || null,
+    email: ghUser.email || null,
+    email_verified: !!ghUser.email,
+    avatar_url: ghUser.avatar_url || null,
+  };
 
-  let userId: string;
-  if (existingUser) {
-    userId = existingUser.id;
-    await env.DB.prepare(
-      'UPDATE users SET username = ?, display_name = ?, email = ?, avatar_url = ?, updated_at = ? WHERE id = ?'
-    ).bind(ghUser.login, ghUser.name || null, ghUser.email || null, ghUser.avatar_url || null, now, userId).run();
-  } else {
-    userId = crypto.randomUUID();
-    await env.DB.prepare(
-      `INSERT INTO users (id, github_id, username, display_name, email, avatar_url, role, plan, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, 'user', 'free', ?, ?)`
-    ).bind(userId, ghUser.id, ghUser.login, ghUser.name || null, ghUser.email || null, ghUser.avatar_url || null, now, now).run();
-  }
+  const { userId } = await upsertOAuthUser(env.DB, info);
+  const { cookie } = await createUserSession(env.DB, env.SESSION_CACHE, userId);
 
-  // Create session
-  const sessionId = nanoid(32);
-  const expiresAt = new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString();
-
-  await env.DB.prepare(
-    'INSERT INTO sessions (id, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)'
-  ).bind(sessionId, userId, expiresAt, now).run();
-
-  // Cache session in KV
-  await env.SESSION_CACHE.put(`session:${sessionId}`, JSON.stringify({
-    user_id: userId,
-    expires_at: expiresAt,
-  }), { expirationTtl: 7 * 24 * 3600 });
-
-  // Set cookie and redirect
-  const cookie = `session=${sessionId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 3600}`;
   return c.redirect(`${env.FRONTEND_URL}`, 302, {
     'Set-Cookie': cookie,
   } as any);
 });
+
+// ── Google OAuth ─────────────────────────────────────────────
+
+// GET /google -> redirect to Google OAuth
+authRoutes.get('/google', (c) => {
+  const env = c.env;
+  const state = nanoid(16);
+  const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+  url.searchParams.set('client_id', env.GOOGLE_CLIENT_ID);
+  url.searchParams.set('redirect_uri', env.GOOGLE_REDIRECT_URI);
+  url.searchParams.set('response_type', 'code');
+  url.searchParams.set('scope', 'openid email profile');
+  url.searchParams.set('state', state);
+  url.searchParams.set('access_type', 'online');
+  url.searchParams.set('prompt', 'select_account');
+  return c.redirect(url.toString());
+});
+
+// GET /google/callback -> exchange code, userinfo, upsert, session
+authRoutes.get('/google/callback', async (c) => {
+  const env = c.env;
+  const code = c.req.query('code');
+
+  if (!code) {
+    return c.json({ success: false, error: 'Missing code parameter', data: null }, 400);
+  }
+
+  // Exchange code for tokens
+  let accessToken: string;
+  try {
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        code,
+        client_id: env.GOOGLE_CLIENT_ID,
+        client_secret: env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: env.GOOGLE_REDIRECT_URI,
+        grant_type: 'authorization_code',
+      }),
+    });
+    const tokenData = await tokenRes.json() as any;
+
+    if (!tokenData.access_token) {
+      return c.redirect(`${env.FRONTEND_URL}?error=auth_failed`);
+    }
+    accessToken = tokenData.access_token;
+  } catch {
+    return c.redirect(`${env.FRONTEND_URL}?error=auth_failed`);
+  }
+
+  // Get user info from Google
+  let gUser: any;
+  try {
+    const userRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { 'Authorization': `Bearer ${accessToken}` },
+    });
+    gUser = await userRes.json() as any;
+  } catch {
+    return c.redirect(`${env.FRONTEND_URL}?error=auth_failed`);
+  }
+
+  if (!gUser.id) {
+    return c.redirect(`${env.FRONTEND_URL}?error=auth_failed`);
+  }
+
+  // Upsert user via shared helper
+  const info: ProviderUserInfo = {
+    provider: 'google',
+    provider_id: gUser.id,
+    username: gUser.email?.split('@')[0] || `user_${gUser.id.slice(0, 8)}`,
+    display_name: gUser.name || null,
+    email: gUser.email || null,
+    email_verified: gUser.verified_email === true,
+    avatar_url: gUser.picture || null,
+  };
+
+  const { userId } = await upsertOAuthUser(env.DB, info);
+  const { cookie } = await createUserSession(env.DB, env.SESSION_CACHE, userId);
+
+  return c.redirect(`${env.FRONTEND_URL}`, 302, {
+    'Set-Cookie': cookie,
+  } as any);
+});
+
+// ── Logout / Me ──────────────────────────────────────────────
 
 // POST /logout -> clear session
 authRoutes.post('/logout', async (c) => {

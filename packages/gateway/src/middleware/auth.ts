@@ -71,7 +71,7 @@ async function resolveApiKey(env: Env, key: string): Promise<{ user_id: string; 
 
 async function resolveUser(env: Env, userId: string): Promise<any> {
   return env.DB.prepare(
-    'SELECT id, github_id, username, display_name, email, avatar_url, role, plan, scenario, created_at, updated_at FROM users WHERE id = ?'
+    'SELECT id, github_id, google_id, username, display_name, email, avatar_url, role, plan, scenario, created_at, updated_at FROM users WHERE id = ?'
   ).bind(userId).first();
 }
 

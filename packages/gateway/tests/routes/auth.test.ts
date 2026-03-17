@@ -8,7 +8,6 @@ describe('Auth Routes', () => {
 
   async function createApp(env: Env, user: any = null) {
     const { authRoutes } = await import('../../src/routes/auth.js');
-    const { authMiddleware } = await import('../../src/middleware/auth.js');
 
     const app = new Hono<{ Bindings: Env; Variables: { user: any; session: any } }>();
 
@@ -25,6 +24,8 @@ describe('Auth Routes', () => {
   beforeEach(() => {
     mockEnv = createMockEnv();
   });
+
+  // ── GitHub OAuth ─────────────────────────────────────────
 
   describe('GET /api/auth/github', () => {
     it('should redirect to GitHub OAuth URL', async () => {
@@ -49,7 +50,6 @@ describe('Auth Routes', () => {
     });
 
     it('should handle callback with valid code (mock fetch)', async () => {
-      // Mock global fetch for GitHub API calls
       const originalFetch = globalThis.fetch;
       globalThis.fetch = vi.fn()
         .mockResolvedValueOnce(
@@ -107,13 +107,187 @@ describe('Auth Routes', () => {
         const app = await createApp(mockEnv);
         const res = await app.request('/api/auth/github/callback?code=invalid-code', {}, mockEnv);
 
-        // Should return error or redirect with error
         expect([302, 400, 401]).toContain(res.status);
       } finally {
         globalThis.fetch = originalFetch;
       }
     });
   });
+
+  // ── Google OAuth ─────────────────────────────────────────
+
+  describe('GET /api/auth/google', () => {
+    it('should redirect to Google OAuth URL', async () => {
+      const app = await createApp(mockEnv);
+
+      const res = await app.request('/api/auth/google', {}, mockEnv);
+
+      expect(res.status).toBe(302);
+      const location = res.headers.get('Location');
+      expect(location).toContain('accounts.google.com/o/oauth2/v2/auth');
+      expect(location).toContain('client_id=test-google-client-id');
+      expect(location).toContain('scope=openid+email+profile');
+    });
+
+    it('should include redirect_uri in Google OAuth URL', async () => {
+      const app = await createApp(mockEnv);
+
+      const res = await app.request('/api/auth/google', {}, mockEnv);
+
+      const location = res.headers.get('Location');
+      expect(location).toContain('redirect_uri=');
+    });
+  });
+
+  describe('GET /api/auth/google/callback', () => {
+    it('should return error with missing code', async () => {
+      const app = await createApp(mockEnv);
+
+      const res = await app.request('/api/auth/google/callback', {}, mockEnv);
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should handle callback with valid code (mock fetch)', async () => {
+      const originalFetch = globalThis.fetch;
+      globalThis.fetch = vi.fn()
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({
+            access_token: 'google-token',
+            token_type: 'Bearer',
+            id_token: 'fake-id-token',
+          }), {
+            headers: { 'Content-Type': 'application/json' },
+          })
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({
+            id: 'g-987654',
+            email: 'guser@gmail.com',
+            verified_email: true,
+            name: 'Google User',
+            picture: 'https://lh3.googleusercontent.com/photo',
+          }), {
+            headers: { 'Content-Type': 'application/json' },
+          })
+        );
+
+      try {
+        const env = createMockEnv({
+          DB: createMockDB({
+            firstFn: (query) => {
+              if (query.includes('google_id')) return { id: 'existing-google-user' };
+              return null;
+            },
+            runFn: () => ({ success: true, meta: { changes: 1 } }),
+          }),
+        });
+
+        const app = await createApp(env);
+
+        const res = await app.request('/api/auth/google/callback?code=valid-google-code', {}, env);
+
+        expect(res.status).toBe(302);
+        const location = res.headers.get('Location');
+        expect(location).toContain('localhost:3000');
+      } finally {
+        globalThis.fetch = originalFetch;
+      }
+    });
+
+    it('should handle Google token exchange failure', async () => {
+      const originalFetch = globalThis.fetch;
+      globalThis.fetch = vi.fn().mockResolvedValueOnce(
+        new Response(JSON.stringify({ error: 'invalid_grant' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
+
+      try {
+        const app = await createApp(mockEnv);
+        const res = await app.request('/api/auth/google/callback?code=bad-code', {}, mockEnv);
+
+        expect(res.status).toBe(302);
+        const location = res.headers.get('Location');
+        expect(location).toContain('error=auth_failed');
+      } finally {
+        globalThis.fetch = originalFetch;
+      }
+    });
+
+    it('should handle missing Google user id', async () => {
+      const originalFetch = globalThis.fetch;
+      globalThis.fetch = vi.fn()
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ access_token: 'token' }), {
+            headers: { 'Content-Type': 'application/json' },
+          })
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ email: 'test@gmail.com' }), {
+            headers: { 'Content-Type': 'application/json' },
+          })
+        );
+
+      try {
+        const app = await createApp(mockEnv);
+        const res = await app.request('/api/auth/google/callback?code=code', {}, mockEnv);
+
+        expect(res.status).toBe(302);
+        const location = res.headers.get('Location');
+        expect(location).toContain('error=auth_failed');
+      } finally {
+        globalThis.fetch = originalFetch;
+      }
+    });
+
+    it('should create new user via Google OAuth', async () => {
+      const originalFetch = globalThis.fetch;
+      globalThis.fetch = vi.fn()
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ access_token: 'google-token' }), {
+            headers: { 'Content-Type': 'application/json' },
+          })
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({
+            id: 'new-google-id',
+            email: 'newuser@gmail.com',
+            verified_email: true,
+            name: 'New Google User',
+            picture: 'https://lh3.googleusercontent.com/new',
+          }), {
+            headers: { 'Content-Type': 'application/json' },
+          })
+        );
+
+      try {
+        const runCalls: any[] = [];
+        const env = createMockEnv({
+          DB: createMockDB({
+            firstFn: () => null, // no existing user
+            runFn: (query, params) => {
+              runCalls.push({ query, params });
+              return { success: true, meta: { changes: 1 } };
+            },
+          }),
+        });
+
+        const app = await createApp(env);
+
+        const res = await app.request('/api/auth/google/callback?code=new-user-code', {}, env);
+
+        expect(res.status).toBe(302);
+        // Should have inserted a user + a session
+        expect(runCalls.length).toBeGreaterThanOrEqual(2);
+      } finally {
+        globalThis.fetch = originalFetch;
+      }
+    });
+  });
+
+  // ── Logout / Me ──────────────────────────────────────────
 
   describe('POST /api/auth/logout', () => {
     it('should clear session and return success', async () => {

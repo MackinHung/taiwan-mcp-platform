@@ -120,7 +120,7 @@ const profile = {
         <table style="width:100%;font-size:0.875rem;">
           <tr><td class="text-muted" style="width:120px;">帳號 ID</td><td><code>${escapeHtml(u.id)}</code></td></tr>
           <tr><td class="text-muted">建立日期</td><td>${new Date(u.created_at).toLocaleDateString('zh-TW')}</td></tr>
-          <tr><td class="text-muted">登入方式</td><td>GitHub OAuth</td></tr>
+          <tr><td class="text-muted">登入方式</td><td>${this.loginMethodLabel(u)}</td></tr>
         </table>
       </div>
     `;
@@ -134,6 +134,13 @@ const profile = {
   planLabel(plan) {
     const labels = { free: 'Free', pro: 'Pro', enterprise: 'Enterprise', unlimited: 'Unlimited' };
     return labels[plan] || plan;
+  },
+
+  loginMethodLabel(user) {
+    const methods = [];
+    if (user.github_id) methods.push('GitHub');
+    if (user.google_id) methods.push('Google');
+    return methods.length > 0 ? methods.join(' + ') : 'OAuth';
   },
 
   // ── API Key Management ──

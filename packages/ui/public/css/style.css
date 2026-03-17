@@ -1158,6 +1158,50 @@ tr:hover td { background: var(--bg-surface-hover); }
 
 [data-tooltip]:hover::after { opacity: 1; }
 
+/* ── Login Providers ───────────────────────────────────────── */
+.login-providers {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.btn-login-github,
+.btn-login-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: 1px solid var(--border);
+}
+
+.btn-login-github {
+  background: #24292e;
+  color: #fff;
+  border-color: #24292e;
+}
+.btn-login-github:hover { background: #1b1f23; }
+
+.btn-login-google {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+.btn-login-google:hover { background: var(--bg-surface-hover); }
+
+[data-theme="light"] .btn-login-google {
+  background: #fff;
+  border-color: #dadce0;
+}
+[data-theme="light"] .btn-login-google:hover {
+  background: #f8f9fa;
+}
+
 /* ── Utility ───────────────────────────────────────────────── */
 .flex { display: flex; }
 .flex-col { flex-direction: column; }

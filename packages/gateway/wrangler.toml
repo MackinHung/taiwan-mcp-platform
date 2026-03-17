@@ -31,4 +31,6 @@ bucket_name = "mcp-packages"
 [vars]
 GITHUB_CLIENT_ID = ""
 GITHUB_REDIRECT_URI = "https://mcp-gateway.watermelom5404.workers.dev/api/auth/github/callback"
+GOOGLE_CLIENT_ID = ""
+GOOGLE_REDIRECT_URI = "https://mcp-gateway.watermelom5404.workers.dev/api/auth/google/callback"
 FRONTEND_URL = "https://tw-mcp.pages.dev"

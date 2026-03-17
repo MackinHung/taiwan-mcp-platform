@@ -79,6 +79,9 @@ export function createMockEnv(overrides: Partial<Env> = {}): Env {
     GITHUB_CLIENT_ID: 'test-client-id',
     GITHUB_CLIENT_SECRET: 'test-client-secret',
     GITHUB_REDIRECT_URI: 'http://localhost/api/auth/github/callback',
+    GOOGLE_CLIENT_ID: 'test-google-client-id',
+    GOOGLE_CLIENT_SECRET: 'test-google-client-secret',
+    GOOGLE_REDIRECT_URI: 'http://localhost/api/auth/google/callback',
     FRONTEND_URL: 'http://localhost:3000',
     JWT_SECRET: 'test-secret-key-at-least-32-chars-long',
     ...overrides,
@@ -90,6 +93,7 @@ export function createMockUser(overrides: Record<string, any> = {}) {
   return {
     id: 'user-123',
     github_id: 12345,
+    google_id: null,
     username: 'testuser',
     display_name: 'Test User',
     email: 'test@example.com',
