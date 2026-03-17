@@ -159,4 +159,109 @@ describe('Admin Routes', () => {
       expect(res.status).toBe(403);
     });
   });
+
+  describe('GET /api/admin/reports', () => {
+    it('should list all reports for admin', async () => {
+      const env = createMockEnv({
+        DB: createMockDB({
+          allFn: () => ({
+            results: [{
+              id: 'report-1', user_id: 'user-1', server_id: 'srv-1',
+              type: 'security', description: 'XSS vulnerability', status: 'open',
+              server_name: 'Test Server', server_slug: 'test-server',
+              reporter_username: 'testuser', reporter_display_name: 'Test User',
+              created_at: '2025-01-01T00:00:00Z',
+            }],
+          }),
+        }),
+      });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/reports', {}, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.success).toBe(true);
+      expect(Array.isArray(data.data)).toBe(true);
+      expect(data.data.length).toBe(1);
+      expect(data.data[0].server_name).toBe('Test Server');
+    });
+
+    it('should reject non-admin (403)', async () => {
+      const env = createMockEnv();
+      const app = await createApp(env, regularUser);
+
+      const res = await app.request('/api/admin/reports', {}, env);
+      expect(res.status).toBe(403);
+    });
+
+    it('should reject unauthenticated (401)', async () => {
+      const env = createMockEnv();
+      const app = await createApp(env);
+
+      const res = await app.request('/api/admin/reports', {}, env);
+      expect(res.status).toBe(401);
+    });
+  });
+
+  describe('PUT /api/admin/reports/:id', () => {
+    it('should update report status', async () => {
+      const env = createMockEnv({
+        DB: createMockDB({
+          firstFn: () => ({ id: 'report-1' }),
+          runFn: () => ({ success: true, meta: { changes: 1 } }),
+        }),
+      });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/reports/report-1', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'investigating' }),
+      }, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.success).toBe(true);
+      expect(data.data.status).toBe('investigating');
+    });
+
+    it('should return 404 for non-existent report', async () => {
+      const env = createMockEnv({
+        DB: createMockDB({ firstFn: () => null }),
+      });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/reports/nonexistent', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'resolved' }),
+      }, env);
+      expect(res.status).toBe(404);
+    });
+
+    it('should reject invalid status', async () => {
+      const env = createMockEnv({
+        DB: createMockDB({ firstFn: () => ({ id: 'report-1' }) }),
+      });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/reports/report-1', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'invalid' }),
+      }, env);
+      expect(res.status).toBe(400);
+    });
+
+    it('should reject non-admin (403)', async () => {
+      const env = createMockEnv();
+      const app = await createApp(env, regularUser);
+
+      const res = await app.request('/api/admin/reports/report-1', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'resolved' }),
+      }, env);
+      expect(res.status).toBe(403);
+    });
+  });
 });

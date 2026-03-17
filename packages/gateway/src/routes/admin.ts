@@ -147,3 +147,64 @@ adminRoutes.put('/users/:id', async (c) => {
 
   return c.json({ success: true, data: { id: userId }, error: null });
 });
+
+// GET /reports -> list all reports with server/user info
+adminRoutes.get('/reports', async (c) => {
+  const result = requireAdmin(c);
+  if (result === null) return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
+
+  const statusFilter = c.req.query('status');
+  const validStatuses = ['open', 'investigating', 'resolved', 'dismissed'];
+
+  const hasFilter = statusFilter && validStatuses.includes(statusFilter);
+
+  const query = hasFilter
+    ? `SELECT r.*, s.name as server_name, s.slug as server_slug,
+         u.username as reporter_username, u.display_name as reporter_display_name
+       FROM reports r
+       LEFT JOIN servers s ON r.server_id = s.id
+       LEFT JOIN users u ON r.user_id = u.id
+       WHERE r.status = ?
+       ORDER BY r.created_at DESC`
+    : `SELECT r.*, s.name as server_name, s.slug as server_slug,
+         u.username as reporter_username, u.display_name as reporter_display_name
+       FROM reports r
+       LEFT JOIN servers s ON r.server_id = s.id
+       LEFT JOIN users u ON r.user_id = u.id
+       ORDER BY r.created_at DESC`;
+
+  const { results } = hasFilter
+    ? await c.env.DB.prepare(query).bind(statusFilter).all()
+    : await c.env.DB.prepare(query).all();
+
+  return c.json({ success: true, data: results, error: null });
+});
+
+// PUT /reports/:id -> update report status
+adminRoutes.put('/reports/:id', async (c) => {
+  const result = requireAdmin(c);
+  if (result === null) return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
+
+  const reportId = c.req.param('id');
+
+  const report = await c.env.DB.prepare(
+    'SELECT id FROM reports WHERE id = ?'
+  ).bind(reportId).first();
+
+  if (!report) {
+    return c.json({ success: false, error: '回報不存在', data: null }, 404);
+  }
+
+  const body = await c.req.json();
+  if (!body.status || !['open', 'investigating', 'resolved', 'dismissed'].includes(body.status)) {
+    return c.json({ success: false, error: '無效的狀態', data: null }, 400);
+  }
+
+  await c.env.DB.prepare(
+    'UPDATE reports SET status = ? WHERE id = ?'
+  ).bind(body.status, reportId).run();
+
+  return c.json({ success: true, data: { id: reportId, status: body.status }, error: null });
+});

@@ -3,6 +3,13 @@ import { z } from 'zod';
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const semverPattern = /^\d+\.\d+\.\d+(?:-[\w.]+)?$/;
 
+export const toolCreateSchema = z.object({
+  name: z.string().min(1).max(64).regex(/^[a-z0-9_]+$/, 'Tool name must be lowercase alphanumeric with underscores'),
+  display_name: z.string().max(64).optional(),
+  description: z.string().max(500).default(''),
+  input_schema: z.string().max(10000).default('{}'),
+});
+
 export const serverCreateSchema = z.object({
   slug: z.string().min(2).max(64).regex(slugPattern, 'Slug must be lowercase alphanumeric with hyphens'),
   name: z.string().min(1).max(128),
@@ -19,6 +26,7 @@ export const serverCreateSchema = z.object({
   declared_external_urls: z.array(z.string().url()).default([]),
   is_open_source: z.boolean().default(false),
   data_source_license: z.string().max(128).optional(),
+  tools: z.array(toolCreateSchema).max(50).default([]),
 });
 
 export const serverUpdateSchema = serverCreateSchema.partial().omit({ slug: true });

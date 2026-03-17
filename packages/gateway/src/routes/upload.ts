@@ -16,6 +16,24 @@ function requireDeveloper(c: any): any {
   return user;
 }
 
+// GET / -> list my servers (developer's own servers)
+uploadRoutes.get('/', async (c) => {
+  const result = requireDeveloper(c);
+  if (result === null) return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
+  const user = result;
+
+  const { results } = await c.env.DB.prepare(
+    `SELECT s.*,
+       (SELECT COUNT(*) FROM tools t WHERE t.server_id = s.id) as tools_count
+     FROM servers s
+     WHERE s.owner_id = ?
+     ORDER BY s.created_at DESC`
+  ).bind(user.id).all();
+
+  return c.json({ success: true, data: results, error: null });
+});
+
 // POST / -> create new server
 uploadRoutes.post('/', async (c) => {
   const result = requireDeveloper(c);
@@ -80,7 +98,18 @@ uploadRoutes.post('/', async (c) => {
     now, now,
   ).run();
 
-  return c.json({ success: true, data: { id, slug: data.slug }, error: null }, 201);
+  // Insert tools if provided
+  if (data.tools && data.tools.length > 0) {
+    for (const tool of data.tools) {
+      const toolId = crypto.randomUUID();
+      await c.env.DB.prepare(
+        `INSERT INTO tools (id, server_id, name, display_name, description, input_schema, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`
+      ).bind(toolId, id, tool.name, tool.display_name || null, tool.description, tool.input_schema, now).run();
+    }
+  }
+
+  return c.json({ success: true, data: { id, slug: data.slug, tools_count: data.tools.length }, error: null }, 201);
 });
 
 // PUT /:slug -> update server metadata
@@ -134,6 +163,37 @@ uploadRoutes.put('/:slug', async (c) => {
   }
 
   return c.json({ success: true, data: { id: server.id }, error: null });
+});
+
+// GET /:slug/versions -> list version history
+uploadRoutes.get('/:slug/versions', async (c) => {
+  const result = requireDeveloper(c);
+  if (result === null) return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
+  const user = result;
+
+  const slug = c.req.param('slug');
+
+  const server = await c.env.DB.prepare(
+    'SELECT id, owner_id FROM servers WHERE slug = ?'
+  ).bind(slug).first<{ id: string; owner_id: string }>();
+
+  if (!server) {
+    return c.json({ success: false, error: '伺服器不存在', data: null }, 404);
+  }
+
+  if (server.owner_id !== user.id && user.role !== 'admin') {
+    return c.json({ success: false, error: '權限不足', data: null }, 403);
+  }
+
+  const { results } = await c.env.DB.prepare(
+    `SELECT id, version, changelog, review_status, created_at
+     FROM server_versions
+     WHERE server_id = ?
+     ORDER BY created_at DESC`
+  ).bind(server.id).all();
+
+  return c.json({ success: true, data: results, error: null });
 });
 
 // POST /:slug/versions -> create new version

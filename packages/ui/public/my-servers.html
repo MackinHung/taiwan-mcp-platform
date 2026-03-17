@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>伺服器詳情 — 台灣 MCP 市集</title>
+  <title>我的伺服器 — 台灣 MCP 市集</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -17,7 +17,7 @@
       <div class="nav-links">
         <a href="/">探索</a>
         <a href="/my-mcp.html" class="hide-mobile">我的 MCP</a>
-        <a href="/my-servers.html" class="hide-mobile">我的伺服器</a>
+        <a href="/my-servers.html" class="active hide-mobile">我的伺服器</a>
         <a href="/upload.html" class="hide-mobile">上架</a>
         <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()">☀️</button>
         <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
@@ -29,38 +29,31 @@
     </div>
   </nav>
 
-  <div class="container page-content" id="server-detail">
-    <div class="loading"><div class="spinner"></div></div>
+  <div class="container page-content" style="max-width:960px;">
+    <div class="flex items-center justify-between mb-24">
+      <h1 style="font-size:1.5rem;font-weight:700;">我的伺服器</h1>
+      <a href="/upload.html" class="btn btn-primary">+ 上架新伺服器</a>
+    </div>
+    <div id="my-servers-content">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
   </div>
 
-  <!-- Report Modal -->
-  <div class="modal-overlay hidden" id="report-modal">
-    <div class="modal">
+  <!-- Version History Modal -->
+  <div class="modal-overlay hidden" id="versions-modal">
+    <div class="modal" style="max-width:640px;">
       <div class="modal-header">
-        <h2>回報問題</h2>
-        <button class="modal-close" onclick="serverDetail.closeReportModal()">&times;</button>
+        <h2 id="versions-modal-title">版本紀錄</h2>
+        <button class="modal-close" onclick="myServers.closeVersionsModal()">&times;</button>
       </div>
-      <div class="form-group">
-        <label>問題類型</label>
-        <select id="report-type">
-          <option value="inaccurate">資訊不正確</option>
-          <option value="security">安全性問題</option>
-          <option value="abuse">濫用</option>
-          <option value="other">其他</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>說明</label>
-        <textarea id="report-desc" rows="4" placeholder="請描述問題..."></textarea>
-      </div>
+      <div id="versions-modal-body"></div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="serverDetail.closeReportModal()">取消</button>
-        <button class="btn btn-danger" onclick="serverDetail.submitReport()">送出回報</button>
+        <button class="btn btn-secondary" onclick="myServers.closeVersionsModal()">關閉</button>
       </div>
     </div>
   </div>
 
   <script src="/js/app.js"></script>
-  <script src="/js/server-detail.js"></script>
+  <script src="/js/my-servers.js"></script>
 </body>
 </html>

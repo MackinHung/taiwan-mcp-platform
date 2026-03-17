@@ -321,16 +321,95 @@ const admin = {
 
   // ── Reports ──
   async loadReports() {
-    // Reports don't have a dedicated admin list endpoint yet,
-    // so we show a placeholder. This can be enhanced later.
+    try {
+      const res = await api.get('/admin/reports');
+      this.reports = res.data || [];
+    } catch (e) {
+      console.error('Failed to load reports:', e);
+      this.reports = [];
+    }
+    this.renderReports();
+  },
+
+  renderReports() {
     const el = $('#report-list');
     if (!el) return;
-    el.innerHTML = '<div class="empty-state"><h3>回報管理功能開發中</h3><p class="text-muted">用戶的回報目前直接存入資料庫，稍後將加入管理介面</p></div>';
+
+    if (this.reports.length === 0) {
+      el.innerHTML = '<div class="empty-state"><h3>尚無回報</h3><p class="text-muted">目前沒有使用者回報的問題</p></div>';
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>類型</th>
+              <th>伺服器</th>
+              <th>回報者</th>
+              <th>說明</th>
+              <th>狀態</th>
+              <th>日期</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${this.reports.map(r => `
+              <tr>
+                <td><span class="badge ${this.reportTypeClass(r.type)}">${this.reportTypeLabel(r.type)}</span></td>
+                <td>
+                  <a href="/server.html?slug=${escapeHtml(r.server_slug || '')}" class="text-sm font-bold">${escapeHtml(r.server_name || '未知')}</a>
+                </td>
+                <td class="text-sm">${escapeHtml(r.reporter_display_name || r.reporter_username || '未知')}</td>
+                <td class="text-sm" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHtml(r.description)}">${escapeHtml(r.description)}</td>
+                <td><span class="badge ${this.reportStatusClass(r.status)}">${this.reportStatusLabel(r.status)}</span></td>
+                <td class="text-muted">${timeAgo(r.created_at)}</td>
+                <td>
+                  <select class="btn btn-secondary btn-sm" onchange="admin.updateReportStatus('${r.id}', this.value)" style="padding:4px 8px;font-size:0.75rem;">
+                    <option value="" disabled selected>操作</option>
+                    <option value="investigating" ${r.status === 'investigating' ? 'disabled' : ''}>調查中</option>
+                    <option value="resolved" ${r.status === 'resolved' ? 'disabled' : ''}>已解決</option>
+                    <option value="dismissed" ${r.status === 'dismissed' ? 'disabled' : ''}>忽略</option>
+                  </select>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
   },
 
   reportTypeLabel(type) {
     const labels = { security: '安全問題', bug: '錯誤', abuse: '濫用', other: '其他' };
     return labels[type] || type;
+  },
+
+  reportTypeClass(type) {
+    const classes = { security: 'badge-red', bug: 'badge-amber', abuse: 'badge-orange', other: 'badge-gray' };
+    return classes[type] || 'badge-gray';
+  },
+
+  reportStatusLabel(status) {
+    const labels = { open: '待處理', investigating: '調查中', resolved: '已解決', dismissed: '已忽略' };
+    return labels[status] || status;
+  },
+
+  reportStatusClass(status) {
+    const classes = { open: 'badge-amber', investigating: 'badge-blue', resolved: 'badge-green', dismissed: 'badge-gray' };
+    return classes[status] || 'badge-gray';
+  },
+
+  async updateReportStatus(reportId, status) {
+    if (!status) return;
+    try {
+      await api.put(`/admin/reports/${reportId}`, { status });
+      await this.loadReports();
+      showToast(`回報狀態已更新為：${this.reportStatusLabel(status)}`);
+    } catch (e) {
+      showToast('更新回報狀態失敗');
+    }
   },
 };
 

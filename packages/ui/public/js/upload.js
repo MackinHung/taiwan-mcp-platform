@@ -251,6 +251,12 @@ const upload = {
       declared_permissions: data.badge_permission,
       declared_external_urls: data.external_urls,
       is_open_source: data.is_opensource,
+      tools: data.tools.map(t => ({
+        name: t.name,
+        display_name: t.display_name || undefined,
+        description: t.description || '',
+        input_schema: t.input_schema || '{}',
+      })),
     };
 
     try {
