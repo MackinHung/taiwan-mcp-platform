@@ -1,5 +1,9 @@
 # WG-1: MCP 工廠（MCP Server 量產群）
 
+> **Agent 自主維護**: 本文件由工作中的 agent 持續更新。
+> 開發新 server 時發現的陷阱、經驗、pattern 應直接補充到「量產經驗與陷阱」段落；
+> 完成新 server 後應更新「已完成 MCP Servers」表格與開發清單狀態。
+
 **性質**: 開發子專案 — 持續建立新的 MCP Server
 **範圍**: `servers/` 目錄 only
 **不碰**: `packages/` 平台代碼
@@ -54,7 +58,7 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 | 3 | ~~taiwan-stock~~ | 證交所 | TWSE OpenAPI | ✅ 48 tests |
 | 4 | ~~taiwan-electricity~~ | 台電 | Taipower open data | ✅ 49 tests |
 | 5 | ~~taiwan-air-quality~~ | 環境部 | MOENV API | ✅ 50 tests |
-| 6 | taiwan-hospital | 健保署 | 醫院/藥局開放資料 | 待開發 |
+| 6 | ~~taiwan-hospital~~ | 健保署 | NHI 醫療機構查詢 API | ✅ 57 tests |
 | 7 | taiwan-land | 內政部 | 不動產實價登錄 API | 待開發 |
 | 8 | ~~taiwan-news~~ | 各大媒體 | RSS feeds 聚合 | ✅ 55 tests |
 
@@ -67,6 +71,7 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 | taiwan-electricity | 5 | 49 | Taipower service.taipower.com.tw (d006001) + loadpara.txt | None |
 | taiwan-stock | 5 | 48 | TWSE openapi.twse.com.tw/v1 | None |
 | taiwan-news | 5 | 55 | RSS feeds (CNA/LTN/PTS/Storm/NewsLens) | None |
+| taiwan-hospital | 5 | 57 | NHI info.nhi.gov.tw/api/iode0010/v1/rest/datastore | None |
 
 ---
 
@@ -81,6 +86,8 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 - **TWSE/Taipower 不需 Key**: 直接 fetch，但有隱性 rate limit
 - **標準 test 結構**: client.test + tools.test（mock client）+ mcp-handler.test（mock tools）+ index.test（mock handler）
 - **每個 tool 固定 4 測試**: success + empty/not-found + param-validation + API-error
+- **NHI API total=0 quirk**: `result.total` 永遠回傳 0，不能用來做分頁計數
+- **Promise.allSettled + error test**: `mockRejectedValue` 不會觸發外層 catch → 用 `mockImplementation(() => { throw })` 觸發同步 throw
 
 ## 參考實作
 
