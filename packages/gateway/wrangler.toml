@@ -6,23 +6,23 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "mcp-platform"
-database_id = "placeholder"
+database_id = "14d6f8bf-e51a-4085-9978-9d35c88d3865"
 
 [[kv_namespaces]]
 binding = "RATE_LIMITS"
-id = "placeholder"
+id = "7e8637e4bb664fb2b4253f3a0c656f1d"
 
 [[kv_namespaces]]
 binding = "API_KEY_CACHE"
-id = "placeholder"
+id = "3dcd3af1db0f40f6a0ebc2d1ba93e82e"
 
 [[kv_namespaces]]
 binding = "SESSION_CACHE"
-id = "placeholder"
+id = "4756e7f844fe4dc089e450e97526c11f"
 
 [[kv_namespaces]]
 binding = "SERVER_CACHE"
-id = "placeholder"
+id = "aab645fdd2d5447cae01d90fd9fbbcec"
 
 [[r2_buckets]]
 binding = "PACKAGES"
@@ -30,5 +30,5 @@ bucket_name = "mcp-packages"
 
 [vars]
 GITHUB_CLIENT_ID = ""
-GITHUB_REDIRECT_URI = ""
+GITHUB_REDIRECT_URI = "https://mcp-gateway.watermelom5404.workers.dev/api/auth/github/callback"
 FRONTEND_URL = "https://tw-mcp.pages.dev"
