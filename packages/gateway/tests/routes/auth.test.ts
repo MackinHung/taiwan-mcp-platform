@@ -38,18 +38,91 @@ describe('Auth Routes', () => {
       expect(location).toContain('github.com/login/oauth/authorize');
       expect(location).toContain('client_id=test-client-id');
     });
+
+    it('should store OAuth state in KV', async () => {
+      const kvStore: Record<string, string> = {};
+      const env = createMockEnv({
+        SESSION_CACHE: createMockKV(kvStore),
+      });
+
+      const app = await createApp(env);
+      await app.request('/api/auth/github', {}, env);
+
+      // Should have stored an oauth_state:* key
+      const stateKeys = Object.keys(kvStore).filter(k => k.startsWith('oauth_state:'));
+      expect(stateKeys).toHaveLength(1);
+    });
   });
 
   describe('GET /api/auth/github/callback', () => {
-    it('should return error with missing code', async () => {
+    it('should redirect with error when missing code or state', async () => {
       const app = await createApp(mockEnv);
 
+      // No code or state
       const res = await app.request('/api/auth/github/callback', {}, mockEnv);
-
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(302);
+      expect(res.headers.get('Location')).toContain('error=auth_failed');
     });
 
-    it('should handle callback with valid code (mock fetch)', async () => {
+    it('should reject callback with invalid state', async () => {
+      const kvStore: Record<string, string> = {}; // no state stored
+      const env = createMockEnv({
+        SESSION_CACHE: createMockKV(kvStore),
+      });
+      const app = await createApp(env);
+
+      const res = await app.request('/api/auth/github/callback?code=valid-code&state=fake-state', {}, env);
+      expect(res.status).toBe(302);
+      expect(res.headers.get('Location')).toContain('error=invalid_state');
+    });
+
+    it('should consume state (one-time use) after verification', async () => {
+      const kvStore: Record<string, string> = {
+        'oauth_state:test-state-123': '1',
+      };
+      const env = createMockEnv({
+        SESSION_CACHE: createMockKV(kvStore),
+      });
+
+      const originalFetch = globalThis.fetch;
+      globalThis.fetch = vi.fn()
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ access_token: 'gh-token' }), {
+            headers: { 'Content-Type': 'application/json' },
+          })
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({
+            id: 12345, login: 'testuser', name: 'Test', email: 'test@x.com', avatar_url: null,
+          }), {
+            headers: { 'Content-Type': 'application/json' },
+          })
+        );
+
+      try {
+        const user = createMockUser();
+        const dbEnv = createMockEnv({
+          SESSION_CACHE: createMockKV(kvStore),
+          DB: createMockDB({
+            firstFn: (query) => {
+              if (query.includes('users')) return user;
+              return null;
+            },
+            runFn: () => ({ success: true, meta: { changes: 1 } }),
+          }),
+        });
+
+        const app = await createApp(dbEnv);
+        await app.request('/api/auth/github/callback?code=valid-code&state=test-state-123', {}, dbEnv);
+
+        // State should be consumed (deleted)
+        expect(kvStore['oauth_state:test-state-123']).toBeUndefined();
+      } finally {
+        globalThis.fetch = originalFetch;
+      }
+    });
+
+    it('should handle callback with valid code and state (mock fetch)', async () => {
       const originalFetch = globalThis.fetch;
       globalThis.fetch = vi.fn()
         .mockResolvedValueOnce(
@@ -71,7 +144,9 @@ describe('Auth Routes', () => {
 
       try {
         const user = createMockUser();
+        const kvStore: Record<string, string> = { 'oauth_state:valid-state': '1' };
         const env = createMockEnv({
+          SESSION_CACHE: createMockKV(kvStore),
           DB: createMockDB({
             firstFn: (query) => {
               if (query.includes('users')) return user;
@@ -83,7 +158,7 @@ describe('Auth Routes', () => {
 
         const app = await createApp(env);
 
-        const res = await app.request('/api/auth/github/callback?code=valid-code', {}, env);
+        const res = await app.request('/api/auth/github/callback?code=valid-code&state=valid-state', {}, env);
 
         // Should redirect to frontend
         expect(res.status).toBe(302);
@@ -104,10 +179,14 @@ describe('Auth Routes', () => {
       );
 
       try {
-        const app = await createApp(mockEnv);
-        const res = await app.request('/api/auth/github/callback?code=invalid-code', {}, mockEnv);
+        const kvStore: Record<string, string> = { 'oauth_state:err-state': '1' };
+        const env = createMockEnv({
+          SESSION_CACHE: createMockKV(kvStore),
+        });
+        const app = await createApp(env);
+        const res = await app.request('/api/auth/github/callback?code=invalid-code&state=err-state', {}, env);
 
-        expect([302, 400, 401]).toContain(res.status);
+        expect(res.status).toBe(302);
       } finally {
         globalThis.fetch = originalFetch;
       }
@@ -140,15 +219,28 @@ describe('Auth Routes', () => {
   });
 
   describe('GET /api/auth/google/callback', () => {
-    it('should return error with missing code', async () => {
+    it('should redirect with error when missing code or state', async () => {
       const app = await createApp(mockEnv);
 
       const res = await app.request('/api/auth/google/callback', {}, mockEnv);
 
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(302);
+      expect(res.headers.get('Location')).toContain('error=auth_failed');
     });
 
-    it('should handle callback with valid code (mock fetch)', async () => {
+    it('should reject callback with invalid state', async () => {
+      const kvStore: Record<string, string> = {};
+      const env = createMockEnv({
+        SESSION_CACHE: createMockKV(kvStore),
+      });
+      const app = await createApp(env);
+
+      const res = await app.request('/api/auth/google/callback?code=valid-code&state=bad-state', {}, env);
+      expect(res.status).toBe(302);
+      expect(res.headers.get('Location')).toContain('error=invalid_state');
+    });
+
+    it('should handle callback with valid code and state (mock fetch)', async () => {
       const originalFetch = globalThis.fetch;
       globalThis.fetch = vi.fn()
         .mockResolvedValueOnce(
@@ -173,7 +265,9 @@ describe('Auth Routes', () => {
         );
 
       try {
+        const kvStore: Record<string, string> = { 'oauth_state:g-state': '1' };
         const env = createMockEnv({
+          SESSION_CACHE: createMockKV(kvStore),
           DB: createMockDB({
             firstFn: (query) => {
               if (query.includes('google_id')) return { id: 'existing-google-user' };
@@ -185,7 +279,7 @@ describe('Auth Routes', () => {
 
         const app = await createApp(env);
 
-        const res = await app.request('/api/auth/google/callback?code=valid-google-code', {}, env);
+        const res = await app.request('/api/auth/google/callback?code=valid-google-code&state=g-state', {}, env);
 
         expect(res.status).toBe(302);
         const location = res.headers.get('Location');
@@ -205,8 +299,12 @@ describe('Auth Routes', () => {
       );
 
       try {
-        const app = await createApp(mockEnv);
-        const res = await app.request('/api/auth/google/callback?code=bad-code', {}, mockEnv);
+        const kvStore: Record<string, string> = { 'oauth_state:fail-state': '1' };
+        const env = createMockEnv({
+          SESSION_CACHE: createMockKV(kvStore),
+        });
+        const app = await createApp(env);
+        const res = await app.request('/api/auth/google/callback?code=bad-code&state=fail-state', {}, env);
 
         expect(res.status).toBe(302);
         const location = res.headers.get('Location');
@@ -231,8 +329,12 @@ describe('Auth Routes', () => {
         );
 
       try {
-        const app = await createApp(mockEnv);
-        const res = await app.request('/api/auth/google/callback?code=code', {}, mockEnv);
+        const kvStore: Record<string, string> = { 'oauth_state:noid-state': '1' };
+        const env = createMockEnv({
+          SESSION_CACHE: createMockKV(kvStore),
+        });
+        const app = await createApp(env);
+        const res = await app.request('/api/auth/google/callback?code=code&state=noid-state', {}, env);
 
         expect(res.status).toBe(302);
         const location = res.headers.get('Location');
@@ -264,7 +366,9 @@ describe('Auth Routes', () => {
 
       try {
         const runCalls: any[] = [];
+        const kvStore: Record<string, string> = { 'oauth_state:new-state': '1' };
         const env = createMockEnv({
+          SESSION_CACHE: createMockKV(kvStore),
           DB: createMockDB({
             firstFn: () => null, // no existing user
             runFn: (query, params) => {
@@ -276,7 +380,7 @@ describe('Auth Routes', () => {
 
         const app = await createApp(env);
 
-        const res = await app.request('/api/auth/google/callback?code=new-user-code', {}, env);
+        const res = await app.request('/api/auth/google/callback?code=new-user-code&state=new-state', {}, env);
 
         expect(res.status).toBe(302);
         // Should have inserted a user + a session
@@ -284,6 +388,88 @@ describe('Auth Routes', () => {
       } finally {
         globalThis.fetch = originalFetch;
       }
+    });
+  });
+
+  // ── OAuth Security ─────────────────────────────────────────
+
+  describe('OAuth Security', () => {
+    it('should set Secure flag on session cookie', async () => {
+      const { createUserSession } = await import('../../src/lib/oauth.js');
+      const kvStore: Record<string, string> = {};
+      const db = createMockDB({
+        runFn: () => ({ success: true, meta: { changes: 1 } }),
+      });
+      const kv = createMockKV(kvStore);
+
+      const result = await createUserSession(db as any, kv as any, 'user-123');
+      expect(result.cookie).toContain('Secure');
+      expect(result.cookie).toContain('HttpOnly');
+      expect(result.cookie).toContain('SameSite=Lax');
+    });
+
+    it('should not auto-link accounts by email (security fix)', async () => {
+      const { upsertOAuthUser } = await import('../../src/lib/oauth.js');
+
+      // User exists with same email but different provider
+      const firstFnCalls: string[] = [];
+      const runCalls: any[] = [];
+      const db = createMockDB({
+        firstFn: (query) => {
+          firstFnCalls.push(query);
+          if (query.includes('github_id')) return null; // no existing github user
+          if (query.includes('email')) return { id: 'existing-user-by-email' }; // email exists
+          return null;
+        },
+        runFn: (query, params) => {
+          runCalls.push({ query, params });
+          return { success: true, meta: { changes: 1 } };
+        },
+      });
+
+      const result = await upsertOAuthUser(db as any, {
+        provider: 'github',
+        provider_id: '99999',
+        username: 'newuser',
+        display_name: 'New User',
+        email: 'shared@example.com',
+        email_verified: true,
+        avatar_url: null,
+      });
+
+      // Should create a NEW user, not link to existing
+      expect(result.isNewUser).toBe(true);
+      // The INSERT should have email=null (since email is taken)
+      const insertCall = runCalls.find(c => c.query.includes('INSERT'));
+      expect(insertCall).toBeTruthy();
+      // Verify email param is null (index 5 in the bind params)
+      expect(insertCall.params[5]).toBeNull();
+    });
+
+    it('should store email when no conflict exists', async () => {
+      const { upsertOAuthUser } = await import('../../src/lib/oauth.js');
+      const runCalls: any[] = [];
+      const db = createMockDB({
+        firstFn: () => null, // no existing user at all
+        runFn: (query, params) => {
+          runCalls.push({ query, params });
+          return { success: true, meta: { changes: 1 } };
+        },
+      });
+
+      const result = await upsertOAuthUser(db as any, {
+        provider: 'github',
+        provider_id: '88888',
+        username: 'unique',
+        display_name: 'Unique User',
+        email: 'unique@example.com',
+        email_verified: true,
+        avatar_url: null,
+      });
+
+      expect(result.isNewUser).toBe(true);
+      const insertCall = runCalls.find(c => c.query.includes('INSERT'));
+      expect(insertCall.params[5]).toBe('unique@example.com');
     });
   });
 

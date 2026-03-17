@@ -46,12 +46,15 @@ keyRoutes.post('/', async (c) => {
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(id, user.id, name, keyHash, keyPrefix, JSON.stringify(permissions), expires_at || null, now).run();
 
-  // Cache in KV
+  // Cache in KV — TTL must respect expires_at to avoid stale cache
+  const cacheTtl = expires_at
+    ? Math.max(60, Math.floor((new Date(expires_at).getTime() - Date.now()) / 1000))
+    : 86400;
   await c.env.API_KEY_CACHE.put(`key:${keyHash}`, JSON.stringify({
     user_id: user.id,
     permissions,
     expires_at: expires_at || null,
-  }), { expirationTtl: expires_at ? undefined : 86400 });
+  }), { expirationTtl: cacheTtl });
 
   return c.json({
     success: true,

@@ -12,9 +12,11 @@ export const authRoutes = new Hono<HonoEnv>();
 // ── GitHub OAuth ─────────────────────────────────────────────
 
 // GET /github -> redirect to GitHub OAuth
-authRoutes.get('/github', (c) => {
+authRoutes.get('/github', async (c) => {
   const env = c.env;
   const state = nanoid(16);
+  // Store state in KV with 5-minute TTL for CSRF protection
+  await env.SESSION_CACHE.put(`oauth_state:${state}`, '1', { expirationTtl: 300 });
   const url = new URL('https://github.com/login/oauth/authorize');
   url.searchParams.set('client_id', env.GITHUB_CLIENT_ID);
   url.searchParams.set('redirect_uri', env.GITHUB_REDIRECT_URI);
@@ -27,10 +29,18 @@ authRoutes.get('/github', (c) => {
 authRoutes.get('/github/callback', async (c) => {
   const env = c.env;
   const code = c.req.query('code');
+  const state = c.req.query('state');
 
-  if (!code) {
-    return c.json({ success: false, error: 'Missing code parameter', data: null }, 400);
+  if (!code || !state) {
+    return c.redirect(`${env.FRONTEND_URL}?error=auth_failed`);
   }
+
+  // Validate + consume state (one-time use)
+  const stored = await env.SESSION_CACHE.get(`oauth_state:${state}`);
+  if (!stored) {
+    return c.redirect(`${env.FRONTEND_URL}?error=invalid_state`);
+  }
+  await env.SESSION_CACHE.delete(`oauth_state:${state}`);
 
   // Exchange code for access token
   let accessToken: string;
@@ -94,9 +104,11 @@ authRoutes.get('/github/callback', async (c) => {
 // ── Google OAuth ─────────────────────────────────────────────
 
 // GET /google -> redirect to Google OAuth
-authRoutes.get('/google', (c) => {
+authRoutes.get('/google', async (c) => {
   const env = c.env;
   const state = nanoid(16);
+  // Store state in KV with 5-minute TTL for CSRF protection
+  await env.SESSION_CACHE.put(`oauth_state:${state}`, '1', { expirationTtl: 300 });
   const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
   url.searchParams.set('client_id', env.GOOGLE_CLIENT_ID);
   url.searchParams.set('redirect_uri', env.GOOGLE_REDIRECT_URI);
@@ -112,10 +124,18 @@ authRoutes.get('/google', (c) => {
 authRoutes.get('/google/callback', async (c) => {
   const env = c.env;
   const code = c.req.query('code');
+  const state = c.req.query('state');
 
-  if (!code) {
-    return c.json({ success: false, error: 'Missing code parameter', data: null }, 400);
+  if (!code || !state) {
+    return c.redirect(`${env.FRONTEND_URL}?error=auth_failed`);
   }
+
+  // Validate + consume state (one-time use)
+  const stored = await env.SESSION_CACHE.get(`oauth_state:${state}`);
+  if (!stored) {
+    return c.redirect(`${env.FRONTEND_URL}?error=invalid_state`);
+  }
+  await env.SESSION_CACHE.delete(`oauth_state:${state}`);
 
   // Exchange code for tokens
   let accessToken: string;
@@ -189,7 +209,7 @@ authRoutes.post('/logout', async (c) => {
   }
 
   return c.json({ success: true, data: null, error: null }, 200, {
-    'Set-Cookie': 'session=; Path=/; HttpOnly; Max-Age=0',
+    'Set-Cookie': 'session=; Path=/; HttpOnly; Secure; Max-Age=0',
   } as any);
 });
 

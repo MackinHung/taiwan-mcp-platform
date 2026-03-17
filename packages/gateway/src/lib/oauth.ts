@@ -42,8 +42,11 @@ export function generateUsername(email: string | null, displayName: string | nul
 /**
  * Upsert an OAuth user. Lookup order:
  * 1. provider_id match (existing user logged in via same provider)
- * 2. verified email match (auto-link accounts)
- * 3. Create new user
+ * 2. Create new user (email auto-link removed for security)
+ *
+ * Note: Email auto-link was removed to prevent account takeover attacks.
+ * Users with the same email from different providers get separate accounts
+ * and can manually link them from the profile page.
  */
 export async function upsertOAuthUser(
   db: D1Database,
@@ -72,28 +75,20 @@ export async function upsertOAuthUser(
     return { userId: existingByProvider.id, isNewUser: false };
   }
 
-  // 2. Lookup by verified email (auto-link)
-  if (info.email && info.email_verified) {
+  // 2. Create new user — check email uniqueness to avoid UNIQUE constraint violation
+  let emailToStore = info.email;
+  if (emailToStore) {
     const existingByEmail = await db.prepare(
       'SELECT id FROM users WHERE email = ?'
-    ).bind(info.email).first<{ id: string }>();
+    ).bind(emailToStore).first<{ id: string }>();
 
     if (existingByEmail) {
-      // Link this provider to existing account
-      await db.prepare(
-        `UPDATE users SET ${providerCol} = ?, display_name = COALESCE(display_name, ?), avatar_url = COALESCE(avatar_url, ?), updated_at = ? WHERE id = ?`
-      ).bind(
-        providerValue,
-        info.display_name,
-        info.avatar_url,
-        now,
-        existingByEmail.id,
-      ).run();
-      return { userId: existingByEmail.id, isNewUser: false };
+      // Email already taken by another account — store null to avoid conflict
+      // User can manually link accounts from profile page
+      emailToStore = null;
     }
   }
 
-  // 3. Create new user
   const userId = crypto.randomUUID();
   const username = generateUsername(info.email, info.display_name);
 
@@ -109,7 +104,7 @@ export async function upsertOAuthUser(
     googleId,
     username,
     info.display_name,
-    info.email,
+    emailToStore,
     info.avatar_url,
     now,
     now,
@@ -140,6 +135,6 @@ export async function createUserSession(
     expires_at: expiresAt,
   }), { expirationTtl: ttlSeconds });
 
-  const cookie = `session=${sessionId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${ttlSeconds}`;
+  const cookie = `session=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${ttlSeconds}`;
   return { sessionId, cookie };
 }

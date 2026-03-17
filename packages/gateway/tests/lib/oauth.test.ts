@@ -63,38 +63,52 @@ describe('OAuth helpers', () => {
       expect(result.isNewUser).toBe(false);
     });
 
-    it('should link by verified email when provider_id not found', async () => {
+    it('should create new user when email exists but provider_id not found (no auto-link)', async () => {
       let callCount = 0;
+      const runCalls: any[] = [];
       const db = createMockDB({
         firstFn: (query) => {
           callCount++;
           if (callCount === 1) return null; // provider_id not found
-          if (callCount === 2) return { id: 'email-linked-id' }; // email found
+          if (callCount === 2) return { id: 'email-linked-id' }; // email exists
           return null;
         },
-        runFn: () => ({ success: true, meta: { changes: 1 } }),
+        runFn: (query, params) => {
+          runCalls.push({ query, params });
+          return { success: true, meta: { changes: 1 } };
+        },
       });
 
       const result = await upsertOAuthUser(db, baseInfo);
-      expect(result.userId).toBe('email-linked-id');
-      expect(result.isNewUser).toBe(false);
+      // Should create a NEW user, NOT link to existing
+      expect(result.isNewUser).toBe(true);
+      expect(result.userId).not.toBe('email-linked-id');
+      // Email should be null in INSERT to avoid UNIQUE conflict
+      const insertCall = runCalls.find(c => c.query.includes('INSERT'));
+      expect(insertCall).toBeTruthy();
+      expect(insertCall.params[5]).toBeNull();
     });
 
-    it('should not link by email if not verified', async () => {
+    it('should store email when email not verified and no conflict', async () => {
       const queries: string[] = [];
+      const runCalls: any[] = [];
       const db = createMockDB({
         firstFn: (query) => {
           queries.push(query);
           return null; // nothing found
         },
-        runFn: () => ({ success: true, meta: { changes: 1 } }),
+        runFn: (query, params) => {
+          runCalls.push({ query, params });
+          return { success: true, meta: { changes: 1 } };
+        },
       });
 
       const info: ProviderUserInfo = { ...baseInfo, email_verified: false };
       const result = await upsertOAuthUser(db, info);
       expect(result.isNewUser).toBe(true);
-      // Should NOT have queried by email
-      expect(queries.filter(q => q.includes('email')).length).toBe(0);
+      // Email should still be stored since no conflict
+      const insertCall = runCalls.find(c => c.query.includes('INSERT'));
+      expect(insertCall.params[5]).toBe('test@example.com');
     });
 
     it('should create new user when no matches found', async () => {
