@@ -3,6 +3,10 @@
 > 冷啟動指南：本文件讓任何新 session 快速理解專案全貌。
 > 工作群詳細規格在 `docs/cold-start/` — 用戶指定 WG 後再載入對應文件。
 
+> **Agent 維護須知**: `docs/cold-start/` 下的各 WG 文件由 agent 自主維護。
+> 工作過程中發現新的陷阱、經驗、建議，應直接更新對應的冷啟動文件，
+> 讓下一個 session 能受益。本主檔（CLAUDE.md）僅更新統計數字與架構變動。
+
 ## Project Overview
 
 台灣第一個 MCP (Model Context Protocol) 平台：Marketplace + 樂高組合器 + 營養標示信任系統。
@@ -15,7 +19,7 @@
 
 **Repo**: `MackinHung/taiwan-mcp-platform` (private), branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
-**Current**: 685 tests, 0 failures, 136 source files
+**Current**: 756 tests, 0 failures
 
 ---
 
@@ -35,6 +39,7 @@ servers/
   taiwan-electricity/ → Module I: 5 Taipower tools (49 tests)
   taiwan-stock/       → Module J: 5 TWSE OpenAPI tools (48 tests)
   taiwan-news/        → Module K: 5 RSS news aggregation tools (55 tests)
+  taiwan-hospital/    → Module L: 5 NHI facility lookup tools (57 tests)
 docs/
   cold-start/ → WG 詳細規格（本文件下方有索引）
   research/   → WG-3 研究產出
