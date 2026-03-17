@@ -1,5 +1,5 @@
 // ============================================================
-// server-detail.js — Server detail page
+// server-detail.js — Server detail page (real API)
 // ============================================================
 
 const serverDetail = {
@@ -16,22 +16,31 @@ const serverDetail = {
     this.loadServerDetail(this.slug);
   },
 
-  loadServerDetail(slug) {
-    const server = mockData.servers.find(s => s.slug === slug);
-    if (!server) {
+  async loadServerDetail(slug) {
+    try {
+      const res = await api.get(`/servers/${slug}`);
+      const d = res.data;
+      this.server = {
+        ...d,
+        tags: parseJsonField(d.tags),
+        tools_count: d.tools ? d.tools.length : 0,
+        owner: {
+          username: d.owner_username || '',
+          display_name: d.owner_display_name || d.owner_username || '未知',
+        },
+      };
+      document.title = `${this.server.name} — 台灣 MCP 市集`;
+      this.render();
+    } catch (e) {
+      console.error('Failed to load server:', e);
       $('#server-detail').innerHTML = '<div class="empty-state"><h3>找不到此伺服器</h3><p><a href="/">回到市集</a></p></div>';
-      return;
     }
-    this.server = server;
-    document.title = `${server.name} — 台灣 MCP 市集`;
-    this.render();
   },
 
   render() {
     const s = this.server;
-    const tools = mockData.tools[this.slug] || [];
-    const reviews = mockData.reviews[this.slug] || [];
-    const gatewayBase = 'https://mcp-gateway.xxx.workers.dev';
+    const tools = s.tools || [];
+    const gatewayBase = window.location.origin;
 
     $('#server-detail').innerHTML = `
       <!-- Header -->
@@ -109,9 +118,9 @@ const serverDetail = {
             <tbody>
               ${tools.map(t => `
                 <tr>
-                  <td><code>${escapeHtml(t.name)}</code><br><span class="text-xs text-muted">${escapeHtml(t.display_name)}</span></td>
+                  <td><code>${escapeHtml(t.name)}</code>${t.display_name ? `<br><span class="text-xs text-muted">${escapeHtml(t.display_name)}</span>` : ''}</td>
                   <td class="text-secondary">${escapeHtml(t.description)}</td>
-                  <td><code class="text-xs">${escapeHtml(t.input_schema)}</code></td>
+                  <td><code class="text-xs">${escapeHtml(typeof t.input_schema === 'string' ? t.input_schema : JSON.stringify(t.input_schema || {}))}</code></td>
                 </tr>
               `).join('')}
             </tbody>
@@ -140,20 +149,6 @@ const serverDetail = {
             <div class="stat-label">審核狀態</div>
           </div>
         </div>
-      </div>
-
-      <!-- Review Timeline -->
-      <div class="detail-section">
-        <h2>審核歷程</h2>
-        ${reviews.length > 0 ? `
-        <div class="timeline">
-          ${reviews.map(r => `
-            <div class="timeline-item ${r.status === 'done' ? 'success' : 'warning'}">
-              <div><strong>${escapeHtml(r.label)}</strong></div>
-              <div class="time">${r.time || '等待中...'}</div>
-            </div>
-          `).join('')}
-        </div>` : '<p class="text-muted">尚無審核紀錄</p>'}
       </div>
 
       <!-- How to Use -->
@@ -208,16 +203,25 @@ const serverDetail = {
     return explains[type]?.[value] || '';
   },
 
-  toggleStar() {
+  async toggleStar() {
     if (!auth.requireLogin()) return;
-    this.starred = !this.starred;
-    const count = $('#star-count');
-    const current = parseInt(count.textContent);
-    count.textContent = this.starred ? current + 1 : current - 1;
-    showToast(this.starred ? '已收藏' : '已取消收藏');
-    // Re-render the star button text
-    const btn = count.parentElement;
-    btn.innerHTML = `${this.starred ? '⭐ 已收藏' : '☆ 收藏'} <span id="star-count">${count.textContent}</span>`;
+    try {
+      if (this.starred) {
+        await api.delete(`/servers/${this.slug}/star`);
+      } else {
+        await api.post(`/servers/${this.slug}/star`);
+      }
+      this.starred = !this.starred;
+      const count = $('#star-count');
+      const current = parseInt(count.textContent);
+      const newCount = this.starred ? current + 1 : Math.max(0, current - 1);
+      count.textContent = newCount;
+      const btn = count.parentElement;
+      btn.innerHTML = `${this.starred ? '⭐ 已收藏' : '☆ 收藏'} <span id="star-count">${newCount}</span>`;
+      showToast(this.starred ? '已收藏' : '已取消收藏');
+    } catch (e) {
+      showToast('操作失敗，請稍後再試');
+    }
   },
 
   addToMcp() {
@@ -227,27 +231,37 @@ const serverDetail = {
 
   openReportModal() {
     if (!auth.requireLogin()) return;
-    $('#report-modal').classList.remove('hidden');
+    const modal = $('#report-modal');
+    if (modal) modal.classList.remove('hidden');
   },
 
   closeReportModal() {
-    $('#report-modal').classList.add('hidden');
-    $('#report-type').value = 'inaccurate';
-    $('#report-desc').value = '';
+    const modal = $('#report-modal');
+    if (modal) modal.classList.add('hidden');
+    const type = $('#report-type');
+    const desc = $('#report-desc');
+    if (type) type.value = 'security';
+    if (desc) desc.value = '';
   },
 
-  submitReport() {
+  async submitReport() {
     const type = $('#report-type').value;
     const desc = $('#report-desc').value.trim();
-    if (!desc) {
-      alert('請填寫問題說明');
+    if (!desc || desc.length < 10) {
+      alert('請填寫至少 10 字的問題說明');
       return;
     }
-    showToast('回報已送出，感謝您的回饋');
-    this.closeReportModal();
+    try {
+      await api.post(`/servers/${this.slug}/report`, { type, description: desc });
+      showToast('回報已送出，感謝您的回饋');
+      this.closeReportModal();
+    } catch (e) {
+      showToast('回報送出失敗，請稍後再試');
+    }
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await auth.ready;
   serverDetail.init();
 });

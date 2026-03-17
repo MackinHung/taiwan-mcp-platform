@@ -7,6 +7,14 @@ const API_BASE = '/api';
 // ── Auth State ──────────────────────────────────────────────
 const auth = {
   user: null,
+  _readyResolve: null,
+  ready: null,
+
+  _initReadyPromise() {
+    this.ready = new Promise((resolve) => {
+      this._readyResolve = resolve;
+    });
+  },
 
   async init() {
     try {
@@ -14,8 +22,10 @@ const auth = {
       this.user = res.data;
     } catch {
       this.user = null;
+    } finally {
+      this.updateUI();
+      if (this._readyResolve) this._readyResolve();
     }
-    this.updateUI();
   },
 
   updateUI() {
@@ -82,8 +92,7 @@ const auth = {
 
   requireLogin() {
     if (!this.user) {
-      alert('請先登入');
-      this.login();
+      this.showLoginModal();
       return false;
     }
     return true;
@@ -98,6 +107,9 @@ const auth = {
     return true;
   }
 };
+
+// Initialize the ready promise immediately
+auth._initReadyPromise();
 
 // ── API Wrapper ─────────────────────────────────────────────
 const api = {
@@ -190,172 +202,19 @@ const theme = {
   }
 };
 
-// ── Mock Data (for development) ─────────────────────────────
-const mockData = {
-  servers: [
-    {
-      id: 'srv001', slug: 'taiwan-weather', name: '台灣氣象',
-      description: '中央氣象署資料 — 天氣預報、地震、颱風、潮汐',
-      version: '1.0.0', category: 'government',
-      tags: ['天氣', '氣象', 'forecast', 'earthquake'],
-      badge_source: 'open', badge_data: 'public',
-      badge_permission: 'readonly', badge_community: 'popular',
-      total_calls: 2500, total_stars: 18, is_official: true,
-      review_status: 'approved', is_published: true,
-      tools_count: 8, owner: { username: 'admin', display_name: 'Platform Admin' },
-      created_at: '2026-02-15T10:00:00Z', updated_at: '2026-03-10T08:00:00Z'
-    },
-    {
-      id: 'srv002', slug: 'taiwan-transit', name: '台灣交通',
-      description: '公共運輸資料 — 台鐵、高鐵、公車即時到站',
-      version: '0.1.0', category: 'government',
-      tags: ['交通', '台鐵', '高鐵', '公車'],
-      badge_source: 'declared', badge_data: 'public',
-      badge_permission: 'readonly', badge_community: 'new',
-      total_calls: 0, total_stars: 3, is_official: true,
-      review_status: 'pending_scan', is_published: false,
-      tools_count: 5, owner: { username: 'admin', display_name: 'Platform Admin' },
-      created_at: '2026-03-12T14:00:00Z', updated_at: '2026-03-12T14:00:00Z'
-    },
-    {
-      id: 'srv003', slug: 'taiwan-company', name: '台灣公司查詢',
-      description: '經濟部商業司公司登記資料查詢',
-      version: '0.1.0', category: 'government',
-      tags: ['公司', '商業', '登記'],
-      badge_source: 'declared', badge_data: 'public',
-      badge_permission: 'readonly', badge_community: 'new',
-      total_calls: 50, total_stars: 5, is_official: true,
-      review_status: 'scan_passed', is_published: true,
-      tools_count: 3, owner: { username: 'admin', display_name: 'Platform Admin' },
-      created_at: '2026-03-01T09:00:00Z', updated_at: '2026-03-08T12:00:00Z'
-    },
-    {
-      id: 'srv004', slug: 'tw-stock-price', name: '台股即時報價',
-      description: '台灣證券交易所即時股價查詢',
-      version: '1.2.0', category: 'finance',
-      tags: ['股票', '投資', '金融'],
-      badge_source: 'open_audited', badge_data: 'account',
-      badge_permission: 'readonly', badge_community: 'trusted',
-      total_calls: 15000, total_stars: 85, is_official: false,
-      review_status: 'approved', is_published: true,
-      tools_count: 6, owner: { username: 'fintech_dev', display_name: 'FinTech Dev' },
-      created_at: '2026-01-20T08:00:00Z', updated_at: '2026-03-15T16:00:00Z'
-    },
-    {
-      id: 'srv005', slug: 'tw-electricity', name: '台灣電力資訊',
-      description: '台電即時用電量、電價查詢',
-      version: '1.0.0', category: 'utility',
-      tags: ['電力', '能源', '台電'],
-      badge_source: 'open', badge_data: 'public',
-      badge_permission: 'readonly', badge_community: 'rising',
-      total_calls: 350, total_stars: 12, is_official: false,
-      review_status: 'scan_passed', is_published: true,
-      tools_count: 4, owner: { username: 'energy_lab', display_name: 'Energy Lab' },
-      created_at: '2026-02-28T11:00:00Z', updated_at: '2026-03-05T10:00:00Z'
-    },
-    {
-      id: 'srv006', slug: 'tw-social-trends', name: '台灣社群趨勢',
-      description: 'PTT、Dcard 熱門話題趨勢分析',
-      version: '0.5.0', category: 'social',
-      tags: ['社群', 'PTT', 'Dcard', '趨勢'],
-      badge_source: 'declared', badge_data: 'public',
-      badge_permission: 'readonly', badge_community: 'rising',
-      total_calls: 180, total_stars: 8, is_official: false,
-      review_status: 'scan_passed', is_published: true,
-      tools_count: 3, owner: { username: 'data_miner', display_name: 'Data Miner' },
-      created_at: '2026-03-05T15:00:00Z', updated_at: '2026-03-14T09:00:00Z'
-    }
-  ],
-
-  tools: {
-    'taiwan-weather': [
-      { name: 'get_forecast_36hr', display_name: '36小時天氣預報', description: '取得台灣各縣市未來 36 小時天氣預報', input_schema: '{ "city": "string (縣市名稱)" }' },
-      { name: 'get_forecast_7day', display_name: '7天天氣預報', description: '取得台灣各縣市未來 7 天天氣預報', input_schema: '{ "city": "string (縣市名稱)" }' },
-      { name: 'get_earthquake_recent', display_name: '最近地震', description: '取得最近地震報告', input_schema: '{ "limit": "number (筆數, 預設5)" }' },
-      { name: 'get_typhoon_active', display_name: '颱風資訊', description: '取得目前活躍颱風資訊', input_schema: '{}' },
-      { name: 'get_weather_warning', display_name: '氣象警特報', description: '取得目前生效的氣象警特報', input_schema: '{}' },
-      { name: 'get_rain_observation', display_name: '即時雨量', description: '取得即時雨量觀測', input_schema: '{ "city": "string (縣市名稱, 可選)" }' },
-      { name: 'get_tidal_forecast', display_name: '潮汐預報', description: '取得潮汐預報', input_schema: '{ "location": "string (觀測站名稱)" }' },
-      { name: 'get_uv_index', display_name: '紫外線指數', description: '取得紫外線指數', input_schema: '{ "city": "string (縣市名稱, 可選)" }' },
-    ],
-    'tw-stock-price': [
-      { name: 'get_stock_price', display_name: '即時股價', description: '查詢個股即時報價', input_schema: '{ "symbol": "string (股票代號)" }' },
-      { name: 'get_stock_history', display_name: '歷史股價', description: '查詢個股歷史股價', input_schema: '{ "symbol": "string", "days": "number" }' },
-      { name: 'get_market_index', display_name: '大盤指數', description: '取得加權指數', input_schema: '{}' },
-      { name: 'get_top_movers', display_name: '漲跌排行', description: '取得漲跌幅排行榜', input_schema: '{ "type": "gainers|losers", "limit": "number" }' },
-      { name: 'get_stock_info', display_name: '個股資訊', description: '查詢個股基本資料', input_schema: '{ "symbol": "string (股票代號)" }' },
-      { name: 'get_dividends', display_name: '股利資訊', description: '查詢個股配息紀錄', input_schema: '{ "symbol": "string", "years": "number" }' },
-    ]
-  },
-
-  reviews: {
-    'taiwan-weather': [
-      { step: 'submitted', status: 'done', label: '提交審核', time: '2026-02-15 10:00' },
-      { step: 'auto_scan', status: 'done', label: '自動掃描通過', time: '2026-02-15 10:05' },
-      { step: 'badge_assigned', status: 'done', label: '徽章評定完成', time: '2026-02-15 10:05' },
-      { step: 'approved', status: 'done', label: '審核通過，已上架', time: '2026-02-16 14:30' },
-    ],
-    'taiwan-transit': [
-      { step: 'submitted', status: 'done', label: '提交審核', time: '2026-03-12 14:00' },
-      { step: 'auto_scan', status: 'pending', label: '等待自動掃描', time: '' },
-    ]
-  },
-
-  user: {
-    id: 'user001', username: 'demo_user', display_name: 'Demo User',
-    avatar_url: 'https://avatars.githubusercontent.com/u/0?v=4',
-    role: 'developer', plan: 'free',
-    created_at: '2026-02-01T10:00:00Z'
-  },
-
-  apiKeys: [
-    {
-      id: 'key001', prefix: 'sk-abc1', name: '開發測試',
-      permissions: ['read', 'compose'], last_used: '2026-03-17T08:00:00Z',
-      created_at: '2026-03-01T10:00:00Z', expires_at: null
-    },
-    {
-      id: 'key002', prefix: 'sk-def2', name: 'CI/CD',
-      permissions: ['read'], last_used: '2026-03-16T22:00:00Z',
-      created_at: '2026-03-10T10:00:00Z', expires_at: '2026-06-10T10:00:00Z'
-    }
-  ],
-
-  compositions: [
-    {
-      id: 'comp001', name: '我的 Side Project', description: '天氣 + 交通查詢',
-      endpoint_slug: 'my-side-project', scenario: 'hobby', is_active: true,
-      servers: [
-        { server_slug: 'taiwan-weather', namespace_prefix: 'weather', server_name: '台灣氣象' },
-        { server_slug: 'taiwan-transit', namespace_prefix: 'transit', server_name: '台灣交通' },
-      ]
-    }
-  ],
-
-  adminUsers: [
-    { id: 'u001', username: 'admin', display_name: 'Admin', role: 'admin', plan: 'unlimited', created_at: '2026-01-01T00:00:00Z' },
-    { id: 'u002', username: 'demo_user', display_name: 'Demo User', role: 'developer', plan: 'free', created_at: '2026-02-01T10:00:00Z' },
-    { id: 'u003', username: 'fintech_dev', display_name: 'FinTech Dev', role: 'developer', plan: 'pro', created_at: '2026-01-15T08:00:00Z' },
-    { id: 'u004', username: 'energy_lab', display_name: 'Energy Lab', role: 'developer', plan: 'free', created_at: '2026-02-20T12:00:00Z' },
-    { id: 'u005', username: 'data_miner', display_name: 'Data Miner', role: 'developer', plan: 'free', created_at: '2026-03-01T09:00:00Z' },
-  ],
-
-  reports: [
-    { id: 'rpt001', server_slug: 'tw-social-trends', server_name: '台灣社群趨勢', type: 'inaccurate', description: '部分 PTT 資料來源已失效', status: 'open', created_at: '2026-03-15T10:00:00Z', reporter: 'demo_user' },
-  ]
-};
-
 // ── Helpers ──────────────────────────────────────────────────
 function $(selector) { return document.querySelector(selector); }
 function $$(selector) { return document.querySelectorAll(selector); }
 
 function escapeHtml(str) {
+  if (!str) return '';
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
 }
 
 function formatNumber(n) {
+  if (n == null) return '0';
   if (n >= 10000) return (n / 1000).toFixed(1) + 'k';
   if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
   return n.toString();
@@ -396,6 +255,14 @@ function showToast(msg) {
   toast.textContent = msg;
   toast.style.opacity = '1';
   setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+}
+
+function parseJsonField(val) {
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try { return JSON.parse(val); } catch { return []; }
+  }
+  return [];
 }
 
 function renderNav(activePage) {

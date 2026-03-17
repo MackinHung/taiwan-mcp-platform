@@ -6,6 +6,37 @@ type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 
 export const serverRoutes = new Hono<HonoEnv>();
 
+const SORT_COLUMNS: Record<string, string> = {
+  popular: 's.total_calls DESC',
+  stars: 's.total_stars DESC',
+  newest: 's.created_at DESC',
+  name: 's.name ASC',
+};
+
+// GET /stats -> aggregate stats for published servers
+serverRoutes.get('/stats', async (c) => {
+  const env = c.env;
+
+  const row = await env.DB.prepare(
+    `SELECT
+       COUNT(*) as total_published,
+       COALESCE(SUM((SELECT COUNT(*) FROM tools t WHERE t.server_id = s.id)), 0) as total_tools,
+       COALESCE(SUM(s.total_calls), 0) as total_calls
+     FROM servers s
+     WHERE s.is_published = 1 AND s.review_status = 'approved'`
+  ).first<{ total_published: number; total_tools: number; total_calls: number }>();
+
+  return c.json({
+    success: true,
+    data: {
+      total_published: row?.total_published ?? 0,
+      total_tools: row?.total_tools ?? 0,
+      total_calls: row?.total_calls ?? 0,
+    },
+    error: null,
+  });
+});
+
 // GET / -> list published servers
 serverRoutes.get('/', async (c) => {
   const env = c.env;
@@ -14,6 +45,7 @@ serverRoutes.get('/', async (c) => {
     badge_data: c.req.query('badge_data'),
     badge_source: c.req.query('badge_source'),
     search: c.req.query('search'),
+    sort: c.req.query('sort'),
     page: c.req.query('page'),
     limit: c.req.query('limit'),
   };
@@ -23,32 +55,32 @@ serverRoutes.get('/', async (c) => {
     return c.json({ success: false, error: '輸入驗證失敗', data: null }, 400);
   }
 
-  const { category, badge_data, badge_source, search, page, limit } = parsed.data;
+  const { category, badge_data, badge_source, search, sort, page, limit } = parsed.data;
 
-  let whereClause = 'WHERE is_published = 1 AND review_status = ?';
+  let whereClause = 'WHERE s.is_published = 1 AND s.review_status = ?';
   const countParams: any[] = ['approved'];
   const queryParams: any[] = ['approved'];
 
   if (category) {
-    whereClause += ' AND category = ?';
+    whereClause += ' AND s.category = ?';
     countParams.push(category);
     queryParams.push(category);
   }
 
   if (badge_data) {
-    whereClause += ' AND badge_data = ?';
+    whereClause += ' AND s.badge_data = ?';
     countParams.push(badge_data);
     queryParams.push(badge_data);
   }
 
   if (badge_source) {
-    whereClause += ' AND badge_source = ?';
+    whereClause += ' AND s.badge_source = ?';
     countParams.push(badge_source);
     queryParams.push(badge_source);
   }
 
   if (search) {
-    whereClause += ' AND (name LIKE ? OR description LIKE ?)';
+    whereClause += ' AND (s.name LIKE ? OR s.description LIKE ?)';
     const searchPattern = `%${search}%`;
     countParams.push(searchPattern, searchPattern);
     queryParams.push(searchPattern, searchPattern);
@@ -57,13 +89,23 @@ serverRoutes.get('/', async (c) => {
   const offset = (page - 1) * limit;
 
   const countRow = await env.DB.prepare(
-    `SELECT COUNT(*) as total FROM servers ${whereClause}`
+    `SELECT COUNT(*) as total FROM servers s ${whereClause}`
   ).bind(...countParams).first<{ total: number }>();
 
   const total = countRow?.total ?? 0;
 
+  const orderBy = SORT_COLUMNS[sort || 'popular'] || SORT_COLUMNS.popular;
+
   const { results } = await env.DB.prepare(
-    `SELECT * FROM servers ${whereClause} ORDER BY published_at DESC LIMIT ? OFFSET ?`
+    `SELECT s.*,
+       u.username as owner_username,
+       u.display_name as owner_display_name,
+       (SELECT COUNT(*) FROM tools t WHERE t.server_id = s.id) as tools_count
+     FROM servers s
+     LEFT JOIN users u ON s.owner_id = u.id
+     ${whereClause}
+     ORDER BY ${orderBy}
+     LIMIT ? OFFSET ?`
   ).bind(...queryParams, limit, offset).all();
 
   return c.json({
@@ -88,7 +130,12 @@ serverRoutes.get('/:slug', async (c) => {
   if (slug === 'star' || slug === 'report') return c.notFound();
 
   const server = await env.DB.prepare(
-    'SELECT * FROM servers WHERE slug = ?'
+    `SELECT s.*,
+       u.username as owner_username,
+       u.display_name as owner_display_name
+     FROM servers s
+     LEFT JOIN users u ON s.owner_id = u.id
+     WHERE s.slug = ?`
   ).bind(slug).first();
 
   if (!server) {

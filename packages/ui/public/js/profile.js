@@ -1,15 +1,41 @@
 // ============================================================
-// profile.js — Profile + API Keys
+// profile.js — Profile + API Keys (real API)
 // ============================================================
 
 const profile = {
   user: null,
   apiKeys: [],
 
-  init() {
-    this.user = mockData.user;
-    this.apiKeys = JSON.parse(JSON.stringify(mockData.apiKeys));
+  async init() {
+    if (!auth.user) {
+      const el = $('#profile-content');
+      if (el) el.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🔒</div>
+          <h3>請先登入</h3>
+          <p class="text-muted mb-16">登入後即可查看個人資料與管理 API Keys</p>
+          <button class="btn btn-primary" onclick="auth.login()">登入</button>
+        </div>`;
+      return;
+    }
+    this.user = auth.user;
+    await this.loadApiKeys();
     this.render();
+  },
+
+  async loadApiKeys() {
+    try {
+      const res = await api.get('/keys');
+      this.apiKeys = (res.data || []).map(k => ({
+        ...k,
+        prefix: k.key_prefix || k.prefix || '',
+        permissions: parseJsonField(k.permissions),
+        last_used: k.last_used_at || k.last_used || null,
+      }));
+    } catch (e) {
+      console.error('Failed to load API keys:', e);
+      this.apiKeys = [];
+    }
   },
 
   render() {
@@ -21,13 +47,13 @@ const profile = {
       unlimited: { calls: Infinity, compositions: Infinity, keys: Infinity },
     };
     const limits = planLimits[u.plan] || planLimits.free;
-    const usedCalls = 342;
+    const usedCalls = u.monthly_calls || 0;
 
     $('#profile-content').innerHTML = `
       <!-- Profile Info -->
       <div class="card mb-24">
         <div class="flex items-center gap-16">
-          <img src="${u.avatar_url}" alt="avatar" style="width:64px;height:64px;border-radius:50%;border:3px solid var(--border);" />
+          <img src="${u.avatar_url || ''}" alt="avatar" style="width:64px;height:64px;border-radius:50%;border:3px solid var(--border);" />
           <div style="flex:1;">
             <h1 style="font-size:1.3rem;font-weight:700;">${escapeHtml(u.display_name)}</h1>
             <div class="text-sm text-secondary">@${escapeHtml(u.username)}</div>
@@ -47,10 +73,6 @@ const profile = {
           <div class="stat-card">
             <div class="stat-value">${formatNumber(usedCalls)} / ${limits.calls === Infinity ? '∞' : formatNumber(limits.calls)}</div>
             <div class="stat-label">月呼叫量</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">1 / ${limits.compositions === Infinity ? '∞' : limits.compositions}</div>
-            <div class="stat-label">MCP 組合</div>
           </div>
           <div class="stat-card">
             <div class="stat-value">${this.apiKeys.length} / ${limits.keys === Infinity ? '∞' : limits.keys}</div>
@@ -127,7 +149,7 @@ const profile = {
   },
 
   roleLabel(role) {
-    const labels = { admin: '管理員', developer: '開發者', viewer: '檢視者' };
+    const labels = { admin: '管理員', developer: '開發者', user: '一般用戶', viewer: '檢視者' };
     return labels[role] || role;
   },
 
@@ -145,20 +167,23 @@ const profile = {
 
   // ── API Key Management ──
   openKeyModal() {
-    $('#create-key-modal').classList.remove('hidden');
-    $('#key-name').value = '';
-    $('#key-expiry').value = '';
-    // Reset checkboxes
+    const modal = $('#create-key-modal');
+    if (modal) modal.classList.remove('hidden');
+    const nameEl = $('#key-name');
+    if (nameEl) nameEl.value = '';
+    const expiryEl = $('#key-expiry');
+    if (expiryEl) expiryEl.value = '';
     $$('#create-key-modal input[type="checkbox"]').forEach((cb, i) => {
-      cb.checked = i < 2; // read + compose checked by default
+      cb.checked = i < 2;
     });
   },
 
   closeKeyModal() {
-    $('#create-key-modal').classList.add('hidden');
+    const modal = $('#create-key-modal');
+    if (modal) modal.classList.add('hidden');
   },
 
-  handleCreateKey() {
+  async handleCreateKey() {
     const name = $('#key-name').value.trim();
     if (!name) { alert('請輸入名稱'); return; }
 
@@ -169,42 +194,42 @@ const profile = {
     const now = new Date();
     const expiresAt = expiryDays
       ? new Date(now.getTime() + parseInt(expiryDays) * 86400000).toISOString()
-      : null;
+      : undefined;
 
-    // Generate mock key
-    const randomPart = Array.from({ length: 32 }, () =>
-      'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]
-    ).join('');
-    const fullKey = `sk-${randomPart}`;
-    const prefix = fullKey.slice(0, 7);
+    try {
+      const res = await api.post('/keys', { name, permissions, expires_at: expiresAt });
+      this.closeKeyModal();
 
-    const newKey = {
-      id: 'key' + Date.now(),
-      prefix,
-      name,
-      permissions,
-      last_used: null,
-      created_at: now.toISOString(),
-      expires_at: expiresAt,
-    };
+      // Show the full key (only available once)
+      const fullKey = res.data?.key;
+      if (fullKey) {
+        const keyValueEl = $('#new-key-value');
+        if (keyValueEl) keyValueEl.textContent = fullKey;
+        const createdModal = $('#key-created-modal');
+        if (createdModal) createdModal.classList.remove('hidden');
+      }
 
-    this.apiKeys.push(newKey);
-    this.closeKeyModal();
-    this.render();
-
-    // Show the full key
-    $('#new-key-value').textContent = fullKey;
-    $('#key-created-modal').classList.remove('hidden');
+      await this.loadApiKeys();
+      this.render();
+    } catch (e) {
+      showToast('建立 API Key 失敗');
+    }
   },
 
-  deleteKey(keyId) {
+  async deleteKey(keyId) {
     if (!confirm('確定要刪除此 API Key？此操作無法復原。')) return;
-    this.apiKeys = this.apiKeys.filter(k => k.id !== keyId);
-    this.render();
-    showToast('API Key 已刪除');
+    try {
+      await api.delete(`/keys/${keyId}`);
+      await this.loadApiKeys();
+      this.render();
+      showToast('API Key 已刪除');
+    } catch (e) {
+      showToast('刪除 API Key 失敗');
+    }
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await auth.ready;
   profile.init();
 });

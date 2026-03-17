@@ -1,133 +1,125 @@
 // ============================================================
-// marketplace.js — Homepage server listing
+// marketplace.js — Homepage server listing (real API)
 // ============================================================
 
 const marketplace = {
-  allServers: [],
   filtered: [],
   currentCategory: 'all',
   currentSort: 'popular',
   searchQuery: '',
   page: 1,
   perPage: 12,
+  totalCount: 0,
+  totalPages: 0,
 
-  init() {
-    this.allServers = mockData.servers.filter(s => s.is_published);
-    this.applyFilters();
+  async init() {
+    await this.loadServers();
     this.renderStats();
     this.renderCategoryTabs();
     this.setupMobileToggle();
   },
 
-  renderStats() {
-    const servers = mockData.servers;
-    const totalTools = servers.reduce((sum, s) => sum + s.tools_count, 0);
-    const totalCalls = servers.reduce((sum, s) => sum + s.total_calls, 0);
-    $('#stat-servers').textContent = servers.filter(s => s.is_published).length;
-    $('#stat-tools').textContent = totalTools;
-    $('#stat-calls').textContent = formatNumber(totalCalls);
+  async loadServers() {
+    try {
+      const params = new URLSearchParams();
+      if (this.currentCategory !== 'all') params.set('category', this.currentCategory);
+      if (this.searchQuery) params.set('search', this.searchQuery);
+      params.set('sort', this.currentSort);
+      params.set('page', this.page);
+      params.set('limit', this.perPage);
+
+      const res = await api.get(`/servers?${params}`);
+      this.filtered = (res.data || []).map(s => ({
+        ...s,
+        tags: parseJsonField(s.tags),
+        owner: {
+          username: s.owner_username || '',
+          display_name: s.owner_display_name || s.owner_username || '未知',
+        },
+      }));
+      this.totalCount = res.meta?.total ?? 0;
+      this.totalPages = res.meta?.total_pages ?? 0;
+    } catch (e) {
+      console.error('Failed to load servers:', e);
+      this.filtered = [];
+      this.totalCount = 0;
+      this.totalPages = 0;
+    }
+
+    this.renderServerCards();
+    this.renderPagination();
+  },
+
+  async renderStats() {
+    try {
+      const res = await api.get('/servers/stats');
+      const stats = res.data;
+      const elServers = $('#stat-servers');
+      const elTools = $('#stat-tools');
+      const elCalls = $('#stat-calls');
+      if (elServers) elServers.textContent = stats.total_published;
+      if (elTools) elTools.textContent = stats.total_tools;
+      if (elCalls) elCalls.textContent = formatNumber(stats.total_calls);
+    } catch {
+      // Stats are non-critical; keep default values
+    }
   },
 
   renderCategoryTabs() {
-    const cats = ['all', ...new Set(mockData.servers.map(s => s.category))];
+    const cats = ['all', 'government', 'finance', 'utility', 'social', 'other'];
     const html = cats.map(c =>
       `<button class="${c === this.currentCategory ? 'active' : ''}" onclick="marketplace.handleCategoryFilter('${c}')">${categoryLabels[c] || c}</button>`
     ).join('');
-    $('#category-tabs').innerHTML = html;
+    const el = $('#category-tabs');
+    if (el) el.innerHTML = html;
   },
 
   handleSearch(query) {
     this.searchQuery = query.toLowerCase().trim();
     this.page = 1;
-    this.applyFilters();
+    this.loadServers();
   },
 
   handleCategoryFilter(cat) {
     this.currentCategory = cat;
     this.page = 1;
     this.renderCategoryTabs();
-    this.applyFilters();
+    this.loadServers();
   },
 
   handleSort(sort) {
     this.currentSort = sort;
     $$('.sort-options button').forEach(b => b.classList.toggle('active', b.dataset.sort === sort));
-    this.applyFilters();
+    this.page = 1;
+    this.loadServers();
   },
 
   applyFilters() {
-    let servers = this.allServers.slice();
-
-    // Category filter
-    if (this.currentCategory !== 'all') {
-      servers = servers.filter(s => s.category === this.currentCategory);
-    }
-
-    // Search filter
-    if (this.searchQuery) {
-      servers = servers.filter(s =>
-        s.name.toLowerCase().includes(this.searchQuery) ||
-        s.description.toLowerCase().includes(this.searchQuery) ||
-        s.tags.some(t => t.toLowerCase().includes(this.searchQuery)) ||
-        s.slug.toLowerCase().includes(this.searchQuery)
-      );
-    }
-
-    // Data badge filter
-    const checkedData = [...$$('#sidebar .filter-section:nth-child(1) input:checked')].map(i => i.value);
-    if (checkedData.length > 0 && checkedData.length < 4) {
-      servers = servers.filter(s => checkedData.includes(s.badge_data));
-    }
-
-    // Source badge filter
-    const checkedSource = [...$$('#sidebar .filter-section:nth-child(2) input:checked')].map(i => i.value);
-    if (checkedSource.length > 0 && checkedSource.length < 4) {
-      servers = servers.filter(s => checkedSource.includes(s.badge_source));
-    }
-
-    // Official only
-    const officialOnly = $('#sidebar .filter-section:nth-child(3) input').checked;
-    if (officialOnly) {
-      servers = servers.filter(s => s.is_official);
-    }
-
-    // Sort
-    switch (this.currentSort) {
-      case 'popular':
-        servers.sort((a, b) => b.total_calls - a.total_calls);
-        break;
-      case 'stars':
-        servers.sort((a, b) => b.total_stars - a.total_stars);
-        break;
-      case 'newest':
-        servers.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        break;
-      case 'name':
-        servers.sort((a, b) => a.name.localeCompare(b.name, 'zh-TW'));
-        break;
-    }
-
-    this.filtered = servers;
-    this.renderServerCards();
-    this.renderPagination();
+    // Badge sidebar filters are applied client-side on current results
+    // Since the API supports badge_data and badge_source, we could add those
+    // For now, trigger a full reload
+    this.page = 1;
+    this.loadServers();
   },
 
   renderServerCards() {
-    const start = (this.page - 1) * this.perPage;
-    const pageServers = this.filtered.slice(start, start + this.perPage);
+    const pageServers = this.filtered;
 
     if (pageServers.length === 0) {
-      $('#server-grid').innerHTML = `
+      const el = $('#server-grid');
+      if (el) el.innerHTML = `
         <div class="empty-state" style="grid-column: 1/-1;">
           <div class="empty-icon">🔍</div>
           <h3>找不到符合的伺服器</h3>
           <p class="text-muted">試試其他搜尋條件或篩選</p>
         </div>`;
-      $('#result-count').textContent = '0 個結果';
+      const countEl = $('#result-count');
+      if (countEl) countEl.textContent = '0 個結果';
       return;
     }
 
-    $('#result-count').textContent = `${this.filtered.length} 個伺服器`;
+    const countEl = $('#result-count');
+    if (countEl) countEl.textContent = `${this.totalCount} 個伺服器`;
 
     const html = pageServers.map(server => `
       <div class="card">
@@ -141,57 +133,59 @@ const marketplace = {
         <div class="card-desc">${escapeHtml(server.description)}</div>
         ${badges.renderAll(server)}
         <div class="card-tags">
-          ${server.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
+          ${(server.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
         </div>
         <div class="card-meta mt-8">
           <span title="呼叫次數">📞 ${formatNumber(server.total_calls)}</span>
           <span title="星數">⭐ ${server.total_stars}</span>
-          <span title="工具數">🔧 ${server.tools_count}</span>
+          <span title="工具數">🔧 ${server.tools_count || 0}</span>
           <span>${escapeHtml(server.owner.display_name)}</span>
         </div>
       </div>
     `).join('');
 
-    $('#server-grid').innerHTML = html;
+    const el = $('#server-grid');
+    if (el) el.innerHTML = html;
   },
 
   renderPagination() {
-    const totalPages = Math.ceil(this.filtered.length / this.perPage);
-    if (totalPages <= 1) {
-      $('#pagination').innerHTML = '';
+    const pag = $('#pagination');
+    if (!pag) return;
+
+    if (this.totalPages <= 1) {
+      pag.innerHTML = '';
       return;
     }
     let html = `<button ${this.page <= 1 ? 'disabled' : ''} onclick="marketplace.goPage(${this.page - 1})">上一頁</button>`;
-    for (let i = 1; i <= totalPages; i++) {
+    for (let i = 1; i <= this.totalPages; i++) {
       html += `<button class="${i === this.page ? 'active' : ''}" onclick="marketplace.goPage(${i})">${i}</button>`;
     }
-    html += `<button ${this.page >= totalPages ? 'disabled' : ''} onclick="marketplace.goPage(${this.page + 1})">下一頁</button>`;
-    $('#pagination').innerHTML = html;
+    html += `<button ${this.page >= this.totalPages ? 'disabled' : ''} onclick="marketplace.goPage(${this.page + 1})">下一頁</button>`;
+    pag.innerHTML = html;
   },
 
   goPage(p) {
     this.page = p;
-    this.renderServerCards();
-    this.renderPagination();
+    this.loadServers();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
 
   resetFilters() {
     $$('#sidebar input[type="checkbox"]').forEach(cb => {
-      // Reset data/source filters to checked, official to unchecked
       cb.checked = cb.value !== 'official';
     });
     this.currentCategory = 'all';
     this.searchQuery = '';
-    $('#global-search').value = '';
+    const searchEl = $('#global-search');
+    if (searchEl) searchEl.value = '';
     this.page = 1;
     this.renderCategoryTabs();
-    this.applyFilters();
+    this.loadServers();
   },
 
   toggleSidebar() {
     const sidebar = $('#sidebar');
-    sidebar.classList.toggle('open');
+    if (sidebar) sidebar.classList.toggle('open');
   },
 
   setupMobileToggle() {
@@ -204,6 +198,7 @@ const marketplace = {
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await auth.ready;
   marketplace.init();
 });

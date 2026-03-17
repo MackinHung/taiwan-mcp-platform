@@ -1,37 +1,68 @@
 // ============================================================
-// my-mcp.js — Composition manager
+// my-mcp.js — Composition manager (real API)
 // ============================================================
 
 const myMcp = {
   compositions: [],
   selectedServerSlug: null,
+  selectedServerName: null,
   activeCompId: null,
 
-  init() {
-    this.loadCompositions();
+  async init() {
+    if (!auth.user) {
+      const el = $('#compositions-list');
+      if (el) el.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🔒</div>
+          <h3>請先登入</h3>
+          <p class="text-muted mb-16">登入後即可管理您的 MCP 組合</p>
+          <button class="btn btn-primary" onclick="auth.login()">登入</button>
+        </div>`;
+      return;
+    }
+    await this.loadCompositions();
     // Handle ?add=slug from server detail page
     const addSlug = getQueryParam('add');
-    if (addSlug) {
-      // If there are compositions, open add modal for first one
-      if (this.compositions.length > 0) {
-        this.activeCompId = this.compositions[0].id;
-        this.openAddServerModal();
-        // Pre-select the server
-        setTimeout(() => {
-          this.searchServers(addSlug);
-          $('#server-search').value = addSlug;
-        }, 100);
-      }
+    if (addSlug && this.compositions.length > 0) {
+      this.activeCompId = this.compositions[0].id;
+      this.openAddServerModal();
+      setTimeout(() => {
+        this.searchServers(addSlug);
+        const searchEl = $('#server-search');
+        if (searchEl) searchEl.value = addSlug;
+      }, 100);
     }
   },
 
-  loadCompositions() {
-    this.compositions = JSON.parse(JSON.stringify(mockData.compositions));
+  async loadCompositions() {
+    try {
+      const res = await api.get('/compositions');
+      const comps = res.data || [];
+      // Load server details for each composition
+      const detailed = [];
+      for (const comp of comps) {
+        try {
+          const detail = await api.get(`/compositions/${comp.id}`);
+          detailed.push({
+            ...detail.data,
+            servers: detail.data.servers || [],
+          });
+        } catch {
+          detailed.push({ ...comp, servers: [] });
+        }
+      }
+      this.compositions = detailed;
+    } catch (e) {
+      console.error('Failed to load compositions:', e);
+      this.compositions = [];
+    }
     this.renderCompositionCards();
   },
 
   renderCompositionCards() {
     const container = $('#compositions-list');
+    if (!container) return;
+
     if (this.compositions.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
@@ -43,7 +74,7 @@ const myMcp = {
       return;
     }
 
-    const gatewayBase = 'https://mcp-gateway.xxx.workers.dev';
+    const gatewayBase = window.location.origin;
     container.innerHTML = this.compositions.map(comp => `
       <div class="comp-card" id="comp-${comp.id}">
         <div class="comp-header">
@@ -60,7 +91,7 @@ const myMcp = {
             <button class="btn btn-ghost btn-sm" onclick="myMcp.deleteComposition('${comp.id}')" title="刪除">🗑️</button>
           </div>
         </div>
-        <p class="text-secondary text-sm">${escapeHtml(comp.description)}</p>
+        <p class="text-secondary text-sm">${escapeHtml(comp.description || '')}</p>
 
         <div class="comp-endpoint">
           <code id="endpoint-${comp.id}">${gatewayBase}/mcp/u/${escapeHtml(comp.endpoint_slug)}</code>
@@ -70,16 +101,15 @@ const myMcp = {
         <!-- Servers in this composition -->
         <div class="comp-servers">
           <div class="flex items-center justify-between mb-8">
-            <span class="text-sm font-bold">伺服器 (${comp.servers.length})</span>
+            <span class="text-sm font-bold">伺服器 (${(comp.servers || []).length})</span>
             <button class="btn btn-secondary btn-sm" onclick="myMcp.openAddServerModal('${comp.id}')">+ 加入伺服器</button>
           </div>
-          ${comp.servers.length > 0 ? comp.servers.map((sv, idx) => `
+          ${(comp.servers || []).length > 0 ? (comp.servers || []).map(sv => `
             <div class="comp-server-item">
               <span class="prefix">${escapeHtml(sv.namespace_prefix)}</span>
-              <a href="/server.html?slug=${escapeHtml(sv.server_slug)}" class="text-sm">${escapeHtml(sv.server_name)}</a>
+              <a href="/server.html?slug=${escapeHtml(sv.server_slug || '')}" class="text-sm">${escapeHtml(sv.server_name || sv.server_slug || '')}</a>
               <div style="margin-left:auto;display:flex;gap:4px;">
-                <button class="btn btn-ghost btn-sm" onclick="myMcp.editPrefix('${comp.id}', ${idx})" title="編輯前綴">✏️</button>
-                <button class="btn btn-ghost btn-sm" onclick="myMcp.removeServer('${comp.id}', ${idx})" title="移除">✕</button>
+                <button class="btn btn-ghost btn-sm" onclick="myMcp.removeServer('${comp.id}', '${sv.server_id}')" title="移除">✕</button>
               </div>
             </div>
           `).join('') : '<p class="text-muted text-sm">尚未加入任何伺服器</p>'}
@@ -111,24 +141,27 @@ const myMcp = {
 
   scenarioLabel(s) {
     const labels = { hobby: '個人', business: '商業', enterprise: '企業', regulated: '受監管' };
-    return labels[s] || s;
+    return labels[s] || s || '個人';
   },
 
   // ── Create ──
   openCreateModal() {
-    $('#create-modal').classList.remove('hidden');
-    $('#comp-name').focus();
+    const modal = $('#create-modal');
+    if (modal) modal.classList.remove('hidden');
+    const nameEl = $('#comp-name');
+    if (nameEl) nameEl.focus();
   },
 
   closeCreateModal() {
-    $('#create-modal').classList.add('hidden');
-    $('#comp-name').value = '';
-    $('#comp-desc').value = '';
-    $('#comp-slug').value = '';
-    $('#comp-scenario').value = 'hobby';
+    const modal = $('#create-modal');
+    if (modal) modal.classList.add('hidden');
+    const fields = ['#comp-name', '#comp-desc', '#comp-slug'];
+    fields.forEach(f => { const el = $(f); if (el) el.value = ''; });
+    const scenario = $('#comp-scenario');
+    if (scenario) scenario.value = 'hobby';
   },
 
-  handleCreateComposition() {
+  async handleCreateComposition() {
     const name = $('#comp-name').value.trim();
     const desc = $('#comp-desc').value.trim();
     const slug = $('#comp-slug').value.trim();
@@ -138,146 +171,159 @@ const myMcp = {
     if (!slug) { alert('請輸入端點代稱'); return; }
     if (!/^[a-z0-9-]+$/.test(slug)) { alert('代稱僅允許小寫英文、數字、連字號'); return; }
 
-    const newComp = {
-      id: 'comp' + Date.now(),
-      name,
-      description: desc,
-      endpoint_slug: slug,
-      scenario,
-      is_active: true,
-      servers: []
-    };
-    this.compositions.push(newComp);
-    this.closeCreateModal();
-    this.renderCompositionCards();
-    showToast('組合已建立');
+    try {
+      await api.post('/compositions', {
+        name,
+        description: desc || undefined,
+        endpoint_slug: slug,
+        scenario: scenario || undefined,
+      });
+      this.closeCreateModal();
+      await this.loadCompositions();
+      showToast('組合已建立');
+    } catch (e) {
+      showToast(e.error || '建立組合失敗');
+    }
   },
 
   // ── Add Server ──
   openAddServerModal(compId) {
     this.activeCompId = compId || (this.compositions[0] && this.compositions[0].id);
     if (!this.activeCompId) { alert('請先建立組合'); return; }
-    $('#add-server-modal').classList.remove('hidden');
-    $('#server-search').value = '';
-    $('#add-prefix').value = '';
-    $('#server-search-results').innerHTML = '';
+    const modal = $('#add-server-modal');
+    if (modal) modal.classList.remove('hidden');
+    const searchEl = $('#server-search');
+    if (searchEl) searchEl.value = '';
+    const prefixEl = $('#add-prefix');
+    if (prefixEl) prefixEl.value = '';
+    const resultsEl = $('#server-search-results');
+    if (resultsEl) resultsEl.innerHTML = '';
     this.selectedServerSlug = null;
-    $('#add-server-confirm').disabled = true;
+    this.selectedServerName = null;
+    const confirmBtn = $('#add-server-confirm');
+    if (confirmBtn) confirmBtn.disabled = true;
     this.searchServers('');
   },
 
   closeAddServerModal() {
-    $('#add-server-modal').classList.add('hidden');
+    const modal = $('#add-server-modal');
+    if (modal) modal.classList.add('hidden');
     this.selectedServerSlug = null;
+    this.selectedServerName = null;
   },
 
-  searchServers(query) {
-    const q = query.toLowerCase().trim();
-    const comp = this.compositions.find(c => c.id === this.activeCompId);
-    const existingSlugs = comp ? comp.servers.map(s => s.server_slug) : [];
+  async searchServers(query) {
+    const q = (query || '').toLowerCase().trim();
+    try {
+      const params = new URLSearchParams();
+      if (q) params.set('search', q);
+      params.set('limit', '20');
+      const res = await api.get(`/servers?${params}`);
+      const comp = this.compositions.find(c => c.id === this.activeCompId);
+      const existingSlugs = comp ? (comp.servers || []).map(s => s.server_slug) : [];
 
-    let servers = mockData.servers.filter(s => s.is_published && !existingSlugs.includes(s.slug));
-    if (q) {
-      servers = servers.filter(s =>
-        s.name.toLowerCase().includes(q) ||
-        s.slug.toLowerCase().includes(q) ||
-        s.description.toLowerCase().includes(q)
-      );
-    }
+      const servers = (res.data || [])
+        .filter(s => !existingSlugs.includes(s.slug))
+        .map(s => ({
+          ...s,
+          tags: parseJsonField(s.tags),
+        }));
 
-    const container = $('#server-search-results');
-    if (servers.length === 0) {
-      container.innerHTML = '<p class="text-muted text-sm" style="padding:8px;">沒有符合的伺服器</p>';
-      return;
-    }
+      const container = $('#server-search-results');
+      if (!container) return;
 
-    container.innerHTML = servers.map(s => `
-      <div class="comp-server-item" style="cursor:pointer;border:1px solid ${this.selectedServerSlug === s.slug ? 'var(--color-primary)' : 'transparent'};border-radius:var(--radius-sm);margin-bottom:4px;"
-           onclick="myMcp.selectServer('${s.slug}', '${escapeHtml(s.name)}')">
-        <div>
-          <div class="text-sm font-bold">${escapeHtml(s.name)}</div>
-          <div class="text-xs text-muted">${escapeHtml(s.description)}</div>
+      if (servers.length === 0) {
+        container.innerHTML = '<p class="text-muted text-sm" style="padding:8px;">沒有符合的伺服器</p>';
+        return;
+      }
+
+      container.innerHTML = servers.map(s => `
+        <div class="comp-server-item" style="cursor:pointer;border:1px solid ${this.selectedServerSlug === s.slug ? 'var(--color-primary)' : 'transparent'};border-radius:var(--radius-sm);margin-bottom:4px;"
+             onclick="myMcp.selectServer('${escapeHtml(s.slug)}', '${escapeHtml(s.name)}', '${escapeHtml(s.id)}')">
+          <div>
+            <div class="text-sm font-bold">${escapeHtml(s.name)}</div>
+            <div class="text-xs text-muted">${escapeHtml(s.description)}</div>
+          </div>
+          ${badges.render('data', s.badge_data)}
         </div>
-        ${badges.render('data', s.badge_data)}
-      </div>
-    `).join('');
+      `).join('');
+    } catch (e) {
+      console.error('Server search failed:', e);
+    }
   },
 
-  selectServer(slug, name) {
+  selectServer(slug, name, id) {
     this.selectedServerSlug = slug;
-    // Suggest prefix based on slug
+    this.selectedServerName = name;
+    this.selectedServerId = id;
     const prefix = slug.replace(/^tw-|^taiwan-/, '').replace(/-/g, '_');
-    $('#add-prefix').value = prefix;
-    $('#add-server-confirm').disabled = false;
-    this.searchServers($('#server-search').value);
+    const prefixEl = $('#add-prefix');
+    if (prefixEl) prefixEl.value = prefix;
+    const confirmBtn = $('#add-server-confirm');
+    if (confirmBtn) confirmBtn.disabled = false;
+    // Re-render to show selection highlight
+    this.searchServers($('#server-search')?.value || '');
   },
 
-  confirmAddServer() {
-    if (!this.selectedServerSlug) return;
+  async confirmAddServer() {
+    if (!this.selectedServerId) return;
     const prefix = $('#add-prefix').value.trim();
     if (!prefix) { alert('請輸入命名空間前綴'); return; }
     if (!/^[a-z0-9_]+$/.test(prefix)) { alert('前綴僅允許小寫英文、數字、底線'); return; }
 
-    const comp = this.compositions.find(c => c.id === this.activeCompId);
-    if (!comp) return;
-
-    const server = mockData.servers.find(s => s.slug === this.selectedServerSlug);
-    comp.servers.push({
-      server_slug: this.selectedServerSlug,
-      namespace_prefix: prefix,
-      server_name: server ? server.name : this.selectedServerSlug
-    });
-
-    this.closeAddServerModal();
-    this.renderCompositionCards();
-    showToast('已加入伺服器');
+    try {
+      await api.post(`/compositions/${this.activeCompId}/servers`, {
+        server_id: this.selectedServerId,
+        namespace_prefix: prefix,
+      });
+      this.closeAddServerModal();
+      await this.loadCompositions();
+      showToast('已加入伺服器');
+    } catch (e) {
+      showToast(e.error || '加入伺服器失敗');
+    }
   },
 
   // ── Remove Server ──
-  removeServer(compId, idx) {
+  async removeServer(compId, serverId) {
     if (!confirm('確定要移除此伺服器？')) return;
-    const comp = this.compositions.find(c => c.id === compId);
-    if (!comp) return;
-    comp.servers.splice(idx, 1);
-    this.renderCompositionCards();
-    showToast('已移除伺服器');
-  },
-
-  // ── Edit Prefix ──
-  editPrefix(compId, idx) {
-    const comp = this.compositions.find(c => c.id === compId);
-    if (!comp) return;
-    const sv = comp.servers[idx];
-    const newPrefix = prompt('新的命名空間前綴：', sv.namespace_prefix);
-    if (newPrefix === null) return;
-    const trimmed = newPrefix.trim();
-    if (!trimmed || !/^[a-z0-9_]+$/.test(trimmed)) {
-      alert('前綴僅允許小寫英文、數字、底線');
-      return;
+    try {
+      await api.delete(`/compositions/${compId}/servers/${serverId}`);
+      await this.loadCompositions();
+      showToast('已移除伺服器');
+    } catch (e) {
+      showToast('移除失敗');
     }
-    sv.namespace_prefix = trimmed;
-    this.renderCompositionCards();
-    showToast('前綴已更新');
   },
 
   // ── Toggle Active ──
-  toggleActive(compId, active) {
-    const comp = this.compositions.find(c => c.id === compId);
-    if (!comp) return;
-    comp.is_active = active;
-    this.renderCompositionCards();
-    showToast(active ? '組合已啟用' : '組合已停用');
+  async toggleActive(compId, active) {
+    try {
+      await api.put(`/compositions/${compId}`, { is_active: active });
+      const comp = this.compositions.find(c => c.id === compId);
+      if (comp) comp.is_active = active;
+      this.renderCompositionCards();
+      showToast(active ? '組合已啟用' : '組合已停用');
+    } catch (e) {
+      showToast('切換失敗');
+      await this.loadCompositions();
+    }
   },
 
   // ── Delete ──
-  deleteComposition(compId) {
+  async deleteComposition(compId) {
     if (!confirm('確定要刪除此組合？此操作無法復原。')) return;
-    this.compositions = this.compositions.filter(c => c.id !== compId);
-    this.renderCompositionCards();
-    showToast('組合已刪除');
+    try {
+      await api.delete(`/compositions/${compId}`);
+      await this.loadCompositions();
+      showToast('組合已刪除');
+    } catch (e) {
+      showToast('刪除失敗');
+    }
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await auth.ready;
   myMcp.init();
 });

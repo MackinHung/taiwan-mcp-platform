@@ -1,5 +1,5 @@
 // ============================================================
-// upload.js — Upload wizard
+// upload.js — Upload wizard (real API)
 // ============================================================
 
 const upload = {
@@ -10,12 +10,35 @@ const upload = {
   stepLabels: ['基本資訊', '技術資訊', '安全聲明', '工具清單', '確認送出'],
 
   init() {
+    if (!auth.user) {
+      const content = $('#upload-content');
+      if (content) content.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🔒</div>
+          <h3>請先登入</h3>
+          <p class="text-muted mb-16">登入後才能上架 MCP 伺服器</p>
+          <button class="btn btn-primary" onclick="auth.login()">登入</button>
+        </div>`;
+      return;
+    }
+    if (auth.user.role === 'user') {
+      const content = $('#upload-content');
+      if (content) content.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">👨‍💻</div>
+          <h3>需要開發者權限</h3>
+          <p class="text-muted mb-16">目前帳號為一般用戶，請聯繫管理員申請開發者角色</p>
+          <a href="/" class="btn btn-secondary">回到市集</a>
+        </div>`;
+      return;
+    }
     this.renderWizardSteps();
     this.renderTools();
   },
 
   renderWizardSteps() {
     const container = $('#wizard-steps');
+    if (!container) return;
     let html = '';
     for (let i = 1; i <= this.totalSteps; i++) {
       const cls = i === this.currentStep ? 'active' : (i < this.currentStep ? 'done' : '');
@@ -38,11 +61,11 @@ const upload = {
     this.currentStep = step;
     this.renderWizardSteps();
 
-    // Button visibility
-    $('#wizard-prev').style.display = step > 1 ? 'block' : 'none';
-    $('#wizard-next').textContent = step === this.totalSteps ? '送出審核' : '下一步';
+    const prevBtn = $('#wizard-prev');
+    if (prevBtn) prevBtn.style.display = step > 1 ? 'block' : 'none';
+    const nextBtn = $('#wizard-next');
+    if (nextBtn) nextBtn.textContent = step === this.totalSteps ? '送出審核' : '下一步';
 
-    // Render review on last step
     if (step === this.totalSteps) {
       this.renderReviewSummary();
     }
@@ -76,7 +99,7 @@ const upload = {
         if (!/^[a-z0-9-]+$/.test(slug)) { alert('代稱僅允許小寫英文、數字、連字號'); return false; }
         if (!cat) { alert('請選擇分類'); return false; }
         if (!ver) { alert('請輸入版本'); return false; }
-        if (!desc) { alert('請輸入說明'); return false; }
+        if (!desc || desc.length < 10) { alert('請輸入至少 10 字的說明'); return false; }
         return true;
       }
       case 2: {
@@ -86,9 +109,9 @@ const upload = {
         return true;
       }
       case 3:
-        return true; // Selections have defaults
+        return true;
       case 4:
-        return true; // Tools are optional initially
+        return true;
       default:
         return true;
     }
@@ -111,6 +134,7 @@ const upload = {
 
   renderTools() {
     const container = $('#tools-list');
+    if (!container) return;
     if (this.tools.length === 0) {
       container.innerHTML = '<p class="text-muted text-sm">尚未新增任何工具，點擊下方按鈕新增。</p>';
       return;
@@ -146,6 +170,7 @@ const upload = {
   renderReviewSummary() {
     const data = this.getFormData();
     const container = $('#review-summary');
+    if (!container) return;
 
     container.innerHTML = `
       <div class="card mb-16">
@@ -210,15 +235,37 @@ const upload = {
     };
   },
 
-  handleSubmit() {
+  async handleSubmit() {
     const data = this.getFormData();
-    // In production, POST to /api/servers
-    console.log('Submit server:', data);
-    showToast('已送出審核申請！');
-    setTimeout(() => { window.location.href = '/'; }, 1500);
+    const payload = {
+      name: data.name,
+      slug: data.slug,
+      description: data.description,
+      version: data.version,
+      category: data.category,
+      tags: data.tags,
+      endpoint_url: data.endpoint,
+      repo_url: data.repo || undefined,
+      license: data.license || undefined,
+      declared_data_sensitivity: data.badge_data,
+      declared_permissions: data.badge_permission,
+      declared_external_urls: data.external_urls,
+      is_open_source: data.is_opensource,
+    };
+
+    try {
+      const res = await api.post('/upload', payload);
+      showToast('已送出審核申請！');
+      const slug = res.data?.slug || data.slug;
+      setTimeout(() => { window.location.href = `/server.html?slug=${slug}`; }, 1500);
+    } catch (e) {
+      const msg = e.error || '送出失敗，請稍後再試';
+      showToast(msg);
+    }
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await auth.ready;
   upload.init();
 });

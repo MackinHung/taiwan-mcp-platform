@@ -43,6 +43,7 @@ export const serverQuerySchema = z.object({
   badge_data: z.enum(['public', 'account', 'personal', 'sensitive']).optional(),
   badge_source: z.enum(['open_audited', 'open', 'declared', 'undeclared']).optional(),
   search: z.string().max(128).optional(),
+  sort: z.enum(['popular', 'stars', 'newest', 'name']).default('popular').optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
 });
