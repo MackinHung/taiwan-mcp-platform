@@ -109,7 +109,7 @@ cd packages/db && npm run migrate:local && npm run seed:local  # DB
 
 | 用戶說的 | 工作群 | 詳細文件 |
 |---------|--------|---------|
-| 「做新的 MCP server」「加一個交通 server」 | WG-1 MCP 工廠 | [`docs/cold-start/wg-1-mcp-factory.md`](docs/cold-start/wg-1-mcp-factory.md) |
+| 「做新的 MCP server」「加一個交通 server」 | WG-1 MCP 工廠 | [`docs/cold-start/wg-1-mcp-factory.md`](docs/cold-start/wg-1-mcp-factory.md) + [`wg-1-batch2-spec.md`](docs/cold-start/wg-1-batch2-spec.md) |
 | 「改平台」「修 gateway」「部署」「接 API」「改 UI」 | WG-2 平台迭代 | [`docs/cold-start/wg-2-platform.md`](docs/cold-start/wg-2-platform.md) |
 | 「研究 MCP」「競品分析」「搬運策略」「商業模式」 | WG-3 研究 | [`docs/cold-start/wg-3-research.md`](docs/cold-start/wg-3-research.md) |
 | 「安全規則」「標章改進」「沙箱設計」「掃描規則」 | WG-4 安全 | [`docs/cold-start/wg-4-security.md`](docs/cold-start/wg-4-security.md) |

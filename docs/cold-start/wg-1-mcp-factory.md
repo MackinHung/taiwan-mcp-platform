@@ -86,6 +86,28 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 | 18 | ~~taiwan-patent~~ | TIPO 智慧財產局 | tiponet CSV + data.gov.tw | ✅ 73 tests |
 | 19 | ~~taiwan-customs~~ | 海關進出口 | customs.gov.tw + trade.gov.tw | ✅ 65 tests |
 
+### Batch 2（研究團隊 2026-03-17 提供）
+
+> 詳細規格見 [`docs/cold-start/wg-1-batch2-spec.md`](wg-1-batch2-spec.md)
+> 4 個與 Batch 1 重複（company, exchange-rate, labor, hospital）→ 實際新增 14 個
+
+| Phase | # | Server | 資料來源 | 狀態 |
+|-------|---|--------|----------|------|
+| A 法律 | 20 | taiwan-law | 法務部全國法規資料庫 | 待開發 |
+| A 法律 | 21 | taiwan-judgment | 司法院裁判書 | 待開發 |
+| A 法律 | 22 | taiwan-legislative | 立法院開放資料 | 待開發 |
+| B 企業 | 23 | taiwan-procurement | 政府採購標案 | 待開發 |
+| C 勞動 | 24 | taiwan-insurance-calc | 勞健保費試算（純演算法） | 待開發 |
+| D 醫療 | 25 | taiwan-drug | 食藥署藥品許可證 | 待開發 |
+| D 醫療 | 26 | taiwan-cdc | 疾管署傳染病監測 | 待開發 |
+| E 生活 | 27 | taiwan-oil-price | 中油牌價 | 待開發 |
+| E 生活 | 28 | taiwan-reservoir | 水利署水庫水情 | 待開發 |
+| E 生活 | 29 | taiwan-disaster | NCDR 民生示警 | 待開發 |
+| E 生活 | 30 | taiwan-agri-price | 農產品交易行情 | 待開發 |
+| E 生活 | 31 | taiwan-parking | TDX 即時停車 | 待開發 |
+| F 工具 | 32 | taiwan-validator | 身分證/統編/手機驗證（純演算法） | 待開發 |
+| F 工具 | 33 | taiwan-calendar | 國定假日+農曆轉換 | 待開發 |
+
 ## 已完成 MCP Servers
 
 | Server | Tools | Tests | API | API Key |
