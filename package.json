@@ -1,0 +1,23 @@
+{
+  "name": "taiwan-mcp-platform",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "servers/*"
+  ],
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "test:shared": "cd packages/shared && npm test",
+    "test:gateway": "cd packages/gateway && npm test",
+    "test:review": "cd packages/review && npm test",
+    "test:composer": "cd packages/composer && npm test",
+    "test:weather": "cd servers/taiwan-weather && npm test",
+    "lint": "eslint packages/ servers/ --ext .ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "@cloudflare/workers-types": "^4.20250312.0",
+    "wrangler": "^4.0.0"
+  }
+}
