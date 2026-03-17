@@ -15,7 +15,7 @@
 
 **Repo**: `MackinHung/taiwan-mcp-platform` (private), branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
-**Current**: 476 tests, 0 failures, 105 source files
+**Current**: 533 tests, 0 failures, 113 source files
 
 ---
 
@@ -30,7 +30,8 @@ packages/
   composer/  → Module E: MCP proxy, namespace routing, lazy loading (76 tests)
   ui/        → Module F: 6 HTML pages, 7 JS modules, CSS design system (vanilla, no build)
 servers/
-  taiwan-weather/ → Module G: 第一個 MCP server, 8 CWA weather tools (66 tests)
+  taiwan-weather/     → Module G: 第一個 MCP server, 8 CWA weather tools (66 tests)
+  taiwan-air-quality/ → Module H: 空氣品質 MCP server, 5 MOENV AQI tools (50 tests)
 docs/
   research/  → WG-3 研究產出
   security/  → WG-4 安全研究產出

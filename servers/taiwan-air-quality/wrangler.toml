@@ -1,0 +1,9 @@
+name = "taiwan-air-quality-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVER_NAME = "taiwan-air-quality"
+SERVER_VERSION = "1.0.0"
+# MOENV_API_KEY → wrangler secret put MOENV_API_KEY

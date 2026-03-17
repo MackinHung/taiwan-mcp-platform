@@ -12,6 +12,7 @@
     "test:review": "cd packages/review && npm test",
     "test:composer": "cd packages/composer && npm test",
     "test:weather": "cd servers/taiwan-weather && npm test",
+    "test:air-quality": "cd servers/taiwan-air-quality && npm test",
     "lint": "eslint packages/ servers/ --ext .ts"
   },
   "devDependencies": {
