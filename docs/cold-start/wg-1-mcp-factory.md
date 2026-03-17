@@ -51,16 +51,40 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 
 ## 優先開發清單（台灣 Open Data）
 
+### Phase 1 (已完成)
 | # | Server | 資料來源 | API | 狀態 |
 |---|--------|---------|-----|------|
-| 1 | taiwan-transit | TDX 公共運輸 | TDX API (台鐵/高鐵/公車) | 待開發（需 TDX OAuth） |
-| 2 | ~~taiwan-company~~ | 經濟部商業司 | GCIS 公司登記查詢 API | ✅ 58 tests |
-| 3 | ~~taiwan-stock~~ | 證交所 | TWSE OpenAPI | ✅ 48 tests |
-| 4 | ~~taiwan-electricity~~ | 台電 | Taipower open data | ✅ 49 tests |
-| 5 | ~~taiwan-air-quality~~ | 環境部 | MOENV API | ✅ 50 tests |
+| 1 | ~~taiwan-weather~~ | 中央氣象署 | CWA opendata API | ✅ 66 tests |
+| 2 | ~~taiwan-air-quality~~ | 環境部 | MOENV API | ✅ 50 tests |
+| 3 | ~~taiwan-electricity~~ | 台電 | Taipower open data | ✅ 49 tests |
+| 4 | ~~taiwan-stock~~ | 證交所 | TWSE OpenAPI | ✅ 48 tests |
+| 5 | ~~taiwan-news~~ | 各大媒體 | RSS feeds 聚合 | ✅ 55 tests |
 | 6 | ~~taiwan-hospital~~ | 健保署 | NHI 醫療機構查詢 API | ✅ 57 tests |
-| 7 | taiwan-land | 內政部 | 不動產實價登錄 API | 待開發 |
-| 8 | ~~taiwan-news~~ | 各大媒體 | RSS feeds 聚合 | ✅ 55 tests |
+| 7 | ~~taiwan-company~~ | 經濟部商業司 | GCIS 公司登記查詢 API | ✅ 58 tests |
+
+### Phase 2: 交通與商業
+| # | Server | 資料來源 | API | 狀態 |
+|---|--------|---------|-----|------|
+| 8 | ~~taiwan-transit~~ | TDX 公共運輸 | TDX OAuth2 (台鐵/高鐵/捷運/公車) | ✅ 49 tests |
+| 9 | ~~taiwan-budget~~ | 政府預算/決算 | data.gov.tw open data | ✅ 53 tests |
+| 10 | taiwan-land | 內政部地政司 | 不動產實價登錄 (批次CSV) | 待開發 — 無 REST API |
+
+### Phase 3: 生活與金融
+| # | Server | 資料來源 | API | 狀態 |
+|---|--------|---------|-----|------|
+| 11 | ~~taiwan-food-safety~~ | 食藥署 | data.fda.gov.tw API | ✅ 52 tests |
+| 12 | ~~taiwan-weather-alert~~ | CWA 即時預警 | CWA opendata (地震/颱風/豪雨) | ✅ 51 tests |
+| 13 | ~~taiwan-invoice~~ | 財政部統一發票 | einvoice.nat.gov.tw API | ✅ 66 tests |
+| 14 | ~~taiwan-exchange-rate~~ | 臺灣銀行匯率 | rate.bot.com.tw CSV | ✅ 60 tests |
+| 15 | taiwan-crypto | 台灣加密貨幣 | MAX/BitoPro exchange API | 待開發 |
+
+### Phase 4: 企業級
+| # | Server | 資料來源 | API | 狀態 |
+|---|--------|---------|-----|------|
+| 16 | taiwan-tax | 財政部稅務 | etax.nat.gov.tw | 待開發 |
+| 17 | taiwan-labor | 勞動部 | data.mol.gov.tw | 待開發 |
+| 18 | taiwan-patent | TIPO 智慧財產局 | tiponet.tipo.gov.tw | 待開發 |
+| 19 | taiwan-customs | 海關進出口 | portal.sw.nat.gov.tw | 待開發 |
 
 ## 已完成 MCP Servers
 
@@ -73,6 +97,12 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 | taiwan-news | 5 | 55 | RSS feeds (CNA/LTN/PTS/Storm/NewsLens) | None |
 | taiwan-hospital | 5 | 57 | NHI info.nhi.gov.tw/api/iode0010/v1/rest/datastore | None |
 | taiwan-company | 5 | 58 | GCIS data.gcis.nat.gov.tw/od/data/api | IP whitelist (works without for low volume) |
+| taiwan-transit | 5 | 49 | TDX tdx.transportdata.tw/api/basic/v2 | Required (OAuth2 client credentials) |
+| taiwan-exchange-rate | 5 | 60 | BOT rate.bot.com.tw/xrt/flcsv | None |
+| taiwan-food-safety | 5 | 52 | FDA data.fda.gov.tw/opendata/exportDataList.do | None |
+| taiwan-weather-alert | 5 | 51 | CWA opendata.cwa.gov.tw (alerts/earthquake/typhoon) | Required (same as weather) |
+| taiwan-invoice | 5 | 66 | E-Invoice api.einvoice.nat.gov.tw/PB2CAPIVAN | Required (appID + UUID) |
+| taiwan-budget | 5 | 53 | data.gov.tw/api/v2/rest/datastore | None |
 
 ---
 
@@ -92,6 +122,13 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 - **GCIS OData filter**: `like` 為模糊搜尋，`eq` 為精確匹配；中文關鍵字需 URL encode
 - **ROC 日期格式**: 商業司 `Company_Setup_Date` 為 `YYYMMDD`（民國年）→ +1911 轉西元
 - **GCIS 回傳 array**: 成功回傳 JSON array（非 object），空結果回傳 `[]`
+- **TDX OAuth2 token cache**: Worker-scoped 變數, 24hr 有效, 提前 5min refresh; `resetTokenCache()` for tests
+- **BOT 匯率 CSV parse**: 幣別欄位格式 `美金 (USD)` → regex `/\((\w+)\)/` 取 code; 無 API Key
+- **FDA 回傳 array**: 與 GCIS 同, 成功=JSON array, 失敗=非 array → 需檢查 `Array.isArray()`
+- **CWA 預警 vs 預報**: 預警用獨立 dataset IDs (E-A0015/E-A0016/W-C0033/W-C0034/F-A0078); 共用同一 API Key
+- **統一發票期別**: 雙月制 (02/04/06/08/10/12), 民國年格式 `YYMM` (e.g. 11502=2026年2月)
+- **發票對獎邏輯**: 從最高獎(特別獎8碼)往下比對到六獎(末3碼)+增開六獎; 每層獎可能有多組號碼
+- **data.gov.tw filters**: JSON 字串格式 `{"欄位":"值"}`, 用 `url.searchParams.set('filters', JSON.stringify(...))`
 
 ## 參考實作
 

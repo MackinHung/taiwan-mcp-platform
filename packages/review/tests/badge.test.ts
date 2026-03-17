@@ -5,7 +5,9 @@ import {
   calculateBadgePermission,
   calculateBadgeCommunity,
   calculateAllBadges,
+  calculateExternalBadge,
 } from '../src/badge.js';
+import type { ExternalScanResult } from '../src/external-scan.js';
 
 describe('calculateBadgeSource', () => {
   it('returns open_audited for open source with passed audit', () => {
@@ -135,6 +137,62 @@ describe('calculateBadgeCommunity', () => {
   });
 });
 
+describe('calculateExternalBadge', () => {
+  const cleanScan: ExternalScanResult = {
+    osv: { provider: 'osv', vulnerabilities: [], scannedAt: '2026-01-01T00:00:00Z' },
+    depsDev: { provider: 'deps_dev', scorecardScore: 8.0, licenses: ['MIT'], dependencyCount: 5, advisoryCount: 0, scannedAt: '2026-01-01T00:00:00Z' },
+    overallStatus: 'pass',
+  };
+
+  it('returns verified for clean scan with high scorecard', () => {
+    expect(calculateExternalBadge(cleanScan)).toBe('verified');
+  });
+
+  it('returns failed when overallStatus is fail', () => {
+    const scan: ExternalScanResult = { ...cleanScan, overallStatus: 'fail' };
+    expect(calculateExternalBadge(scan)).toBe('failed');
+  });
+
+  it('returns failed for HIGH severity vulnerability', () => {
+    const scan: ExternalScanResult = {
+      ...cleanScan,
+      osv: {
+        ...cleanScan.osv,
+        vulnerabilities: [{ id: 'X', summary: 's', severity: 'HIGH', package: 'p' }],
+      },
+      overallStatus: 'pass',
+    };
+    expect(calculateExternalBadge(scan)).toBe('failed');
+  });
+
+  it('returns partial for clean scan with null scorecard', () => {
+    const scan: ExternalScanResult = {
+      ...cleanScan,
+      depsDev: { ...cleanScan.depsDev, scorecardScore: null },
+    };
+    expect(calculateExternalBadge(scan)).toBe('partial');
+  });
+
+  it('returns partial for clean scan with scorecard between 4 and 7', () => {
+    const scan: ExternalScanResult = {
+      ...cleanScan,
+      depsDev: { ...cleanScan.depsDev, scorecardScore: 5.0 },
+    };
+    expect(calculateExternalBadge(scan)).toBe('partial');
+  });
+
+  it('returns unverified for vulns with non-high severity', () => {
+    const scan: ExternalScanResult = {
+      ...cleanScan,
+      osv: {
+        ...cleanScan.osv,
+        vulnerabilities: [{ id: 'X', summary: 's', severity: 'LOW', package: 'p' }],
+      },
+    };
+    expect(calculateExternalBadge(scan)).toBe('unverified');
+  });
+});
+
 describe('calculateAllBadges', () => {
   it('returns all four badges', () => {
     const badges = calculateAllBadges({
@@ -151,6 +209,25 @@ describe('calculateAllBadges', () => {
     expect(badges.badge_data).toBe('public');
     expect(badges.badge_permission).toBe('readonly');
     expect(badges.badge_community).toBe('rising');
+  });
+
+  it('includes badge_external when externalScan provided', () => {
+    const badges = calculateAllBadges({
+      isOpenSource: true,
+      auditPassed: true,
+      declaredDataSensitivity: 'public',
+      verifiedDataSensitivity: null,
+      declaredPermissions: 'readonly',
+      verifiedPermissions: null,
+      totalCalls: 100,
+      totalStars: 0,
+      externalScan: {
+        osv: { provider: 'osv', vulnerabilities: [], scannedAt: '2026-01-01T00:00:00Z' },
+        depsDev: { provider: 'deps_dev', scorecardScore: 8.0, licenses: [], dependencyCount: 0, advisoryCount: 0, scannedAt: '2026-01-01T00:00:00Z' },
+        overallStatus: 'pass',
+      },
+    });
+    expect(badges.badge_external).toBe('verified');
   });
 
   it('handles worst-case scenario', () => {

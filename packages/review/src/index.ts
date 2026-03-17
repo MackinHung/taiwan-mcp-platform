@@ -23,6 +23,7 @@ export default app;
 // Re-export for library usage
 export { runReviewPipeline } from './pipeline.js';
 export { runScanner } from './scanner.js';
-export { calculateAllBadges } from './badge.js';
+export { calculateAllBadges, calculateExternalBadge } from './badge.js';
 export { createReviewReport } from './report.js';
 export { runSandbox } from './sandbox.js';
+export { runExternalScan, scanOsv, scanDepsDev } from './external-scan.js';

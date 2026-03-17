@@ -4,6 +4,8 @@ import type { ScanOutput } from './scanner.js';
 import { calculateAllBadges } from './badge.js';
 import type { AllBadges } from './badge.js';
 import { createReviewReport } from './report.js';
+import { runExternalScan } from './external-scan.js';
+import type { ExternalScanResult } from './external-scan.js';
 
 export interface PipelineInput {
   serverId: string;
@@ -21,10 +23,13 @@ export interface PipelineInput {
   verifiedPermissions: DeclaredPermission | null;
   totalCalls: number;
   totalStars: number;
+  packageName?: string;
+  packageVersion?: string;
 }
 
 export interface PipelineResult {
   scanResult: ScanOutput;
+  externalScan: ExternalScanResult;
   badges: AllBadges;
   report: ReviewReport;
 }
@@ -42,9 +47,16 @@ export async function runReviewPipeline(
     dependencies: input.dependencies,
   });
 
+  // Layer 1.5: External security scan (runs in parallel-safe, never blocks pipeline)
+  const externalScan = await runExternalScan(
+    input.dependencies,
+    input.packageName,
+    input.packageVersion
+  );
+
   const scanDurationMs = Date.now() - start;
 
-  // Calculate badges
+  // Calculate badges (including external badge)
   const badges = calculateAllBadges({
     isOpenSource: input.isOpenSource,
     auditPassed: input.auditPassed,
@@ -55,6 +67,7 @@ export async function runReviewPipeline(
     verifiedPermissions: input.verifiedPermissions,
     totalCalls: input.totalCalls,
     totalStars: input.totalStars,
+    externalScan,
   });
 
   // Create report
@@ -72,5 +85,5 @@ export async function runReviewPipeline(
     scanDurationMs,
   });
 
-  return { scanResult, badges, report };
+  return { scanResult, externalScan, badges, report };
 }

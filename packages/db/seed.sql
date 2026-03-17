@@ -9,7 +9,7 @@ VALUES ('admin001', 0, NULL, 'admin', 'Platform Admin', 'admin', 'enterprise',
 INSERT OR IGNORE INTO servers (
   id, owner_id, slug, name, description, version, category, tags,
   is_official, is_published, review_status,
-  badge_source, badge_data, badge_permission, badge_community,
+  badge_source, badge_data, badge_permission, badge_community, badge_external,
   total_calls, total_stars, monthly_calls,
   declared_data_sensitivity, declared_permissions, declared_external_urls, is_open_source,
   created_at, updated_at, published_at
@@ -17,28 +17,28 @@ INSERT OR IGNORE INTO servers (
   ('srv001', 'admin001', 'taiwan-weather', '台灣氣象',
    '中央氣象署資料 — 天氣預報、地震、颱風、潮汐、紫外線', '1.0.0', 'government',
    '["天氣","氣象","forecast","earthquake"]',
-   1, 1, 'approved', 'open', 'public', 'readonly', 'new',
+   1, 1, 'approved', 'open', 'public', 'readonly', 'new', 'unverified',
    0, 0, 0, 'public', 'readonly', '["https://opendata.cwa.gov.tw"]', 1,
    strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now')),
 
   ('srv004', 'admin001', 'taiwan-air-quality', '台灣空氣品質',
    '環境部空氣品質監測 — AQI 指數、PM2.5、即時監測站資料', '1.0.0', 'government',
    '["空氣品質","AQI","PM2.5","環境"]',
-   1, 1, 'approved', 'open', 'public', 'readonly', 'new',
+   1, 1, 'approved', 'open', 'public', 'readonly', 'new', 'unverified',
    0, 0, 0, 'public', 'readonly', '["https://data.moenv.gov.tw"]', 1,
    strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now')),
 
   ('srv005', 'admin001', 'taiwan-electricity', '台灣電力資訊',
    '台電即時用電量、電力備轉容量、各機組發電資訊', '1.0.0', 'utility',
    '["電力","能源","台電","用電"]',
-   1, 1, 'approved', 'open', 'public', 'readonly', 'new',
+   1, 1, 'approved', 'open', 'public', 'readonly', 'new', 'unverified',
    0, 0, 0, 'public', 'readonly', '["https://www.taipower.com.tw"]', 1,
    strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now')),
 
   ('srv006', 'admin001', 'taiwan-stock', '台股即時報價',
    '台灣證券交易所即時股價、大盤指數、漲跌排行', '1.0.0', 'finance',
    '["股票","投資","金融","TWSE"]',
-   1, 1, 'approved', 'open', 'public', 'readonly', 'new',
+   1, 1, 'approved', 'open', 'public', 'readonly', 'new', 'unverified',
    0, 0, 0, 'public', 'readonly', '["https://www.twse.com.tw"]', 1,
    strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'));
 

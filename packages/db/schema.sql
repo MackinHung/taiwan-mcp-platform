@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS servers (
   badge_data TEXT NOT NULL DEFAULT 'public' CHECK (badge_data IN ('public', 'account', 'personal', 'sensitive')),
   badge_permission TEXT NOT NULL DEFAULT 'readonly' CHECK (badge_permission IN ('readonly', 'limited_write', 'full_write', 'system')),
   badge_community TEXT NOT NULL DEFAULT 'new' CHECK (badge_community IN ('new', 'rising', 'popular', 'trusted')),
+  badge_external TEXT DEFAULT 'unverified' CHECK (badge_external IN ('verified', 'partial', 'unverified', 'failed')),
   -- Review
   review_status TEXT NOT NULL DEFAULT 'pending_scan' CHECK (review_status IN (
     'pending_scan', 'scanning', 'scan_passed', 'scan_failed',
@@ -125,6 +126,7 @@ CREATE TABLE IF NOT EXISTS server_versions (
   version TEXT NOT NULL,
   changelog TEXT,
   package_r2_key TEXT,
+  package_size INTEGER,
   review_status TEXT NOT NULL DEFAULT 'pending_scan' CHECK (review_status IN (
     'pending_scan', 'scanning', 'scan_passed', 'scan_failed',
     'sandbox_testing', 'sandbox_passed', 'sandbox_failed',
@@ -147,6 +149,7 @@ CREATE TABLE IF NOT EXISTS review_reports (
   details TEXT NOT NULL DEFAULT '{}',  -- JSON
   external_urls_detected TEXT,  -- JSON array
   scan_duration_ms INTEGER,
+  external_scan_results TEXT,
   created_by TEXT REFERENCES users(id),
   created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
 );
@@ -178,6 +181,7 @@ CREATE TABLE IF NOT EXISTS composition_servers (
   composition_id TEXT NOT NULL REFERENCES compositions(id) ON DELETE CASCADE,
   server_id TEXT NOT NULL REFERENCES servers(id) ON DELETE CASCADE,
   namespace_prefix TEXT NOT NULL,
+  pinned_version TEXT,
   enabled INTEGER NOT NULL DEFAULT 1,
   added_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
   UNIQUE(composition_id, server_id),

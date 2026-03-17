@@ -3,10 +3,12 @@ import type {
   BadgeData,
   BadgePermission,
   BadgeCommunity,
+  BadgeExternal,
   DataSensitivity,
   DeclaredPermission,
 } from '@mcp-platform/shared';
 import { COMMUNITY_THRESHOLDS } from '@mcp-platform/shared';
+import type { ExternalScanResult } from './external-scan.js';
 
 // Badge level ordering (higher index = higher risk)
 const DATA_LEVELS: readonly DataSensitivity[] = ['public', 'account', 'personal', 'sensitive'];
@@ -63,6 +65,23 @@ export function calculateBadgeCommunity(input: {
   return 'new';
 }
 
+export function calculateExternalBadge(externalScan: ExternalScanResult): BadgeExternal {
+  if (externalScan.overallStatus === 'fail') return 'failed';
+
+  const hasHighCritical = externalScan.osv.vulnerabilities.some(
+    (v) => v.severity === 'CRITICAL' || v.severity === 'HIGH'
+  );
+  if (hasHighCritical) return 'failed';
+
+  const scorecardScore = externalScan.depsDev.scorecardScore;
+  const noVulns = externalScan.osv.vulnerabilities.length === 0;
+
+  if (noVulns && scorecardScore !== null && scorecardScore >= 7) return 'verified';
+  if (noVulns && (scorecardScore === null || scorecardScore >= 4)) return 'partial';
+
+  return 'unverified';
+}
+
 export interface AllBadgesInput {
   isOpenSource: boolean;
   auditPassed: boolean;
@@ -73,6 +92,7 @@ export interface AllBadgesInput {
   verifiedPermissions: DeclaredPermission | null;
   totalCalls: number;
   totalStars: number;
+  externalScan?: ExternalScanResult;
 }
 
 export interface AllBadges {
@@ -80,10 +100,11 @@ export interface AllBadges {
   badge_data: BadgeData;
   badge_permission: BadgePermission;
   badge_community: BadgeCommunity;
+  badge_external?: BadgeExternal;
 }
 
 export function calculateAllBadges(input: AllBadgesInput): AllBadges {
-  return {
+  const badges: AllBadges = {
     badge_source: calculateBadgeSource({
       isOpenSource: input.isOpenSource,
       auditPassed: input.auditPassed,
@@ -102,4 +123,10 @@ export function calculateAllBadges(input: AllBadgesInput): AllBadges {
       totalStars: input.totalStars,
     }),
   };
+
+  if (input.externalScan) {
+    return { ...badges, badge_external: calculateExternalBadge(input.externalScan) };
+  }
+
+  return badges;
 }

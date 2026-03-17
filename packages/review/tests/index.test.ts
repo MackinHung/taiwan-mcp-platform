@@ -110,6 +110,9 @@ describe('runReviewPipeline (Layer flow)', () => {
     expect(result).toHaveProperty('scanResult');
     expect(result).toHaveProperty('badges');
     expect(result).toHaveProperty('report');
+    expect(result).toHaveProperty('externalScan');
+    expect(result.externalScan.osv.provider).toBe('osv');
+    expect(result.externalScan.depsDev.provider).toBe('deps_dev');
     expect(result.badges.badge_community).toBe('trusted');
   });
 });

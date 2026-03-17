@@ -25,6 +25,7 @@ export type BadgeSource = 'open_audited' | 'open' | 'declared' | 'undeclared';
 export type BadgeData = 'public' | 'account' | 'personal' | 'sensitive';
 export type BadgePermission = 'readonly' | 'limited_write' | 'full_write' | 'system';
 export type BadgeCommunity = 'new' | 'rising' | 'popular' | 'trusted';
+export type BadgeExternal = 'verified' | 'partial' | 'unverified' | 'failed';
 export type DataSensitivity = 'public' | 'account' | 'personal' | 'sensitive';
 export type DeclaredPermission = 'readonly' | 'limited_write' | 'full_write' | 'system';
 export type DeclarationMatch = 'match' | 'mismatch' | 'pending';
