@@ -21,6 +21,7 @@ export interface CompositionServerEntry {
   namespace_prefix: string;
   endpoint_url: string;
   enabled: boolean;
+  pinned_version: string | null;
 }
 
 export interface NamespacedTool {

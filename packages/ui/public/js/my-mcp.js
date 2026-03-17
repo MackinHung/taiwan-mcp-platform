@@ -108,7 +108,9 @@ const myMcp = {
             <div class="comp-server-item">
               <span class="prefix">${escapeHtml(sv.namespace_prefix)}</span>
               <a href="/server.html?slug=${escapeHtml(sv.server_slug || '')}" class="text-sm">${escapeHtml(sv.server_name || sv.server_slug || '')}</a>
+              ${sv.pinned_version ? `<span class="badge badge-blue text-xs">v${escapeHtml(sv.pinned_version)}</span>` : '<span class="badge badge-gray text-xs">最新</span>'}
               <div style="margin-left:auto;display:flex;gap:4px;">
+                <button class="btn btn-ghost btn-sm" onclick="myMcp.openPinModal('${comp.id}', '${sv.server_id}', '${escapeHtml(sv.server_name || sv.server_slug || '')}')" title="釘選版本">📌</button>
                 <button class="btn btn-ghost btn-sm" onclick="myMcp.removeServer('${comp.id}', '${sv.server_id}')" title="移除">✕</button>
               </div>
             </div>
@@ -307,6 +309,24 @@ const myMcp = {
     } catch (e) {
       showToast('切換失敗');
       await this.loadCompositions();
+    }
+  },
+
+  // ── Version Pinning ──
+  async openPinModal(compId, serverId, serverName) {
+    const version = prompt(`輸入要釘選的版本號（留空取消釘選，使用最新版）：\n伺服器：${serverName}`);
+    if (version === null) return; // User cancelled
+
+    const pinVersion = version.trim() || null;
+
+    try {
+      await api.put(`/compositions/${compId}/servers/${serverId}/pin`, {
+        version: pinVersion,
+      });
+      await this.loadCompositions();
+      showToast(pinVersion ? `已釘選至 v${pinVersion}` : '已取消釘選，使用最新版');
+    } catch (e) {
+      showToast(e.error || '釘選版本失敗');
     }
   },
 

@@ -78,6 +78,7 @@ const myServers = {
             ${badges.render('data', s.badge_data)}
             ${badges.render('permission', s.badge_permission)}
             ${badges.render('community', s.badge_community)}
+            ${s.badge_external ? badges.render('external', s.badge_external) : ''}
           </div>
         </div>
 
@@ -115,7 +116,10 @@ const myServers = {
     `).join('');
   },
 
+  currentVersionSlug: null,
+
   async showVersions(slug, name) {
+    this.currentVersionSlug = slug;
     const titleEl = $('#versions-modal-title');
     if (titleEl) titleEl.textContent = `版本紀錄：${name}`;
 
@@ -129,18 +133,41 @@ const myServers = {
       const res = await api.get(`/upload/${slug}/versions`);
       const versions = res.data || [];
 
-      if (versions.length === 0) {
-        bodyEl.innerHTML = '<p class="text-muted" style="padding:16px;">尚無版本紀錄</p>';
-        return;
-      }
-
       bodyEl.innerHTML = `
+        <!-- Upload form -->
+        <details class="mb-16" style="border:1px solid var(--border);border-radius:var(--radius-md);padding:12px;">
+          <summary class="text-sm font-bold" style="cursor:pointer;">上傳新版本</summary>
+          <div class="mt-12">
+            <div class="form-group">
+              <label>版本號 (semver)</label>
+              <input type="text" id="new-version" placeholder="例如 1.2.0" pattern="^\\d+\\.\\d+\\.\\d+$" />
+            </div>
+            <div class="form-group">
+              <label>變更說明</label>
+              <textarea id="new-changelog" rows="2" placeholder="此版本變更內容..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>原始碼檔案</label>
+              <input type="file" id="new-source-file" accept=".js,.ts,.mjs" />
+              <div class="text-xs text-muted mt-4">上傳 .js/.ts 檔案，系統會自動進行安全掃描</div>
+            </div>
+            <div class="form-group">
+              <label>依賴清單 (JSON，選填)</label>
+              <textarea id="new-dependencies" rows="2" placeholder='{"lodash": "4.17.21"}'></textarea>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="myServers.uploadVersion()">上傳並掃描</button>
+            <div id="upload-result" class="mt-8"></div>
+          </div>
+        </details>
+
+        ${versions.length === 0 ? '<p class="text-muted" style="padding:16px;">尚無版本紀錄</p>' : `
         <div class="table-wrapper">
           <table>
             <thead>
               <tr>
                 <th>版本</th>
                 <th>狀態</th>
+                <th>大小</th>
                 <th>變更說明</th>
                 <th>日期</th>
               </tr>
@@ -150,16 +177,77 @@ const myServers = {
                 <tr>
                   <td><code>${escapeHtml(v.version)}</code></td>
                   <td><span class="badge ${reviewStatusClass(v.review_status)}">${reviewStatusLabels[v.review_status] || v.review_status}</span></td>
+                  <td class="text-muted text-xs">${v.package_size ? (v.package_size / 1024).toFixed(1) + ' KB' : '-'}</td>
                   <td class="text-sm">${escapeHtml(v.changelog || '無')}</td>
                   <td class="text-muted">${timeAgo(v.created_at)}</td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
-        </div>
+        </div>`}
       `;
     } catch (e) {
       bodyEl.innerHTML = '<p class="text-muted" style="padding:16px;">載入版本紀錄失敗</p>';
+    }
+  },
+
+  async uploadVersion() {
+    const slug = this.currentVersionSlug;
+    if (!slug) return;
+
+    const version = ($('#new-version') || {}).value?.trim();
+    const changelog = ($('#new-changelog') || {}).value?.trim();
+    const fileInput = $('#new-source-file');
+    const depsInput = ($('#new-dependencies') || {}).value?.trim();
+    const resultEl = $('#upload-result');
+
+    if (!version || !/^\d+\.\d+\.\d+$/.test(version)) {
+      if (resultEl) resultEl.innerHTML = '<div class="alert alert-warning">請輸入有效的 semver 版本號</div>';
+      return;
+    }
+
+    let sourceCode = undefined;
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      const file = fileInput.files[0];
+      const text = await file.text();
+      sourceCode = btoa(text);
+    }
+
+    let dependencies = undefined;
+    if (depsInput) {
+      try {
+        dependencies = JSON.parse(depsInput);
+      } catch {
+        if (resultEl) resultEl.innerHTML = '<div class="alert alert-warning">依賴清單 JSON 格式錯誤</div>';
+        return;
+      }
+    }
+
+    if (resultEl) resultEl.innerHTML = '<div class="loading"><div class="spinner"></div> 上傳並掃描中...</div>';
+
+    try {
+      const body = { version, changelog, source_code: sourceCode, dependencies };
+      const res = await api.post(`/upload/${slug}/versions`, body);
+
+      const scan = res.data?.scan;
+      if (scan) {
+        const statusLabel = scan.status === 'scan_passed' ? '掃描通過 ✅' : '掃描失敗 ❌';
+        resultEl.innerHTML = `
+          <div class="alert ${scan.status === 'scan_passed' ? 'alert-info' : 'alert-warning'}">
+            <strong>${statusLabel}</strong><br/>
+            ${scan.badges ? `徽章：${badges.render('external', scan.badges.badge_external || 'unverified')}` : ''}
+          </div>
+        `;
+      } else {
+        resultEl.innerHTML = '<div class="alert alert-info">版本已建立（無原始碼掃描）</div>';
+      }
+
+      // Refresh version list
+      const server = this.servers.find(s => s.slug === slug);
+      if (server) this.showVersions(slug, server.name);
+      await this.loadServers();
+    } catch (e) {
+      if (resultEl) resultEl.innerHTML = `<div class="alert alert-warning">${escapeHtml(e.error || '上傳失敗')}</div>`;
     }
   },
 

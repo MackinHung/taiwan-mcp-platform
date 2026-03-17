@@ -31,6 +31,7 @@ const serverDetail = {
       };
       document.title = `${this.server.name} — 台灣 MCP 市集`;
       this.render();
+      this.loadVersionHistory();
     } catch (e) {
       console.error('Failed to load server:', e);
       $('#server-detail').innerHTML = '<div class="empty-state"><h3>找不到此伺服器</h3><p><a href="/">回到市集</a></p></div>';
@@ -90,6 +91,13 @@ const serverDetail = {
             ${badges.render('community', s.badge_community)}
             <div class="text-xs text-muted mt-8">${this.getBadgeExplain('community', s.badge_community)}</div>
           </div>
+          ${s.badge_external ? `
+          <div class="badge-explain-item">
+            <div class="badge-type">第三方驗證</div>
+            ${badges.render('external', s.badge_external)}
+            <div class="text-xs text-muted mt-8">${this.getBadgeExplain('external', s.badge_external)}</div>
+          </div>
+          ` : ''}
         </div>
       </div>
 
@@ -151,6 +159,14 @@ const serverDetail = {
         </div>
       </div>
 
+      <!-- Version History -->
+      <div class="detail-section">
+        <h2>版本歷史</h2>
+        <div id="version-history">
+          <p class="text-muted text-sm">載入中...</p>
+        </div>
+      </div>
+
       <!-- How to Use -->
       <div class="detail-section">
         <h2>如何使用</h2>
@@ -198,9 +214,37 @@ const serverDetail = {
         rising: '使用量穩定成長中',
         popular: '高使用量的熱門伺服器',
         trusted: '經過長期驗證的信賴伺服器',
+      },
+      external: {
+        verified: '已通過第三方安全驗證（OSV + OpenSSF Scorecard）',
+        partial: '部分通過第三方驗證，無高風險漏洞',
+        unverified: '尚未進行第三方驗證',
+        failed: '第三方驗證發現高風險漏洞',
       }
     };
     return explains[type]?.[value] || '';
+  },
+
+  async loadVersionHistory() {
+    const el = $('#version-history');
+    if (!el) return;
+
+    try {
+      // Version history is only available if user is the owner or admin
+      // For public view, show basic version info from the server object
+      el.innerHTML = `
+        <div class="text-sm">
+          <div class="flex items-center gap-8 mb-8">
+            <code>v${escapeHtml(this.server.version)}</code>
+            <span class="badge ${reviewStatusClass(this.server.review_status)}">${reviewStatusLabels[this.server.review_status] || this.server.review_status}</span>
+            ${this.server.badge_external ? badges.render('external', this.server.badge_external) : ''}
+          </div>
+          <p class="text-xs text-muted">更新於 ${timeAgo(this.server.updated_at)}</p>
+        </div>
+      `;
+    } catch {
+      el.innerHTML = '<p class="text-muted text-sm">無法載入版本資訊</p>';
+    }
   },
 
   async toggleStar() {

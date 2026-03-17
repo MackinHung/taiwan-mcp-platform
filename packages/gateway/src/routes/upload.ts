@@ -2,8 +2,8 @@ import { Hono } from 'hono';
 import type { Env } from '../env.js';
 import { serverCreateSchema, serverUpdateSchema } from '@shared/validation.js';
 import { z } from 'zod';
-import { runReviewPipeline } from '@mcp-platform/review/pipeline';
-import type { PipelineResult } from '@mcp-platform/review/pipeline';
+import { runReviewPipeline } from '@review/pipeline.js';
+import type { PipelineResult } from '@review/pipeline.js';
 
 type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 

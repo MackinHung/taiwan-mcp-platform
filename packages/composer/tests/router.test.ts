@@ -16,6 +16,7 @@ function makeServer(overrides: Partial<CompositionServerEntry> = {}): Compositio
     namespace_prefix: 'weather',
     endpoint_url: 'https://weather.example.com',
     enabled: true,
+    pinned_version: null,
     ...overrides,
   };
 }

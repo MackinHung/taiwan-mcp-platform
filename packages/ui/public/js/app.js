@@ -161,6 +161,12 @@ const badges = {
     popular: { label: '熱門', icon: '📈', class: 'badge-blue' },
     trusted: { label: '信賴', icon: '⭐', class: 'badge-gold' },
   },
+  external: {
+    verified: { label: '第三方驗證', icon: '✅', class: 'badge-green' },
+    partial: { label: '部分驗證', icon: '🔶', class: 'badge-amber' },
+    unverified: { label: '未驗證', icon: '❓', class: 'badge-gray' },
+    failed: { label: '驗證失敗', icon: '❌', class: 'badge-red' },
+  },
 
   render(type, value) {
     const badge = this[type]?.[value];
@@ -175,6 +181,7 @@ const badges = {
         ${this.render('data', server.badge_data)}
         ${this.render('permission', server.badge_permission)}
         ${this.render('community', server.badge_community)}
+        ${server.badge_external ? this.render('external', server.badge_external) : ''}
       </div>
     `;
   }

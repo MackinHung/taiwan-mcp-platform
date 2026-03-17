@@ -155,6 +155,13 @@ const admin = {
           ${badges.render('data', server.badge_data)}
           ${badges.render('permission', server.badge_permission)}
           ${badges.render('community', server.badge_community)}
+          ${server.badge_external ? badges.render('external', server.badge_external) : ''}
+        </div>
+      </div>
+      <div class="mb-16">
+        <div class="text-sm text-muted mb-4">掃描報告</div>
+        <div id="scan-report-section">
+          <p class="text-muted text-xs">載入中...</p>
         </div>
       </div>
       ${isActionable ? `
@@ -165,6 +172,9 @@ const admin = {
       ` : ''}
     `;
 
+    // Load scan report asynchronously
+    this.loadScanReport(server.id, server.version);
+
     const approveBtn = $('#review-approve-btn');
     const rejectBtn = $('#review-reject-btn');
     if (approveBtn) approveBtn.style.display = isActionable ? 'block' : 'none';
@@ -172,6 +182,74 @@ const admin = {
 
     const modal = $('#review-detail-modal');
     if (modal) modal.classList.remove('hidden');
+  },
+
+  async loadScanReport(serverId, version) {
+    const el = $('#scan-report-section');
+    if (!el) return;
+
+    try {
+      const res = await api.get(`/admin/scan-reports/${serverId}/${version}`);
+      const report = res.data;
+
+      if (!report) {
+        el.innerHTML = '<p class="text-muted text-xs">尚無掃描報告</p>';
+        return;
+      }
+
+      const details = typeof report.details === 'string' ? JSON.parse(report.details) : (report.details || {});
+      const rules = details.rules || [];
+      const externalScan = report.external_scan_results
+        ? (typeof report.external_scan_results === 'string' ? JSON.parse(report.external_scan_results) : report.external_scan_results)
+        : null;
+
+      el.innerHTML = `
+        <div class="text-xs">
+          <div class="mb-8"><strong>掃描狀態：</strong>
+            <span class="badge ${report.status === 'pass' ? 'badge-green' : report.status === 'warn' ? 'badge-amber' : 'badge-red'}">${report.status === 'pass' ? '通過' : report.status === 'warn' ? '警告' : '失敗'}</span>
+            ${report.scan_duration_ms ? `<span class="text-muted ml-8">(${report.scan_duration_ms}ms)</span>` : ''}
+          </div>
+          ${rules.length > 0 ? `
+          <div class="mb-8"><strong>規則結果：</strong></div>
+          <table style="width:100%;font-size:0.75rem;">
+            <thead><tr><th>規則</th><th>結果</th><th>詳情</th></tr></thead>
+            <tbody>
+              ${rules.map(r => `
+                <tr>
+                  <td>${escapeHtml(r.ruleName)}</td>
+                  <td><span class="badge ${r.pass ? 'badge-green' : r.severity === 'warn' ? 'badge-amber' : 'badge-red'}">${r.pass ? '通過' : r.severity}</span></td>
+                  <td>${escapeHtml(r.details)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>` : ''}
+          ${externalScan ? `
+          <div class="mt-12 mb-8"><strong>第三方驗證：</strong>
+            <span class="badge ${externalScan.overallStatus === 'pass' ? 'badge-green' : externalScan.overallStatus === 'warn' ? 'badge-amber' : 'badge-red'}">${externalScan.overallStatus}</span>
+          </div>
+          <div class="mb-4">OSV 漏洞：${externalScan.osv?.vulnerabilities?.length || 0} 個</div>
+          ${(externalScan.osv?.vulnerabilities || []).length > 0 ? `
+          <table style="width:100%;font-size:0.75rem;">
+            <thead><tr><th>CVE</th><th>嚴重度</th><th>套件</th><th>摘要</th></tr></thead>
+            <tbody>
+              ${externalScan.osv.vulnerabilities.map(v => `
+                <tr>
+                  <td><code>${escapeHtml(v.id)}</code></td>
+                  <td><span class="badge ${v.severity === 'CRITICAL' || v.severity === 'HIGH' ? 'badge-red' : 'badge-amber'}">${escapeHtml(v.severity)}</span></td>
+                  <td>${escapeHtml(v.package)}</td>
+                  <td>${escapeHtml(v.summary)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>` : ''}
+          <div class="mt-4">deps.dev Scorecard：${externalScan.depsDev?.scorecardScore !== null ? externalScan.depsDev.scorecardScore + '/10' : 'N/A'}</div>
+          <div>授權：${(externalScan.depsDev?.licenses || []).join(', ') || 'N/A'}</div>
+          ` : '<div class="mt-8 text-muted">無第三方驗證資料</div>'}
+        </div>
+      `;
+    } catch {
+      el.innerHTML = '<p class="text-muted text-xs">載入掃描報告失敗</p>';
+    }
   },
 
   closeReviewModal() {

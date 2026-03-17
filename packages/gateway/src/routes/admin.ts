@@ -148,6 +148,25 @@ adminRoutes.put('/users/:id', async (c) => {
   return c.json({ success: true, data: { id: userId }, error: null });
 });
 
+// GET /scan-reports/:serverId/:version -> scan report for a specific version
+adminRoutes.get('/scan-reports/:serverId/:version', async (c) => {
+  const result = requireAdmin(c);
+  if (result === null) return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
+
+  const serverId = c.req.param('serverId');
+  const version = c.req.param('version');
+
+  const report = await c.env.DB.prepare(
+    `SELECT * FROM review_reports
+     WHERE server_id = ? AND version = ?
+     ORDER BY created_at DESC
+     LIMIT 1`
+  ).bind(serverId, version).first();
+
+  return c.json({ success: true, data: report || null, error: null });
+});
+
 // GET /reports -> list all reports with server/user info
 adminRoutes.get('/reports', async (c) => {
   const result = requireAdmin(c);

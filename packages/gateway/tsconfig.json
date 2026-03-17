@@ -4,7 +4,8 @@
     "outDir": "dist",
     "rootDir": "src",
     "paths": {
-      "@shared/*": ["../shared/src/*"]
+      "@shared/*": ["../shared/src/*"],
+      "@review/*": ["../review/src/*"]
     }
   },
   "include": ["src"]

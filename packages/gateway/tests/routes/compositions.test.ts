@@ -238,6 +238,140 @@ describe('Composition Routes', () => {
     });
   });
 
+  describe('PUT /api/compositions/:id/servers/:serverId/pin', () => {
+    it('should pin to a specific approved version', async () => {
+      const composition = { id: 'comp-1', user_id: 'user-123' };
+
+      const env = createMockEnv({
+        DB: createMockDB({
+          firstFn: (query: string) => {
+            if (query.includes('compositions')) return composition;
+            if (query.includes('server_versions')) return { id: 'ver-1' }; // approved version exists
+            return null;
+          },
+          runFn: () => ({ success: true, meta: { changes: 1 } }),
+        }),
+      });
+      const app = await createApp(env, mockUser);
+
+      const res = await app.request('/api/compositions/comp-1/servers/server-123/pin', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ version: '1.0.0' }),
+      }, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.success).toBe(true);
+      expect(data.data.pinned_version).toBe('1.0.0');
+    });
+
+    it('should return 404 for non-existent version', async () => {
+      const composition = { id: 'comp-1', user_id: 'user-123' };
+
+      const env = createMockEnv({
+        DB: createMockDB({
+          firstFn: (query: string) => {
+            if (query.includes('compositions')) return composition;
+            if (query.includes('server_versions')) return null; // version not found
+            return null;
+          },
+        }),
+      });
+      const app = await createApp(env, mockUser);
+
+      const res = await app.request('/api/compositions/comp-1/servers/server-123/pin', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ version: '99.0.0' }),
+      }, env);
+      expect(res.status).toBe(404);
+      const data = await res.json() as any;
+      expect(data.error).toBe('指定版本不存在或未通過審核');
+    });
+
+    it('should unpin (version=null) successfully', async () => {
+      const composition = { id: 'comp-1', user_id: 'user-123' };
+
+      const env = createMockEnv({
+        DB: createMockDB({
+          firstFn: () => composition,
+          runFn: () => ({ success: true, meta: { changes: 1 } }),
+        }),
+      });
+      const app = await createApp(env, mockUser);
+
+      const res = await app.request('/api/compositions/comp-1/servers/server-123/pin', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ version: null }),
+      }, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.success).toBe(true);
+      expect(data.data.pinned_version).toBeNull();
+    });
+
+    it('should return 401 when not authenticated', async () => {
+      const env = createMockEnv();
+      const app = await createApp(env); // no user
+
+      const res = await app.request('/api/compositions/comp-1/servers/server-123/pin', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ version: '1.0.0' }),
+      }, env);
+      expect(res.status).toBe(401);
+    });
+
+    it('should return 404 for non-owner composition', async () => {
+      const env = createMockEnv({
+        DB: createMockDB({
+          firstFn: () => null, // composition not found for this user
+        }),
+      });
+      const app = await createApp(env, mockUser);
+
+      const res = await app.request('/api/compositions/comp-999/servers/server-123/pin', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ version: '1.0.0' }),
+      }, env);
+      expect(res.status).toBe(404);
+      const data = await res.json() as any;
+      expect(data.error).toBe('組合不存在');
+    });
+  });
+
+  describe('GET /api/compositions/:id (pinned_version)', () => {
+    it('should include pinned_version in server detail', async () => {
+      const composition = {
+        id: 'comp-1', user_id: 'user-123', name: 'My Comp',
+        description: 'Test', scenario: null, endpoint_slug: 'my-comp',
+        is_active: 1, created_at: '2025-01-01T00:00:00Z',
+        updated_at: '2025-01-01T00:00:00Z',
+      };
+      const compServer = {
+        id: 'cs-1', composition_id: 'comp-1', server_id: 'server-123',
+        namespace_prefix: 'weather', enabled: 1, pinned_version: '2.0.0',
+        added_at: '2025-01-01T00:00:00Z',
+        server_name: 'Weather Server', server_slug: 'taiwan-weather',
+      };
+
+      const env = createMockEnv({
+        DB: createMockDB({
+          firstFn: () => composition,
+          allFn: () => ({ results: [compServer] }),
+        }),
+      });
+      const app = await createApp(env, mockUser);
+
+      const res = await app.request('/api/compositions/comp-1', {}, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.data.servers[0].pinned_version).toBe('2.0.0');
+    });
+  });
+
   describe('DELETE /api/compositions/:id/servers/:serverId', () => {
     it('should remove server from composition', async () => {
       const composition = { id: 'comp-1', user_id: 'user-123' };

@@ -198,6 +198,44 @@ compositionRoutes.post('/:id/servers', async (c) => {
   return c.json({ success: true, data: { id }, error: null }, 201);
 });
 
+// PUT /:id/servers/:serverId/pin -> pin/unpin version
+compositionRoutes.put('/:id/servers/:serverId/pin', async (c) => {
+  const user = requireUser(c);
+  if (!user) return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+
+  const compositionId = c.req.param('id');
+  const serverId = c.req.param('serverId');
+
+  const composition = await c.env.DB.prepare(
+    'SELECT id FROM compositions WHERE id = ? AND user_id = ?'
+  ).bind(compositionId, user.id).first();
+
+  if (!composition) {
+    return c.json({ success: false, error: '組合不存在', data: null }, 404);
+  }
+
+  const body = await c.req.json();
+  const version = body.version || null; // null = unpin (use latest)
+
+  // If pinning to specific version, verify it exists and is approved
+  if (version) {
+    const versionRow = await c.env.DB.prepare(
+      `SELECT id FROM server_versions
+       WHERE server_id = ? AND version = ? AND review_status = 'approved'`
+    ).bind(serverId, version).first();
+
+    if (!versionRow) {
+      return c.json({ success: false, error: '指定版本不存在或未通過審核', data: null }, 404);
+    }
+  }
+
+  await c.env.DB.prepare(
+    'UPDATE composition_servers SET pinned_version = ? WHERE composition_id = ? AND server_id = ?'
+  ).bind(version, compositionId, serverId).run();
+
+  return c.json({ success: true, data: { pinned_version: version }, error: null });
+});
+
 // DELETE /:id/servers/:serverId -> remove server from composition
 compositionRoutes.delete('/:id/servers/:serverId', async (c) => {
   const user = requireUser(c);

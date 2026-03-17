@@ -12,6 +12,7 @@ function makeServer(prefix: string, enabled = true): CompositionServerEntry {
     namespace_prefix: prefix,
     endpoint_url: `https://${prefix}.example.com`,
     enabled,
+    pinned_version: null,
   };
 }
 
