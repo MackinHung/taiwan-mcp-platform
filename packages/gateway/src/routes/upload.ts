@@ -43,6 +43,11 @@ uploadRoutes.post('/', async (c) => {
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
 
+  // Assign initial badges based on declared values
+  const badgeSource = data.is_open_source ? 'open' : 'declared';
+  const badgeData = data.declared_data_sensitivity || 'public';
+  const badgePermission = data.declared_permissions || 'readonly';
+
   await c.env.DB.prepare(
     `INSERT INTO servers (
       id, owner_id, slug, name, description, version, category, tags, license,
@@ -59,7 +64,7 @@ uploadRoutes.post('/', async (c) => {
       ?, ?, ?,
       ?, ?, ?,
       ?, ?,
-      'undeclared', 'public', 'readonly', 'new',
+      ?, ?, ?, 'new',
       'pending_scan', 'pending',
       0, 0, 0,
       0, 0,
@@ -71,6 +76,7 @@ uploadRoutes.post('/', async (c) => {
     data.repo_url || null, data.endpoint_url || null, data.readme || null,
     data.declared_data_sensitivity, data.declared_permissions, JSON.stringify(data.declared_external_urls),
     data.is_open_source ? 1 : 0, data.data_source_license || null,
+    badgeSource, badgeData, badgePermission,
     now, now,
   ).run();
 
