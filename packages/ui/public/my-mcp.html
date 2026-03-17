@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我的 MCP 組合 — 台灣 MCP 市集</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+      <div class="nav-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." />
+      </div>
+      <div class="nav-links">
+        <a href="/">探索</a>
+        <a href="/my-mcp.html" class="active">我的 MCP</a>
+        <a href="/upload.html" class="hide-mobile">上架</a>
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()">☀️</button>
+        <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
+        <div id="user-menu" style="display:none;">
+          <a href="/profile.html"><img id="user-avatar" src="" alt="avatar" /></a>
+          <span id="user-name"></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container page-content">
+    <div class="flex items-center justify-between mb-24">
+      <h1 style="font-size:1.5rem;font-weight:700;">我的 MCP 組合</h1>
+      <button class="btn btn-primary" onclick="myMcp.openCreateModal()">+ 建立新組合</button>
+    </div>
+
+    <div id="compositions-list">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- Create Composition Modal -->
+  <div class="modal-overlay hidden" id="create-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>建立新組合</h2>
+        <button class="modal-close" onclick="myMcp.closeCreateModal()">&times;</button>
+      </div>
+      <div class="form-group">
+        <label>組合名稱</label>
+        <input type="text" id="comp-name" placeholder="例：我的 Side Project" />
+      </div>
+      <div class="form-group">
+        <label>說明</label>
+        <input type="text" id="comp-desc" placeholder="簡短說明這個組合的用途" />
+      </div>
+      <div class="form-group">
+        <label>端點代稱 (slug)</label>
+        <input type="text" id="comp-slug" placeholder="例：my-side-project" />
+        <div class="hint">僅允許小寫英文、數字、連字號</div>
+      </div>
+      <div class="form-group">
+        <label>使用情境</label>
+        <select id="comp-scenario">
+          <option value="hobby">個人 / 嗜好</option>
+          <option value="business">商業用途</option>
+          <option value="enterprise">企業</option>
+          <option value="regulated">受監管產業</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="myMcp.closeCreateModal()">取消</button>
+        <button class="btn btn-primary" onclick="myMcp.handleCreateComposition()">建立</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Server Modal -->
+  <div class="modal-overlay hidden" id="add-server-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>加入伺服器</h2>
+        <button class="modal-close" onclick="myMcp.closeAddServerModal()">&times;</button>
+      </div>
+      <div class="form-group">
+        <input type="text" id="server-search" placeholder="搜尋伺服器名稱..." oninput="myMcp.searchServers(this.value)" />
+      </div>
+      <div id="server-search-results" style="max-height:300px;overflow-y:auto;"></div>
+      <div class="form-group mt-16">
+        <label>命名空間前綴</label>
+        <input type="text" id="add-prefix" placeholder="例：weather" />
+        <div class="hint">工具名稱將加上此前綴，例：weather_get_forecast</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="myMcp.closeAddServerModal()">取消</button>
+        <button class="btn btn-primary" id="add-server-confirm" onclick="myMcp.confirmAddServer()" disabled>加入</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/my-mcp.js"></script>
+</body>
+</html>

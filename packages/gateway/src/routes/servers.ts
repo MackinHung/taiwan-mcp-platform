@@ -1,0 +1,229 @@
+import { Hono } from 'hono';
+import type { Env } from '../env.js';
+import { serverQuerySchema, reportCreateSchema } from '@shared/validation.js';
+
+type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
+
+export const serverRoutes = new Hono<HonoEnv>();
+
+// GET / -> list published servers
+serverRoutes.get('/', async (c) => {
+  const env = c.env;
+  const raw = {
+    category: c.req.query('category'),
+    badge_data: c.req.query('badge_data'),
+    badge_source: c.req.query('badge_source'),
+    search: c.req.query('search'),
+    page: c.req.query('page'),
+    limit: c.req.query('limit'),
+  };
+
+  const parsed = serverQuerySchema.safeParse(raw);
+  if (!parsed.success) {
+    return c.json({ success: false, error: '輸入驗證失敗', data: null }, 400);
+  }
+
+  const { category, badge_data, badge_source, search, page, limit } = parsed.data;
+
+  let whereClause = 'WHERE is_published = 1 AND review_status = ?';
+  const countParams: any[] = ['approved'];
+  const queryParams: any[] = ['approved'];
+
+  if (category) {
+    whereClause += ' AND category = ?';
+    countParams.push(category);
+    queryParams.push(category);
+  }
+
+  if (badge_data) {
+    whereClause += ' AND badge_data = ?';
+    countParams.push(badge_data);
+    queryParams.push(badge_data);
+  }
+
+  if (badge_source) {
+    whereClause += ' AND badge_source = ?';
+    countParams.push(badge_source);
+    queryParams.push(badge_source);
+  }
+
+  if (search) {
+    whereClause += ' AND (name LIKE ? OR description LIKE ?)';
+    const searchPattern = `%${search}%`;
+    countParams.push(searchPattern, searchPattern);
+    queryParams.push(searchPattern, searchPattern);
+  }
+
+  const offset = (page - 1) * limit;
+
+  const countRow = await env.DB.prepare(
+    `SELECT COUNT(*) as total FROM servers ${whereClause}`
+  ).bind(...countParams).first<{ total: number }>();
+
+  const total = countRow?.total ?? 0;
+
+  const { results } = await env.DB.prepare(
+    `SELECT * FROM servers ${whereClause} ORDER BY published_at DESC LIMIT ? OFFSET ?`
+  ).bind(...queryParams, limit, offset).all();
+
+  return c.json({
+    success: true,
+    data: results,
+    error: null,
+    meta: {
+      total,
+      page,
+      limit,
+      total_pages: Math.ceil(total / limit),
+    },
+  });
+});
+
+// GET /:slug -> server detail
+serverRoutes.get('/:slug', async (c) => {
+  const env = c.env;
+  const slug = c.req.param('slug');
+
+  // Avoid matching "star" and "report" as slug
+  if (slug === 'star' || slug === 'report') return c.notFound();
+
+  const server = await env.DB.prepare(
+    'SELECT * FROM servers WHERE slug = ?'
+  ).bind(slug).first();
+
+  if (!server) {
+    return c.json({ success: false, error: '伺服器不存在', data: null }, 404);
+  }
+
+  const { results: tools } = await env.DB.prepare(
+    'SELECT * FROM tools WHERE server_id = ?'
+  ).bind((server as any).id).all();
+
+  return c.json({
+    success: true,
+    data: { ...server, tools },
+    error: null,
+  });
+});
+
+// GET /:slug/tools -> tool list
+serverRoutes.get('/:slug/tools', async (c) => {
+  const env = c.env;
+  const slug = c.req.param('slug');
+
+  const server = await env.DB.prepare(
+    'SELECT id FROM servers WHERE slug = ?'
+  ).bind(slug).first<{ id: string }>();
+
+  if (!server) {
+    return c.json({ success: false, error: '伺服器不存在', data: null }, 404);
+  }
+
+  const { results } = await env.DB.prepare(
+    'SELECT * FROM tools WHERE server_id = ?'
+  ).bind(server.id).all();
+
+  return c.json({ success: true, data: results, error: null });
+});
+
+// POST /:slug/star -> add star
+serverRoutes.post('/:slug/star', async (c) => {
+  const user = c.get('user');
+  if (!user) {
+    return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  }
+
+  const env = c.env;
+  const slug = c.req.param('slug');
+
+  const server = await env.DB.prepare(
+    'SELECT id FROM servers WHERE slug = ?'
+  ).bind(slug).first<{ id: string }>();
+
+  if (!server) {
+    return c.json({ success: false, error: '伺服器不存在', data: null }, 404);
+  }
+
+  // Check if already starred
+  const existing = await env.DB.prepare(
+    'SELECT user_id FROM stars WHERE user_id = ? AND server_id = ?'
+  ).bind(user.id, server.id).first();
+
+  if (!existing) {
+    const now = new Date().toISOString();
+    await env.DB.prepare(
+      'INSERT INTO stars (user_id, server_id, created_at) VALUES (?, ?, ?)'
+    ).bind(user.id, server.id, now).run();
+
+    await env.DB.prepare(
+      'UPDATE servers SET total_stars = total_stars + 1 WHERE id = ?'
+    ).bind(server.id).run();
+  }
+
+  return c.json({ success: true, data: null, error: null });
+});
+
+// DELETE /:slug/star -> remove star
+serverRoutes.delete('/:slug/star', async (c) => {
+  const user = c.get('user');
+  if (!user) {
+    return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  }
+
+  const env = c.env;
+  const slug = c.req.param('slug');
+
+  const server = await env.DB.prepare(
+    'SELECT id FROM servers WHERE slug = ?'
+  ).bind(slug).first<{ id: string }>();
+
+  if (!server) {
+    return c.json({ success: false, error: '伺服器不存在', data: null }, 404);
+  }
+
+  await env.DB.prepare(
+    'DELETE FROM stars WHERE user_id = ? AND server_id = ?'
+  ).bind(user.id, server.id).run();
+
+  await env.DB.prepare(
+    'UPDATE servers SET total_stars = MAX(0, total_stars - 1) WHERE id = ?'
+  ).bind(server.id).run();
+
+  return c.json({ success: true, data: null, error: null });
+});
+
+// POST /:slug/report -> create report
+serverRoutes.post('/:slug/report', async (c) => {
+  const user = c.get('user');
+  if (!user) {
+    return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  }
+
+  const env = c.env;
+  const slug = c.req.param('slug');
+
+  const server = await env.DB.prepare(
+    'SELECT id FROM servers WHERE slug = ?'
+  ).bind(slug).first<{ id: string }>();
+
+  if (!server) {
+    return c.json({ success: false, error: '伺服器不存在', data: null }, 404);
+  }
+
+  const body = await c.req.json();
+  const parsed = reportCreateSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json({ success: false, error: '輸入驗證失敗', data: null, details: parsed.error.flatten() }, 400);
+  }
+
+  const { type, description } = parsed.data;
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+
+  await env.DB.prepare(
+    `INSERT INTO reports (id, user_id, server_id, type, description, status, created_at)
+     VALUES (?, ?, ?, ?, ?, 'open', ?)`
+  ).bind(id, user.id, server.id, type, description, now).run();
+
+  return c.json({ success: true, data: { id }, error: null }, 201);
+});

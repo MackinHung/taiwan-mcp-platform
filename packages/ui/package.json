@@ -1,0 +1,9 @@
+{
+  "name": "@mcp-platform/ui",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npx wrangler pages dev public --port 3000",
+    "test": "echo 'UI tests - manual verification'"
+  }
+}

@@ -1,0 +1,34 @@
+name = "mcp-gateway"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mcp-platform"
+database_id = "placeholder"
+
+[[kv_namespaces]]
+binding = "RATE_LIMITS"
+id = "placeholder"
+
+[[kv_namespaces]]
+binding = "API_KEY_CACHE"
+id = "placeholder"
+
+[[kv_namespaces]]
+binding = "SESSION_CACHE"
+id = "placeholder"
+
+[[kv_namespaces]]
+binding = "SERVER_CACHE"
+id = "placeholder"
+
+[[r2_buckets]]
+binding = "PACKAGES"
+bucket_name = "mcp-packages"
+
+[vars]
+GITHUB_CLIENT_ID = ""
+GITHUB_REDIRECT_URI = ""
+FRONTEND_URL = "https://tw-mcp.pages.dev"

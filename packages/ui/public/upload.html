@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>上架 MCP 伺服器 — 台灣 MCP 市集</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+      <div class="nav-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." />
+      </div>
+      <div class="nav-links">
+        <a href="/">探索</a>
+        <a href="/my-mcp.html" class="hide-mobile">我的 MCP</a>
+        <a href="/upload.html" class="active">上架</a>
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()">☀️</button>
+        <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
+        <div id="user-menu" style="display:none;">
+          <a href="/profile.html"><img id="user-avatar" src="" alt="avatar" /></a>
+          <span id="user-name"></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container page-content" style="max-width:720px;">
+    <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:8px;">上架 MCP 伺服器</h1>
+    <p class="text-secondary text-sm mb-24">填寫以下資訊，提交後系統將自動掃描並進行審核。</p>
+
+    <!-- Wizard Steps -->
+    <div class="wizard-steps" id="wizard-steps"></div>
+
+    <!-- Step 1: Basic Info -->
+    <div class="wizard-panel active" id="step-1">
+      <h2 style="font-size:1.1rem;margin-bottom:16px;">基本資訊</h2>
+      <div class="form-group">
+        <label>伺服器名稱 *</label>
+        <input type="text" id="w-name" placeholder="例：台灣氣象" />
+      </div>
+      <div class="form-group">
+        <label>代稱 (slug) *</label>
+        <input type="text" id="w-slug" placeholder="例：taiwan-weather" />
+        <div class="hint">僅允許小寫英文、數字、連字號，用於 URL 識別</div>
+      </div>
+      <div class="form-group">
+        <label>分類 *</label>
+        <select id="w-category">
+          <option value="">請選擇</option>
+          <option value="government">政府</option>
+          <option value="finance">金融</option>
+          <option value="utility">公用事業</option>
+          <option value="social">社群</option>
+          <option value="education">教育</option>
+          <option value="health">醫療</option>
+          <option value="other">其他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>版本 *</label>
+        <input type="text" id="w-version" placeholder="1.0.0" value="0.1.0" />
+      </div>
+      <div class="form-group">
+        <label>說明 *</label>
+        <textarea id="w-description" rows="3" placeholder="描述這個 MCP 伺服器的功能..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>標籤</label>
+        <input type="text" id="w-tags" placeholder="以逗號分隔，例：天氣, 氣象, forecast" />
+      </div>
+    </div>
+
+    <!-- Step 2: Technical -->
+    <div class="wizard-panel" id="step-2">
+      <h2 style="font-size:1.1rem;margin-bottom:16px;">技術資訊</h2>
+      <div class="form-group">
+        <label>MCP 端點 URL *</label>
+        <input type="url" id="w-endpoint" placeholder="https://your-server.com/mcp" />
+        <div class="hint">您的 MCP 伺服器端點，需支援 SSE 傳輸</div>
+      </div>
+      <div class="form-group">
+        <label>原始碼倉庫</label>
+        <input type="url" id="w-repo" placeholder="https://github.com/username/repo" />
+      </div>
+      <div class="form-group">
+        <label>授權條款</label>
+        <select id="w-license">
+          <option value="">未指定</option>
+          <option value="MIT">MIT</option>
+          <option value="Apache-2.0">Apache 2.0</option>
+          <option value="GPL-3.0">GPL 3.0</option>
+          <option value="AGPL-3.0">AGPL 3.0</option>
+          <option value="BSD-3-Clause">BSD 3-Clause</option>
+          <option value="proprietary">私有</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Step 3: Security -->
+    <div class="wizard-panel" id="step-3">
+      <h2 style="font-size:1.1rem;margin-bottom:16px;">安全聲明</h2>
+      <div class="alert alert-info mb-16">系統會根據您的聲明自動指派安全徽章，不實聲明可能導致下架。</div>
+      <div class="form-group">
+        <label>資料敏感度 *</label>
+        <select id="w-data">
+          <option value="public">🟢 公開資料 — 僅存取公開資訊</option>
+          <option value="account">🟡 帳號資料 — 需要帳號存取</option>
+          <option value="personal">🟠 個人資料 — 存取個人資訊</option>
+          <option value="sensitive">🔴 敏感資料 — 存取金融/醫療等敏感資訊</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>權限範圍 *</label>
+        <select id="w-permission">
+          <option value="readonly">👁️ 唯讀 — 僅讀取資料</option>
+          <option value="limited_write">✏️ 有限寫入 — 限定寫入操作</option>
+          <option value="full_write">📝 完整寫入 — 完整寫入權限</option>
+          <option value="system">⚙️ 系統權限 — 系統層級操作</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>外部連線 URL</label>
+        <textarea id="w-external-urls" rows="2" placeholder="列出此伺服器會連線的外部 URL（每行一個）"></textarea>
+        <div class="hint">例如：https://opendata.cwa.gov.tw</div>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="w-opensource" />
+          程式碼為開源
+        </label>
+      </div>
+    </div>
+
+    <!-- Step 4: Tools -->
+    <div class="wizard-panel" id="step-4">
+      <h2 style="font-size:1.1rem;margin-bottom:16px;">工具清單</h2>
+      <p class="text-secondary text-sm mb-16">手動新增此伺服器提供的工具，審核時會與實際端點比對。</p>
+      <div id="tools-list"></div>
+      <button class="btn btn-secondary btn-sm mt-8" onclick="upload.addTool()">+ 新增工具</button>
+    </div>
+
+    <!-- Step 5: Review -->
+    <div class="wizard-panel" id="step-5">
+      <h2 style="font-size:1.1rem;margin-bottom:16px;">確認送出</h2>
+      <div id="review-summary"></div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="flex justify-between mt-24">
+      <button class="btn btn-secondary" id="wizard-prev" onclick="upload.prevStep()" style="display:none;">上一步</button>
+      <div></div>
+      <button class="btn btn-primary" id="wizard-next" onclick="upload.nextStep()">下一步</button>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/upload.js"></script>
+</body>
+</html>

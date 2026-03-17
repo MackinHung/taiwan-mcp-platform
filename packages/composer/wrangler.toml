@@ -1,0 +1,17 @@
+name = "mcp-composer"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mcp-platform"
+database_id = "placeholder"
+
+[[kv_namespaces]]
+binding = "TOOL_REGISTRY"
+id = "placeholder"
+
+[[kv_namespaces]]
+binding = "API_KEY_CACHE"
+id = "placeholder"

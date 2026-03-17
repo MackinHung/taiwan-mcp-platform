@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>台灣 MCP 市集</title>
+  <meta name="description" content="探索、安裝、組合 MCP 伺服器 — 台灣在地化 AI 工具市集" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+      <div class="nav-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." oninput="marketplace.handleSearch(this.value)" />
+      </div>
+      <div class="nav-links">
+        <a href="/" class="active">探索</a>
+        <a href="/my-mcp.html" class="hide-mobile">我的 MCP</a>
+        <a href="/upload.html" class="hide-mobile">上架</a>
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()" title="切換主題">☀️</button>
+        <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
+        <div id="user-menu" style="display:none;">
+          <a href="/profile.html"><img id="user-avatar" src="" alt="avatar" /></a>
+          <span id="user-name"></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>台灣 MCP 市集</h1>
+    <p>探索、安裝、組合在地化 MCP 伺服器 — 讓 AI 助手使用台灣的資料與服務</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="stat-value" id="stat-servers">--</div>
+        <div class="stat-label">伺服器</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-value" id="stat-tools">--</div>
+        <div class="stat-label">工具</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-value" id="stat-calls">--</div>
+        <div class="stat-label">累計呼叫</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="container page-content">
+    <!-- Category Tabs -->
+    <div class="category-tabs" id="category-tabs"></div>
+
+    <div class="layout-sidebar">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="filter-section">
+          <h3>資料敏感度</h3>
+          <label class="filter-option"><input type="checkbox" value="public" onchange="marketplace.applyFilters()" checked /> 🟢 公開資料</label>
+          <label class="filter-option"><input type="checkbox" value="account" onchange="marketplace.applyFilters()" checked /> 🟡 帳號資料</label>
+          <label class="filter-option"><input type="checkbox" value="personal" onchange="marketplace.applyFilters()" checked /> 🟠 個人資料</label>
+          <label class="filter-option"><input type="checkbox" value="sensitive" onchange="marketplace.applyFilters()" checked /> 🔴 敏感資料</label>
+        </div>
+        <div class="filter-section">
+          <h3>程式碼透明度</h3>
+          <label class="filter-option"><input type="checkbox" value="open_audited" onchange="marketplace.applyFilters()" checked /> 🛡️ 開源已審計</label>
+          <label class="filter-option"><input type="checkbox" value="open" onchange="marketplace.applyFilters()" checked /> 🔓 開源</label>
+          <label class="filter-option"><input type="checkbox" value="declared" onchange="marketplace.applyFilters()" checked /> 📄 已聲明</label>
+          <label class="filter-option"><input type="checkbox" value="undeclared" onchange="marketplace.applyFilters()" checked /> ❓ 未聲明</label>
+        </div>
+        <div class="filter-section">
+          <h3>狀態</h3>
+          <label class="filter-option"><input type="checkbox" value="official" onchange="marketplace.applyFilters()" /> 僅顯示官方</label>
+        </div>
+        <button class="btn btn-ghost btn-sm w-full mt-8" onclick="marketplace.resetFilters()">重置篩選</button>
+      </aside>
+
+      <!-- Server Grid -->
+      <div>
+        <div class="sort-bar">
+          <span class="result-count" id="result-count"></span>
+          <div class="sort-options">
+            <button class="active" data-sort="popular" onclick="marketplace.handleSort('popular')">熱門</button>
+            <button data-sort="stars" onclick="marketplace.handleSort('stars')">最多星</button>
+            <button data-sort="newest" onclick="marketplace.handleSort('newest')">最新</button>
+            <button data-sort="name" onclick="marketplace.handleSort('name')">名稱</button>
+          </div>
+        </div>
+        <div class="server-grid" id="server-grid">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile sidebar toggle -->
+  <button class="btn btn-secondary btn-sm" id="filter-toggle" onclick="marketplace.toggleSidebar()" style="position:fixed;bottom:16px;right:16px;z-index:50;display:none;">篩選</button>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/marketplace.js"></script>
+</body>
+</html>

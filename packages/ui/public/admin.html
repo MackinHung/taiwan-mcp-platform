@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>管理後台 — 台灣 MCP 市集</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+      <div class="nav-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." />
+      </div>
+      <div class="nav-links">
+        <a href="/">探索</a>
+        <a href="/my-mcp.html" class="hide-mobile">我的 MCP</a>
+        <a href="/admin.html" class="active">管理</a>
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()">☀️</button>
+        <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
+        <div id="user-menu" style="display:none;">
+          <a href="/profile.html"><img id="user-avatar" src="" alt="avatar" /></a>
+          <span id="user-name"></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container page-content">
+    <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:24px;">管理後台</h1>
+
+    <!-- Stats Overview -->
+    <div class="stats-grid mb-24" id="admin-stats"></div>
+
+    <!-- Tabs -->
+    <div class="tabs" id="admin-tabs">
+      <button class="tab-btn active" data-tab="reviews" onclick="admin.switchTab('reviews')">審核佇列</button>
+      <button class="tab-btn" data-tab="users" onclick="admin.switchTab('users')">使用者</button>
+      <button class="tab-btn" data-tab="reports" onclick="admin.switchTab('reports')">回報</button>
+    </div>
+
+    <!-- Review Queue -->
+    <div class="tab-panel active" id="tab-reviews">
+      <div id="review-queue"></div>
+    </div>
+
+    <!-- Users -->
+    <div class="tab-panel" id="tab-users">
+      <div id="user-list"></div>
+    </div>
+
+    <!-- Reports -->
+    <div class="tab-panel" id="tab-reports">
+      <div id="report-list"></div>
+    </div>
+  </div>
+
+  <!-- Review Detail Modal -->
+  <div class="modal-overlay hidden" id="review-detail-modal">
+    <div class="modal" style="max-width:640px;">
+      <div class="modal-header">
+        <h2 id="review-modal-title">審核詳情</h2>
+        <button class="modal-close" onclick="admin.closeReviewModal()">&times;</button>
+      </div>
+      <div id="review-modal-body"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="admin.closeReviewModal()">關閉</button>
+        <button class="btn btn-danger" id="review-reject-btn" onclick="admin.handleReview('rejected')">拒絕</button>
+        <button class="btn btn-success" id="review-approve-btn" onclick="admin.handleReview('approved')">核准</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div class="modal-overlay hidden" id="edit-user-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>編輯使用者</h2>
+        <button class="modal-close" onclick="admin.closeEditUserModal()">&times;</button>
+      </div>
+      <div id="edit-user-body"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="admin.closeEditUserModal()">取消</button>
+        <button class="btn btn-primary" onclick="admin.saveUser()">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>
