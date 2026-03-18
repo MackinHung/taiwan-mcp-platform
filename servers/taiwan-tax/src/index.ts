@@ -1,11 +1,20 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { createMcpHandler } from 'agents/mcp';
 import type { Env } from './types.js';
 import { handleRpcRequest } from './mcp-handler.js';
+import { createMcpServer } from './mcp-server.js';
 
 const app = new Hono<{ Bindings: Env }>();
 
 app.use('*', cors());
+
+// Streamable HTTP endpoint (MCP SDK)
+app.all('/mcp', async (c) => {
+  const server = createMcpServer(c.env);
+  const handler = createMcpHandler(server);
+  return handler(c.req.raw, c.env, c.executionCtx);
+});
 
 app.post('/', async (c) => {
   const contentType = c.req.header('content-type');

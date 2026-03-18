@@ -1,5 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+// Mock agents/mcp (Cloudflare-specific module)
+vi.mock('agents/mcp', () => ({
+  createMcpHandler: vi.fn(() =>
+    vi.fn(async () => new Response(JSON.stringify({ ok: true }), {
+      headers: { 'Content-Type': 'application/json' },
+    }))
+  ),
+}));
+
 vi.mock('../src/mcp-handler.js', () => ({
   handleRpcRequest: vi.fn(),
   TOOL_DEFINITIONS: [],
@@ -74,6 +83,7 @@ describe('POST /', () => {
 
     expect(res.status).toBe(415);
     const data = await res.json();
+    expect(data.jsonrpc).toBe('2.0');
     expect(data.error.code).toBe(-32700);
   });
 

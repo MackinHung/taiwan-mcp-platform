@@ -1,5 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+// Mock agents/mcp (Cloudflare-specific module)
+vi.mock('agents/mcp', () => ({
+  createMcpHandler: vi.fn(() =>
+    vi.fn(async () => new Response(JSON.stringify({ ok: true }), {
+      headers: { 'Content-Type': 'application/json' },
+    }))
+  ),
+}));
+
 vi.mock('../src/mcp-handler.js', () => ({
   handleRpcRequest: vi.fn().mockResolvedValue({
     jsonrpc: '2.0',
@@ -36,7 +45,7 @@ describe('HTTP layer', () => {
     expect(body.jsonrpc).toBe('2.0');
   });
 
-  it('POST / without JSON content-type returns 415', async () => {
+  it('POST / without JSON content-type returns 415 as JSON-RPC envelope', async () => {
     const req = new Request('http://localhost/', {
       method: 'POST',
       headers: { 'content-type': 'text/plain' },
@@ -44,6 +53,9 @@ describe('HTTP layer', () => {
     });
     const res = await app.fetch(req, env);
     expect(res.status).toBe(415);
+    const json = await res.json() as any;
+    expect(json.jsonrpc).toBe('2.0');
+    expect(json.error.code).toBe(-32700);
   });
 
   it('POST / with invalid JSON returns parse error', async () => {

@@ -1,5 +1,14 @@
 import { describe, it, expect, vi } from 'vitest';
 
+// Mock agents/mcp (Cloudflare-specific module)
+vi.mock('agents/mcp', () => ({
+  createMcpHandler: vi.fn(() =>
+    vi.fn(async () => new Response(JSON.stringify({ ok: true }), {
+      headers: { 'Content-Type': 'application/json' },
+    }))
+  ),
+}));
+
 // Mock all tool modules to prevent real imports
 vi.mock('../src/tools/patent-search.js', () => ({
   searchPatents: vi.fn().mockResolvedValue({ content: [{ type: 'text', text: 'ok' }] }),
@@ -61,7 +70,7 @@ describe('Worker HTTP handler', () => {
     expect(json.result.tools).toHaveLength(5);
   });
 
-  it('POST / with invalid content-type returns 415', async () => {
+  it('POST / with invalid content-type returns 415 as JSON-RPC envelope', async () => {
     const req = new Request('http://localhost/', {
       method: 'POST',
       body: 'not json',
@@ -69,6 +78,9 @@ describe('Worker HTTP handler', () => {
     });
     const res = await app.fetch(req, env);
     expect(res.status).toBe(415);
+    const json = (await res.json()) as any;
+    expect(json.jsonrpc).toBe('2.0');
+    expect(json.error.code).toBe(-32700);
   });
 
   it('POST / with invalid JSON returns ParseError', async () => {
