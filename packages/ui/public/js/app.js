@@ -443,6 +443,7 @@ function renderNav(activePage) {
         <a href="/my-mcp.html" class="${activePage === 'my-mcp' ? 'active' : ''} hide-mobile">我的 MCP</a>
         <a href="/my-servers.html" class="${activePage === 'my-servers' ? 'active' : ''} hide-mobile">我的伺服器</a>
         <a href="/upload.html" class="${activePage === 'upload' ? 'active' : ''} hide-mobile">上架</a>
+        <a href="/trust.html" class="${activePage === 'trust' ? 'active' : ''} hide-mobile">信任與安全</a>
         <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()" title="切換主題">☀️</button>
         <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
         <div id="user-menu" style="display:none;">
