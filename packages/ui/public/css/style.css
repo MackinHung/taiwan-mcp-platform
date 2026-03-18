@@ -1267,6 +1267,57 @@ tr:hover td { background: var(--bg-surface-hover); }
   border-radius: var(--radius-sm);
 }
 
+/* ── Template Cards ───────────────────────────────────────── */
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.template-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  cursor: pointer;
+  transform: translateY(0);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.template-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37,99,235,0.12);
+}
+
+.template-card .template-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.template-card .template-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.template-card .template-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.template-card .template-servers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.template-card .template-servers .tag {
+  font-size: 0.7rem;
+}
+
 /* ── Status Indicator ──────────────────────────────────────── */
 .status-dot {
   display: inline-block;

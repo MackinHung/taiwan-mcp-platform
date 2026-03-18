@@ -2,6 +2,33 @@
 // my-mcp.js — Composition manager (real API)
 // ============================================================
 
+const TEMPLATES = [
+  {
+    name: '生活助手',
+    suggestedSlug: 'life-helper',
+    description: '天氣、空氣品質、電力、台股 — 日常生活必備',
+    scenario: 'hobby',
+    icon: '\u{1F3E0}',
+    servers: [
+      { slug: 'taiwan-weather', prefix: 'weather' },
+      { slug: 'taiwan-air-quality', prefix: 'air' },
+      { slug: 'taiwan-electricity', prefix: 'power' },
+      { slug: 'taiwan-stock', prefix: 'stock' },
+    ],
+  },
+  {
+    name: '投資理財',
+    suggestedSlug: 'invest-tools',
+    description: '台股報價 + 電力供需 — 投資決策輔助',
+    scenario: 'hobby',
+    icon: '\u{1F4C8}',
+    servers: [
+      { slug: 'taiwan-stock', prefix: 'stock' },
+      { slug: 'taiwan-electricity', prefix: 'power' },
+    ],
+  },
+];
+
 const myMcp = {
   compositions: [],
   selectedServerSlug: null,
@@ -9,6 +36,7 @@ const myMcp = {
   activeCompId: null,
 
   async init() {
+    this.renderTemplates();
     if (!auth.user) {
       const el = $('#compositions-list');
       if (el) el.innerHTML = `
@@ -340,7 +368,65 @@ const myMcp = {
     } catch (e) {
       showToast('刪除失敗');
     }
-  }
+  },
+
+  // ── Templates ──
+  renderTemplates() {
+    const container = $('#template-cards');
+    if (!container) return;
+
+    container.innerHTML = TEMPLATES.map((t, i) => `
+      <div class="template-card" onclick="myMcp.createFromTemplate(${i})">
+        <div class="template-icon">${t.icon}</div>
+        <div class="template-name">${escapeHtml(t.name)}</div>
+        <div class="template-desc">${escapeHtml(t.description)}</div>
+        <div class="template-servers">
+          ${t.servers.map(s => `<span class="tag">${escapeHtml(s.prefix)}</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
+  },
+
+  async createFromTemplate(index) {
+    const t = TEMPLATES[index];
+    if (!t) return;
+    if (!auth.user) { auth.login(); return; }
+
+    try {
+      // 1. Create composition
+      const res = await api.post('/compositions', {
+        name: t.name,
+        description: t.description,
+        endpoint_slug: t.suggestedSlug,
+        scenario: t.scenario,
+      });
+      const compId = res.data?.id;
+      if (!compId) { showToast('建立組合失敗'); return; }
+
+      // 2. Add servers
+      let added = 0;
+      for (const sv of t.servers) {
+        try {
+          const searchRes = await api.get(`/servers?search=${encodeURIComponent(sv.slug)}&limit=5`);
+          const match = (searchRes.data || []).find(s => s.slug === sv.slug);
+          if (match) {
+            await api.post(`/compositions/${compId}/servers`, {
+              server_id: match.id,
+              namespace_prefix: sv.prefix,
+            });
+            added++;
+          }
+        } catch (e) {
+          console.warn(`Failed to add server ${sv.slug}:`, e);
+        }
+      }
+
+      await this.loadCompositions();
+      showToast(`已從模板建立組合 (${added}/${t.servers.length} 伺服器)`);
+    } catch (e) {
+      showToast(e.error || '從模板建立失敗');
+    }
+  },
 };
 
 document.addEventListener('DOMContentLoaded', async () => {

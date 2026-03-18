@@ -3,6 +3,21 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // Proxy /mcp/* to Composer Worker
+    if (url.pathname.startsWith('/mcp/')) {
+      const composerUrl = new URL(
+        url.pathname + url.search,
+        'https://mcp-composer.watermelom5404.workers.dev'
+      );
+      const headers = new Headers(request.headers);
+      headers.set('X-Forwarded-Host', url.host);
+      return fetch(composerUrl.toString(), {
+        method: request.method,
+        headers,
+        body: request.body,
+      });
+    }
+
     if (url.pathname.startsWith('/api/')) {
       const gatewayUrl = new URL(
         url.pathname + url.search,
