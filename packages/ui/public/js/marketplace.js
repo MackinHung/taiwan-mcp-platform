@@ -16,9 +16,25 @@ const marketplace = {
     this.renderCategoryTabs();
     this.setupMobileToggle();
     this.renderSkeletonCards();
+    this.renderBadgeEducationExamples();
     // Load servers and stats in parallel
     this.loadServers();
     this.renderStats();
+  },
+
+  renderBadgeEducationExamples() {
+    const dimensions = {
+      source: ['open_audited', 'open', 'declared', 'undeclared'],
+      data: ['public', 'account', 'personal', 'sensitive'],
+      permission: ['readonly', 'limited_write', 'full_write', 'system'],
+      community: ['new', 'rising', 'popular', 'trusted'],
+    };
+    for (const [type, values] of Object.entries(dimensions)) {
+      const el = $(`#edu-badges-${type}`);
+      if (el) {
+        el.innerHTML = values.map(v => badges.render(type, v)).join('');
+      }
+    }
   },
 
   renderSkeletonCards() {
@@ -156,7 +172,7 @@ const marketplace = {
             <a href="/server.html?slug=${escapeHtml(server.slug)}">${escapeHtml(server.name)}</a>
             ${server.is_official ? '<span class="badge badge-official">官方</span>' : ''}
           </div>
-          <span class="trust-grade ${tg.class}" title="信任等級 ${tg.grade}: ${tg.label}">${tg.grade}</span>
+          <span class="trust-grade ${tg.class}">${tg.grade}<span class="grade-tip">${tg.tip}</span></span>
         </div>
         <div class="card-desc">${escapeHtml(server.description)}</div>
         ${badges.renderAll(server)}

@@ -413,6 +413,90 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   padding: 1px 6px;
 }
 
+/* Badge Hover Effect */
+.badge {
+  transition: filter 0.15s ease, transform 0.15s ease;
+  cursor: default;
+  position: relative;
+}
+
+.badge:hover {
+  filter: brightness(1.15);
+  transform: scale(1.08);
+  z-index: 5;
+}
+
+/* Badge Rich Tooltip (CSS-only) */
+.badge-tip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  white-space: normal;
+  width: max-content;
+  max-width: 260px;
+  line-height: 1.6;
+  z-index: 100;
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+  text-align: left;
+}
+
+.badge-tip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--border-light);
+}
+
+.badge-tip::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--bg-elevated);
+  z-index: 1;
+}
+
+.badge:hover .badge-tip {
+  display: block;
+  animation: badgeTipIn 0.2s ease forwards;
+}
+
+@keyframes badgeTipIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Ensure tooltip doesn't overflow viewport on edges */
+.badge-group .badge:first-child .badge-tip { left: 0; transform: none; }
+.badge-group .badge:first-child .badge-tip::after,
+.badge-group .badge:first-child .badge-tip::before { left: 20px; transform: none; }
+
+.badge-group .badge:last-child .badge-tip { left: auto; right: 0; transform: none; }
+.badge-group .badge:last-child .badge-tip::after,
+.badge-group .badge:last-child .badge-tip::before { left: auto; right: 20px; transform: none; }
+
+/* Card Badge Area (visual zone separator) */
+.card-badges {
+  padding-top: 12px;
+  margin-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
 /* ── SVG Icons ─────────────────────────────────────────────── */
 .icon {
   display: inline-flex;
@@ -532,6 +616,45 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .trust-grade-b { background: #2563eb; }
 .trust-grade-c { background: #d97706; }
 .trust-grade-d { background: #dc2626; }
+
+.trust-grade {
+  position: relative;
+  cursor: help;
+}
+
+.trust-grade .grade-tip {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  z-index: 50;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+}
+
+.trust-grade .grade-tip::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: var(--bg-elevated);
+}
+
+.trust-grade:hover .grade-tip {
+  display: block;
+  animation: badgeTipIn 0.2s ease forwards;
+}
 
 /* ── Server Card Grid ──────────────────────────────────────── */
 .server-grid {
@@ -1091,8 +1214,20 @@ tr:hover td { background: var(--bg-surface-hover); }
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 12px;
+  padding: 14px;
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
+
+.badge-explain-item:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+}
+
+.badge-explain-item.explain-source { border-left: 3px solid #60a5fa; }
+.badge-explain-item.explain-data { border-left: 3px solid #22c55e; }
+.badge-explain-item.explain-permission { border-left: 3px solid #fbbf24; }
+.badge-explain-item.explain-community { border-left: 3px solid #f59e0b; }
+.badge-explain-item.explain-external { border-left: 3px solid #a78bfa; }
 
 .badge-explain-item .badge-type {
   font-size: 0.75rem;
@@ -1548,7 +1683,25 @@ tr:hover td { background: var(--bg-surface-hover); }
 .badge-education-item {
   background: var(--bg-elevated);
   border-radius: var(--radius-md);
-  padding: 12px;
+  padding: 14px 14px 14px 16px;
+  border-left: 3px solid var(--border);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.badge-education-item:hover {
+  background: var(--bg-surface-hover);
+}
+
+.badge-education-item.edu-source { border-left-color: #60a5fa; }
+.badge-education-item.edu-data { border-left-color: #22c55e; }
+.badge-education-item.edu-permission { border-left-color: #fbbf24; }
+.badge-education-item.edu-community { border-left-color: #f59e0b; }
+
+.badge-education-item .edu-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
 }
 
 .badge-education-item h4 {

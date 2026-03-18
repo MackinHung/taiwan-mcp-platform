@@ -254,17 +254,19 @@ const badges = {
     const badge = this[type]?.[value];
     if (!badge) return '';
     const tooltip = badgeTooltips[type]?.[value] || badge.label;
-    return `<span class="badge ${badge.class}" title="${tooltip}"><span class="icon icon-sm">${badge.icon}</span> ${badge.label}</span>`;
+    return `<span class="badge ${badge.class}"><span class="icon icon-sm">${badge.icon}</span> ${badge.label}<span class="badge-tip">${tooltip}</span></span>`;
   },
 
   renderAll(server) {
     return `
-      <div class="badge-group">
-        ${this.render('source', server.badge_source)}
-        ${this.render('data', server.badge_data)}
-        ${this.render('permission', server.badge_permission)}
-        ${this.render('community', server.badge_community)}
-        ${server.badge_external ? this.render('external', server.badge_external) : ''}
+      <div class="card-badges">
+        <div class="badge-group">
+          ${this.render('source', server.badge_source)}
+          ${this.render('data', server.badge_data)}
+          ${this.render('permission', server.badge_permission)}
+          ${this.render('community', server.badge_community)}
+          ${server.badge_external ? this.render('external', server.badge_external) : ''}
+        </div>
       </div>
     `;
   }
@@ -391,10 +393,10 @@ function calculateTrustGrade(server) {
     (scoreMap.permission[server.badge_permission] || 1) +
     (scoreMap.community[server.badge_community] || 1);
 
-  if (score >= 14) return { grade: 'A', label: '最安全', class: 'trust-grade-a' };
-  if (score >= 11) return { grade: 'B', label: '良好', class: 'trust-grade-b' };
-  if (score >= 8)  return { grade: 'C', label: '注意', class: 'trust-grade-c' };
-  return { grade: 'D', label: '高風險', class: 'trust-grade-d' };
+  if (score >= 14) return { grade: 'A', label: '最安全', class: 'trust-grade-a', tip: '信任等級 A — 最安全（' + score + '/16）' };
+  if (score >= 11) return { grade: 'B', label: '良好', class: 'trust-grade-b', tip: '信任等級 B — 良好（' + score + '/16）' };
+  if (score >= 8)  return { grade: 'C', label: '注意', class: 'trust-grade-c', tip: '信任等級 C — 注意（' + score + '/16）' };
+  return { grade: 'D', label: '高風險', class: 'trust-grade-d', tip: '信任等級 D — 高風險（' + score + '/16）' };
 }
 
 function toggleMobileMenu() {

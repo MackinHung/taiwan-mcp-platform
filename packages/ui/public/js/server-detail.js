@@ -57,7 +57,7 @@ const serverDetail = {
 
       <!-- Safety Summary -->
       <div class="alert alert-info mb-16" style="display:flex;align-items:center;gap:12px;">
-        <span class="trust-grade ${tg.class}">${tg.grade}</span>
+        <span class="trust-grade ${tg.class}">${tg.grade}<span class="grade-tip">${tg.tip || 'Trust Grade ' + tg.grade}</span></span>
         <span>${safetySummary}</span>
       </div>
 
@@ -88,28 +88,28 @@ const serverDetail = {
       <div class="detail-section">
         <h2>安全徽章</h2>
         <div class="badge-explain">
-          <div class="badge-explain-item">
+          <div class="badge-explain-item explain-source">
             <div class="badge-type">程式碼透明度</div>
             ${badges.render('source', s.badge_source)}
             <div class="text-xs text-muted mt-8">${this.getBadgeExplain('source', s.badge_source)}</div>
           </div>
-          <div class="badge-explain-item">
+          <div class="badge-explain-item explain-data">
             <div class="badge-type">資料敏感度</div>
             ${badges.render('data', s.badge_data)}
             <div class="text-xs text-muted mt-8">${this.getBadgeExplain('data', s.badge_data)}</div>
           </div>
-          <div class="badge-explain-item">
+          <div class="badge-explain-item explain-permission">
             <div class="badge-type">權限範圍</div>
             ${badges.render('permission', s.badge_permission)}
             <div class="text-xs text-muted mt-8">${this.getBadgeExplain('permission', s.badge_permission)}</div>
           </div>
-          <div class="badge-explain-item">
+          <div class="badge-explain-item explain-community">
             <div class="badge-type">社群信任</div>
             ${badges.render('community', s.badge_community)}
             <div class="text-xs text-muted mt-8">${this.getBadgeExplain('community', s.badge_community)}</div>
           </div>
           ${s.badge_external ? `
-          <div class="badge-explain-item">
+          <div class="badge-explain-item explain-external">
             <div class="badge-type">第三方驗證</div>
             ${badges.render('external', s.badge_external)}
             <div class="text-xs text-muted mt-8">${this.getBadgeExplain('external', s.badge_external)}</div>
