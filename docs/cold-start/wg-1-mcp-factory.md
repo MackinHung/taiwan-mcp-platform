@@ -249,3 +249,40 @@ factory-lead (orchestrator)
   |- qa-reviewer    (general-purpose) — Stage 3+4+5: 品質關卡
 QA: 每批完成後跑 `servers/` 下所有測試
 ```
+
+---
+
+## 覆蓋率與缺口分析（2026-03-18 WG-3 研究結論）
+
+> Batch 3 完成後，台灣政府公開 REST API 覆蓋率達 **~95%**。
+> 以下為已知缺口，供未來批次參考。
+
+### 覆蓋率
+
+| 階段 | Servers | 覆蓋率 |
+|------|---------|--------|
+| Batch 1 (已完成) | 17 | ~43% |
+| + Batch 2 (已完成) | 31 | ~78% |
+| + Batch 3 (規格完成，待開發) | 39 | ~95% |
+
+### 待評估（有部分 API，但整合困難）
+
+| 項目 | 困難點 | 優先級 |
+|------|--------|--------|
+| **taiwan-housing** | 無 REST API，僅 CSV 批次下載，需 SQLite proxy 架構 + 個資評估 | 中 — 研究完成 |
+| **taiwan-crypto** | MAX/BitoPro 私人交易所 API，非政府資料 | 中 — 研究完成，可立即做 |
+| **taiwan-subsidy** | 補助資料散落各部會（青創/育兒/農業/住宅），無統一入口 | 低 — 整合成本高 |
+| **taiwan-postal** | 中華郵政追蹤 API 有限，郵遞區號可做但價值低 | 低 |
+| **taiwan-library** | 國立圖書館 API 文件不明確 | 低 |
+
+### 不可做（私人平台 / 法律風險）
+
+| 項目 | 原因 |
+|------|------|
+| **taiwan-job** | 104/1111 人力銀行為私人平台，ToS 禁止爬取 |
+| **taiwan-line** | 需 LINE 開發者帳號 + 官方合作 |
+| **taiwan-ecommerce** | Shopee/Momo/PChome 爬蟲有法律風險 |
+| **taiwan-movie** | 電影院時刻來自私人平台 |
+| **taiwan-convenience-store** | 7-11/全家 私人 API，無公開資料 |
+| **taiwan-telecom** | 中華/遠傳/台哥 無公開 API |
+| **taiwan-maps** | Google Maps MCP 已存在，重複建設無護城河 |
