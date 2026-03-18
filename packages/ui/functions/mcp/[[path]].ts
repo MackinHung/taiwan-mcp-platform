@@ -16,5 +16,6 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     method: context.request.method,
     headers,
     body: context.request.body,
+    redirect: 'manual',
   });
 };

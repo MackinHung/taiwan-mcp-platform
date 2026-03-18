@@ -96,9 +96,13 @@ authRoutes.get('/github/callback', async (c) => {
   const { userId } = await upsertOAuthUser(env.DB, info);
   const { cookie } = await createUserSession(env.DB, env.SESSION_CACHE, userId);
 
-  return c.redirect(`${env.FRONTEND_URL}`, 302, {
-    'Set-Cookie': cookie,
-  } as any);
+  return new Response(null, {
+    status: 302,
+    headers: {
+      'Location': env.FRONTEND_URL,
+      'Set-Cookie': cookie,
+    },
+  });
 });
 
 // ── Google OAuth ─────────────────────────────────────────────
@@ -190,9 +194,13 @@ authRoutes.get('/google/callback', async (c) => {
   const { userId } = await upsertOAuthUser(env.DB, info);
   const { cookie } = await createUserSession(env.DB, env.SESSION_CACHE, userId);
 
-  return c.redirect(`${env.FRONTEND_URL}`, 302, {
-    'Set-Cookie': cookie,
-  } as any);
+  return new Response(null, {
+    status: 302,
+    headers: {
+      'Location': env.FRONTEND_URL,
+      'Set-Cookie': cookie,
+    },
+  });
 });
 
 // ── Logout / Me ──────────────────────────────────────────────

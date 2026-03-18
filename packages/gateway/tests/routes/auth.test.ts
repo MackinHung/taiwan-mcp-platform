@@ -160,10 +160,15 @@ describe('Auth Routes', () => {
 
         const res = await app.request('/api/auth/github/callback?code=valid-code&state=valid-state', {}, env);
 
-        // Should redirect to frontend
+        // Should redirect to frontend with Set-Cookie
         expect(res.status).toBe(302);
         const location = res.headers.get('Location');
         expect(location).toContain('localhost:3000');
+        const setCookie = res.headers.get('Set-Cookie');
+        expect(setCookie).toBeTruthy();
+        expect(setCookie).toContain('session=');
+        expect(setCookie).toContain('HttpOnly');
+        expect(setCookie).toContain('Secure');
       } finally {
         globalThis.fetch = originalFetch;
       }
@@ -284,6 +289,10 @@ describe('Auth Routes', () => {
         expect(res.status).toBe(302);
         const location = res.headers.get('Location');
         expect(location).toContain('localhost:3000');
+        const setCookie = res.headers.get('Set-Cookie');
+        expect(setCookie).toBeTruthy();
+        expect(setCookie).toContain('session=');
+        expect(setCookie).toContain('HttpOnly');
       } finally {
         globalThis.fetch = originalFetch;
       }
