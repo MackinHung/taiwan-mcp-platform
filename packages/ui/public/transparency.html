@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>安全透明 — 台灣 MCP 市集</title>
+  <meta name="description" content="了解台灣 MCP 市集如何在技術層面保護每一個 MCP 伺服器的安全 — 掃描流程、風險防護、徽章解讀" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+      <div class="nav-links">
+        <a href="/">探索</a>
+        <a href="/privacy.html" class="hide-mobile">隱私政策</a>
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()" title="切換主題"></button>
+        <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
+        <div id="user-menu" style="display:none;">
+          <a href="/profile.html"><img id="user-avatar" src="" alt="avatar" /></a>
+          <span id="user-name"></span>
+        </div>
+        <button class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="選單"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-close"><button onclick="closeMobileMenu()" aria-label="關閉選單"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+    <div class="mobile-menu-links">
+      <a href="/">探索</a>
+      <a href="/my-mcp.html">我的 MCP</a>
+      <a href="/my-servers.html">我的伺服器</a>
+      <a href="/upload.html">上架</a>
+      <a href="/trust.html">信任與安全</a>
+      <a href="/transparency.html" class="active">安全透明</a>
+      <a href="/privacy.html">隱私政策</a>
+    </div>
+  </div>
+
+  <div class="policy-page">
+    <h1>安全透明</h1>
+    <p class="policy-updated">了解我們如何在技術層面保護每一個 MCP 伺服器的安全</p>
+
+    <!-- 1. 三層掃描流程 -->
+    <div class="policy-section">
+      <h2>三層掃描流程</h2>
+      <p style="color:var(--text-secondary);margin-bottom:16px;">
+        每個上架的 MCP 伺服器都必須通過以下三層安全審查，才能出現在市集中。
+      </p>
+      <div class="trust-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="trust-card">
+          <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <h3>L1 靜態分析</h3>
+          <p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:8px;">自動化 · 5 條規則</p>
+          <details>
+            <summary style="cursor:pointer;color:var(--text-secondary);font-size:0.85rem;">查看檢查細節</summary>
+            <ul style="margin-top:8px;padding-left:16px;color:var(--text-secondary);font-size:0.85rem;line-height:1.8;">
+              <li><strong>eval-detect</strong> — 偵測危險指令執行（eval、exec、spawn 等）</li>
+              <li><strong>network-check</strong> — 比對聲明的網路連線 vs 實際偵測到的 URL</li>
+              <li><strong>env-leak</strong> — 偵測環境變數外洩模式（竊取密碼、API Key）</li>
+              <li><strong>prompt-injection</strong> — 偵測工具描述中的指令注入攻擊</li>
+              <li><strong>cve-check</strong> — 檢查已知安全漏洞（CVE）</li>
+            </ul>
+          </details>
+        </div>
+        <div class="trust-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
+          <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>
+          <h3>L1.5 外部驗證</h3>
+          <p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:8px;">自動化 · 第三方資料庫</p>
+          <details>
+            <summary style="cursor:pointer;color:var(--text-secondary);font-size:0.85rem;">查看檢查細節</summary>
+            <ul style="margin-top:8px;padding-left:16px;color:var(--text-secondary);font-size:0.85rem;line-height:1.8;">
+              <li><strong>OSV.dev</strong> — Google 開源漏洞資料庫即時比對</li>
+              <li><strong>deps.dev Scorecard</strong> — OpenSSF 供應鏈安全評分</li>
+              <li>自動追蹤相依套件的安全更新</li>
+            </ul>
+          </details>
+        </div>
+        <div class="trust-card">
+          <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <h3>L2 人工審核</h3>
+          <p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:8px;">管理員 · 最終決策</p>
+          <details>
+            <summary style="cursor:pointer;color:var(--text-secondary);font-size:0.85rem;">查看審核流程</summary>
+            <ul style="margin-top:8px;padding-left:16px;color:var(--text-secondary);font-size:0.85rem;line-height:1.8;">
+              <li>管理員查看完整掃描報告</li>
+              <li>審核聲明與驗證結果的一致性</li>
+              <li>核准通過 / 要求修正 / 拒絕上架</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+      <div style="text-align:center;padding:0 0 8px;color:var(--text-muted);font-size:0.85rem;">
+        L1 靜態分析 &rarr; L1.5 外部驗證 &rarr; L2 人工審核 &rarr; 上架市集
+      </div>
+    </div>
+
+    <!-- 2. 風險防護對照表 -->
+    <div class="policy-section">
+      <h2>風險防護對照表</h2>
+      <p style="color:var(--text-secondary);margin-bottom:16px;">
+        以下是常見的 MCP 伺服器安全風險，以及平台對應的防護措施。
+      </p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>風險場景</th>
+              <th>你面臨的危險</th>
+              <th>我們的防護</th>
+              <th>掃描規則</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>指令注入</strong></td>
+              <td>MCP Server 偷偷執行危險命令</td>
+              <td>自動偵測 eval / exec / spawn</td>
+              <td><span class="badge badge-blue">eval-detect</span></td>
+            </tr>
+            <tr>
+              <td><strong>資料竊取</strong></td>
+              <td>把你的環境變數（密碼）偷傳到外部</td>
+              <td>偵測環境變數外洩模式</td>
+              <td><span class="badge badge-blue">env-leak</span></td>
+            </tr>
+            <tr>
+              <td><strong>隱私洩漏</strong></td>
+              <td>宣稱「唯讀公開」但偷存取帳號</td>
+              <td>聲明 vs 實際行為自動比對</td>
+              <td><span class="badge badge-blue">network-check</span></td>
+            </tr>
+            <tr>
+              <td><strong>提示詞注入</strong></td>
+              <td>工具描述藏指令讓 AI 做壞事</td>
+              <td>偵測 "ignore instructions" 等模式</td>
+              <td><span class="badge badge-blue">prompt-injection</span></td>
+            </tr>
+            <tr>
+              <td><strong>供應鏈漏洞</strong></td>
+              <td>使用有已知漏洞的套件</td>
+              <td>OSV.dev 即時掃描 + Scorecard 評分</td>
+              <td><span class="badge badge-blue">cve-check + external</span></td>
+            </tr>
+            <tr>
+              <td><strong>未聲明連線</strong></td>
+              <td>偷偷連到未宣告的外部伺服器</td>
+              <td>比對聲明 URL vs 偵測 URL</td>
+              <td><span class="badge badge-blue">network-check</span></td>
+            </tr>
+            <tr>
+              <td><strong>速率濫用</strong></td>
+              <td>惡意大量呼叫耗盡你的配額</td>
+              <td>分級速率限制 + 異常偵測</td>
+              <td><span class="badge badge-amber">rate-limit</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 3. 五維度營養標示深度解讀 -->
+    <div class="policy-section">
+      <h2>五維度營養標示深度解讀</h2>
+      <p style="color:var(--text-secondary);margin-bottom:16px;">
+        每個 MCP 伺服器都附帶五個維度的安全標章，就像食品營養標示一樣，讓你一眼了解風險等級。
+      </p>
+
+      <!-- 程式碼透明度 -->
+      <div class="badge-education" style="margin-bottom:16px;">
+        <div class="badge-education-header" onclick="this.querySelector('.toggle-icon').classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></span> 程式碼透明度 — 你能不能看到這個程式在做什麼</h3>
+          <span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <div class="badge-education-body">
+          <div class="badge-education-grid">
+            <div class="badge-education-item">
+              <h4><span class="badge badge-green" style="font-size:0.75rem;">開源已審計</span></h4>
+              <p>程式碼公開且通過平台自動安全掃描。你可以自己檢視原始碼，平台也已確認沒有危險行為。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-blue" style="font-size:0.75rem;">開源</span></h4>
+              <p>程式碼公開，你可以自行檢視，但尚未通過平台的自動掃描流程。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-amber" style="font-size:0.75rem;">已聲明</span></h4>
+              <p>作者已聲明程式行為，但程式碼未公開，平台無法獨立驗證其實際行為。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-gray" style="font-size:0.75rem;">未聲明</span></h4>
+              <p>未公開程式碼也未聲明行為。平台無法驗證實際行為，請謹慎使用。</p>
+            </div>
+          </div>
+          <p style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">
+            <strong>為什麼這很重要：</strong>程式碼透明度決定了你能否確認工具「真的在做它說的事」。開源且通過審計的工具最值得信賴。
+          </p>
+        </div>
+      </div>
+
+      <!-- 資料敏感度 -->
+      <div class="badge-education" style="margin-bottom:16px;">
+        <div class="badge-education-header" onclick="this.querySelector('.toggle-icon').classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></span> 資料敏感度 — 它會碰到你的哪些資料</h3>
+          <span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <div class="badge-education-body">
+          <div class="badge-education-grid">
+            <div class="badge-education-item">
+              <h4><span class="badge badge-green" style="font-size:0.75rem;">公開資料</span></h4>
+              <p>僅使用公開資訊（如天氣、空氣品質），完全不接觸你的個人帳號或隱私資料。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-yellow" style="font-size:0.75rem;">帳號資料</span></h4>
+              <p>需要帳號資料（如 API Key）才能運作。你的認證資訊會經過加密傳輸。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-orange" style="font-size:0.75rem;">個人資料</span></h4>
+              <p>會存取個人資料（如姓名、地址）。請確認其隱私聲明符合你的預期。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-red" style="font-size:0.75rem;">敏感資料</span></h4>
+              <p>會處理身分證、健康紀錄等敏感資料。請詳閱隱私聲明並確認必要性後再使用。</p>
+            </div>
+          </div>
+          <p style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">
+            <strong>為什麼這很重要：</strong>資料敏感度越高，一旦發生安全事件，你受到的影響就越大。優先選擇「公開資料」等級的工具。
+          </p>
+        </div>
+      </div>
+
+      <!-- 權限範圍 -->
+      <div class="badge-education" style="margin-bottom:16px;">
+        <div class="badge-education-header" onclick="this.querySelector('.toggle-icon').classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg></span> 權限範圍 — 它能代你做什麼操作</h3>
+          <span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <div class="badge-education-body">
+          <div class="badge-education-grid">
+            <div class="badge-education-item">
+              <h4><span class="badge badge-green" style="font-size:0.75rem;">唯讀</span></h4>
+              <p>只能讀取資料，無法代你修改或刪除任何內容。最安全的權限等級。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-yellow" style="font-size:0.75rem;">有限寫入</span></h4>
+              <p>可進行有限範圍的寫入操作（如發送訊息），操作範圍受到限制。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-orange" style="font-size:0.75rem;">完整寫入</span></h4>
+              <p>可代你執行完整的寫入操作（如建立、修改、刪除資料）。請確認你信任此來源。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-red" style="font-size:0.75rem;">系統權限</span></h4>
+              <p>可存取底層系統功能（如檔案系統、執行程式）。僅限進階用戶使用，風險最高。</p>
+            </div>
+          </div>
+          <p style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">
+            <strong>為什麼這很重要：</strong>權限越大，工具能做的事越多。遵循最小權限原則 — 只給工具它需要的最低權限。
+          </p>
+        </div>
+      </div>
+
+      <!-- 社群信任 -->
+      <div class="badge-education" style="margin-bottom:16px;">
+        <div class="badge-education-header" onclick="this.querySelector('.toggle-icon').classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span> 社群信任 — 多少人用過、信賴度如何</h3>
+          <span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <div class="badge-education-body">
+          <div class="badge-education-grid">
+            <div class="badge-education-item">
+              <h4><span class="badge badge-gray" style="font-size:0.75rem;">新上架</span></h4>
+              <p>剛上架的新伺服器，尚無足夠使用數據評估。不代表不安全，只是還需要時間累積口碑。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-green" style="font-size:0.75rem;">成長中</span></h4>
+              <p>使用量穩定成長，已達 100+ 次呼叫。初步驗證了穩定性與可用性。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-blue" style="font-size:0.75rem;">熱門</span></h4>
+              <p>高使用量的熱門伺服器，1,000+ 次呼叫。已被大量使用者驗證。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-gold" style="font-size:0.75rem;">信賴</span></h4>
+              <p>經長期驗證的信賴伺服器，10,000+ 次呼叫且 50+ 收藏。社群公認的高品質工具。</p>
+            </div>
+          </div>
+          <p style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">
+            <strong>為什麼這很重要：</strong>社群信任度反映了實際使用者的經驗。使用量越高、收藏越多的工具，通常越穩定可靠。
+          </p>
+        </div>
+      </div>
+
+      <!-- 第三方驗證 -->
+      <div class="badge-education" style="margin-bottom:16px;">
+        <div class="badge-education-header" onclick="this.querySelector('.toggle-icon').classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
+          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span> 第三方驗證 — 外部安全資料庫怎麼評價它</h3>
+          <span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <div class="badge-education-body">
+          <div class="badge-education-grid">
+            <div class="badge-education-item">
+              <h4><span class="badge badge-green" style="font-size:0.75rem;">第三方驗證</span></h4>
+              <p>通過 OSV + OpenSSF Scorecard 驗證，無已知漏洞。這是最高等級的外部安全認證。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-amber" style="font-size:0.75rem;">部分驗證</span></h4>
+              <p>部分通過第三方驗證，無高風險漏洞，但可能存在低風險的安全提醒。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-gray" style="font-size:0.75rem;">未驗證</span></h4>
+              <p>尚未進行第三方安全驗證。不代表不安全，但缺乏外部背書。</p>
+            </div>
+            <div class="badge-education-item">
+              <h4><span class="badge badge-red" style="font-size:0.75rem;">驗證失敗</span></h4>
+              <p>第三方驗證發現高風險漏洞。平台會標記警告，建議避免使用或等待修復。</p>
+            </div>
+          </div>
+          <p style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">
+            <strong>為什麼這很重要：</strong>第三方驗證提供獨立於平台的安全評估，就像食品的第三方檢驗報告一樣客觀。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 聲明 vs 驗證機制 -->
+    <div class="policy-section">
+      <h2>聲明 vs 驗證機制</h2>
+      <p style="color:var(--text-secondary);margin-bottom:16px;">
+        開發者上架時會聲明工具的行為（如「僅讀取公開資料」），平台會自動驗證這些聲明是否屬實。
+      </p>
+      <div class="policy-summary">
+        <div style="text-align:center;color:var(--text-secondary);font-size:0.875rem;line-height:2.2;">
+          <div style="padding:8px 16px;background:var(--bg-elevated);border-radius:var(--radius-md);display:inline-block;margin-bottom:8px;">
+            <strong>開發者聲明：</strong>「我只讀公開資料」
+          </div>
+          <div style="color:var(--text-muted);">&darr;</div>
+          <div style="padding:4px 0;">平台自動掃描原始碼，偵測實際的網路連線與資料存取行為</div>
+          <div style="color:var(--text-muted);">&darr;</div>
+          <div style="padding:4px 0;">比對結果：<span class="badge badge-green" style="font-size:0.75rem;">一致</span> 或 <span class="badge badge-red" style="font-size:0.75rem;">不一致</span></div>
+          <div style="color:var(--text-muted);">&darr;</div>
+          <div style="padding:8px 16px;background:var(--bg-elevated);border-radius:var(--radius-md);display:inline-block;margin-top:8px;">
+            不一致時 &rarr; <strong>以較高風險值為準</strong> &rarr; 徽章反映實際風險
+          </div>
+        </div>
+      </div>
+      <p style="color:var(--text-muted);font-size:0.85rem;margin-top:12px;">
+        這個機制確保即使開發者宣稱低風險，但實際行為有更高風險時，使用者看到的標章會反映真實情況。
+      </p>
+    </div>
+
+    <!-- 5. 即時防護機制 -->
+    <div class="policy-section">
+      <h2>即時防護機制</h2>
+      <p style="color:var(--text-secondary);margin-bottom:16px;">
+        除了上架前的掃描，平台在運行時也持續保護你的安全。
+      </p>
+      <div class="trust-grid">
+        <div class="trust-card">
+          <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
+          <h3>分級速率限制</h3>
+          <p>依使用者方案分級限制 API 呼叫次數（匿名 30 次/分鐘、認證 50-2000 次/分鐘），防止惡意濫用與資源耗盡。</p>
+        </div>
+        <div class="trust-card">
+          <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <h3>異常行為偵測</h3>
+          <p>平台持續監控三種異常模式：<strong>速率超限</strong>（暴量請求）、<strong>認證失敗</strong>（暴力破解）、<strong>地理異常</strong>（跨國存取）。發現異常時自動記錄並通知管理員。</p>
+        </div>
+        <div class="trust-card">
+          <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+          <h3>API Key 安全</h3>
+          <p>所有 API Key 以 SHA-256 雜湊儲存，即使資料庫遭到不當存取也無法還原。每個 Key 可隨時吊銷與重新產生。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. CTA -->
+    <div class="policy-section">
+      <h2>延伸閱讀</h2>
+      <p style="color:var(--text-secondary);margin-bottom:16px;">
+        想了解平台的政策面安全措施（認證架構、法規合規、資料來源），請參閱：
+      </p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="/trust.html" class="btn btn-primary">信任與安全（政策面）</a>
+        <a href="/privacy.html" class="btn btn-ghost">隱私政策</a>
+      </div>
+      <div class="policy-summary" style="margin-top:24px;">
+        <h2 style="font-size:1rem;">回報安全問題</h2>
+        <p>
+          發現安全漏洞？我們重視每一個安全回報。你可以在每個伺服器詳情頁使用「回報問題」按鈕，
+          或直接聯繫平台管理員回報嚴重漏洞。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>🇹🇼 台灣 MCP 市集</h4>
+          <p>探索、安裝、組合在地化 MCP 伺服器 — 讓 AI 助手使用台灣的資料與服務。39+ 在地化伺服器，涵蓋天氣、交通、金融、法律等領域。</p>
+        </div>
+        <div class="footer-col">
+          <h4>平台</h4>
+          <div class="footer-col-links">
+            <a href="/">探索市集</a>
+            <a href="/my-mcp.html">我的 MCP</a>
+            <a href="/upload.html">上架伺服器</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>開發者</h4>
+          <div class="footer-col-links">
+            <a href="/trust.html">信任與安全</a>
+            <a href="/transparency.html">安全透明</a>
+            <a href="/privacy.html">隱私政策</a>
+            <a href="/profile.html">API Keys</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>資源</h4>
+          <div class="footer-col-links">
+            <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP 規格</a>
+            <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+            <a href="/trust.html#report">回報問題</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2026 台灣 MCP 市集</div>
+        <div class="footer-disclosure">Powered by Cloudflare — 資料受 APEC CBPR 跨境規範保障</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

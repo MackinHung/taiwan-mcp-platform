@@ -185,6 +185,39 @@ const api = {
 };
 
 // ── Badge Rendering ─────────────────────────────────────────
+const badgeTooltips = {
+  source: {
+    open_audited: '程式碼公開且通過自動安全掃描',
+    open: '程式碼公開，可自行檢視',
+    declared: '作者已聲明行為，但無法獨立驗證',
+    undeclared: '未公開程式碼，平台無法驗證實際行為',
+  },
+  data: {
+    public: '僅使用公開資訊，不接觸你的個人帳號或隱私資料',
+    account: '需要帳號資料（如 API Key）才能運作',
+    personal: '會存取個人資料 — 請確認隱私聲明',
+    sensitive: '會處理身分證、健康等敏感資料 — 請詳閱隱私聲明',
+  },
+  permission: {
+    readonly: '只能讀取資料，無法代你修改或刪除任何內容',
+    limited_write: '可進行有限寫入 — 操作範圍受限',
+    full_write: '可代你執行寫入操作 — 請確認你信任此來源',
+    system: '可存取底層系統功能 — 僅限進階用戶使用',
+  },
+  community: {
+    new: '新上架，尚無足夠使用數據評估',
+    rising: '使用量穩定成長，100+ 次呼叫',
+    popular: '高使用量的熱門伺服器，1,000+ 次呼叫',
+    trusted: '經長期驗證的信賴伺服器，10,000+ 次呼叫且 50+ 收藏',
+  },
+  external: {
+    verified: '通過 OSV + OpenSSF Scorecard 驗證，無已知漏洞',
+    partial: '部分通過驗證，無高風險漏洞',
+    unverified: '尚未進行第三方驗證',
+    failed: '第三方驗證發現高風險漏洞',
+  },
+};
+
 const badges = {
   source: {
     open_audited: { label: '開源已審計', icon: icons.shieldCheck, class: 'badge-green' },
@@ -220,7 +253,8 @@ const badges = {
   render(type, value) {
     const badge = this[type]?.[value];
     if (!badge) return '';
-    return `<span class="badge ${badge.class}" title="${badge.label}"><span class="icon icon-sm">${badge.icon}</span> ${badge.label}</span>`;
+    const tooltip = badgeTooltips[type]?.[value] || badge.label;
+    return `<span class="badge ${badge.class}" title="${tooltip}"><span class="icon icon-sm">${badge.icon}</span> ${badge.label}</span>`;
   },
 
   renderAll(server) {
