@@ -2,6 +2,9 @@ import type { CompositionConfig, McpRequest, McpResponse } from './types.js';
 import { routeToolCall } from './router.js';
 import { selectMode, loadAllTools, getMetaTools } from './lazy-loader.js';
 import { proxyToServer } from './proxy.js';
+import { checkPermissions } from './permission-checker.js';
+import type { PermissionContext } from './permission-checker.js';
+import { logPermissionViolations } from './permission-logger.js';
 
 // Fetch tools from an upstream MCP server
 async function fetchToolsFromUpstream(server: { endpoint_url: string }): Promise<any[]> {
@@ -84,6 +87,18 @@ export async function handleMcpRequest(
         if ('error' in route) {
           return { jsonrpc: '2.0', id, error: { code: -32602, message: route.error } };
         }
+        if (route.server.declared_permissions) {
+          const permCtx: PermissionContext = {
+            serverId: route.server.server_id,
+            serverName: route.server.server_name,
+            declaredPermissions: route.server.declared_permissions,
+            declaredExternalUrls: route.server.declared_external_urls ?? [],
+          };
+          const permResult = checkPermissions(permCtx, route.originalTool, '', realArgs);
+          if (permResult.violations.length > 0) {
+            logPermissionViolations(permResult.violations, composition.id, composition.user_id);
+          }
+        }
         return proxyToServer(route.server, route.originalTool, realArgs, id);
       }
 
@@ -91,6 +106,18 @@ export async function handleMcpRequest(
       const route = routeToolCall(composition, toolName, args);
       if ('error' in route) {
         return { jsonrpc: '2.0', id, error: { code: -32602, message: route.error } };
+      }
+      if (route.server.declared_permissions) {
+        const permCtx: PermissionContext = {
+          serverId: route.server.server_id,
+          serverName: route.server.server_name,
+          declaredPermissions: route.server.declared_permissions,
+          declaredExternalUrls: route.server.declared_external_urls ?? [],
+        };
+        const permResult = checkPermissions(permCtx, route.originalTool, '', args);
+        if (permResult.violations.length > 0) {
+          logPermissionViolations(permResult.violations, composition.id, composition.user_id);
+        }
       }
       return proxyToServer(route.server, route.originalTool, args, id);
     }

@@ -1,11 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { runSandbox } from '../src/sandbox.js';
+import { runSandbox } from '../src/sandbox/index.js';
 
-describe('runSandbox (Layer 2 - stub)', () => {
-  it('returns sandbox_passed for now (mock implementation)', async () => {
+describe('runSandbox (Layer 2 - behavioral sandbox)', () => {
+  it('returns sandbox_passed for clean code', async () => {
     const result = await runSandbox({ serverId: 'test-1', sourceCode: 'const x = 1;' });
     expect(result.status).toBe('sandbox_passed');
-    expect(result.details).toContain('stub');
   });
 
   it('returns correct shape', async () => {
@@ -16,10 +15,11 @@ describe('runSandbox (Layer 2 - stub)', () => {
     expect(typeof result.durationMs).toBe('number');
   });
 
-  it('can be queued for later execution', async () => {
-    const result = await runSandbox({ serverId: 'test-3', sourceCode: 'eval("x");' });
-    expect(result.status).toBe('sandbox_passed');
-    // Stub always passes - real implementation would sandbox-execute
+  it('detects eval as violation for readonly permission', async () => {
+    const result = await runSandbox({ serverId: 'test-3', sourceCode: 'eval("x");', declaredPermissions: 'readonly' });
+    expect(result.status).toBe('sandbox_failed');
+    expect(result.violations).toBeDefined();
+    expect(result.violations!.length).toBeGreaterThan(0);
   });
 
   it('returns expected structure with all fields', async () => {
@@ -28,10 +28,13 @@ describe('runSandbox (Layer 2 - stub)', () => {
     expect(typeof result.details).toBe('string');
     expect(typeof result.durationMs).toBe('number');
     expect(result.durationMs).toBeGreaterThanOrEqual(0);
+    expect(result.behaviorTrace).toBeDefined();
   });
 
-  it('indicates sandbox not yet implemented', async () => {
+  it('includes behaviorTrace in result', async () => {
     const result = await runSandbox({ serverId: 'test-5', sourceCode: '' });
-    expect(result.details.toLowerCase()).toContain('stub');
+    expect(result.behaviorTrace).toBeDefined();
+    expect(result.behaviorTrace!.networkCalls).toEqual([]);
+    expect(result.behaviorTrace!.envAccess).toEqual([]);
   });
 });

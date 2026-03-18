@@ -25,5 +25,16 @@ export { runReviewPipeline } from './pipeline.js';
 export { runScanner } from './scanner.js';
 export { calculateAllBadges, calculateExternalBadge } from './badge.js';
 export { createReviewReport } from './report.js';
-export { runSandbox } from './sandbox.js';
-export { runExternalScan, scanOsv, scanDepsDev } from './external-scan.js';
+export { runSandbox } from './sandbox/index.js';
+export { runExternalScan, scanOsv, scanDepsDev, createEmptyDepsDevResult } from './external-scan.js';
+export { generateSbom, buildPurl } from './sbom.js';
+export { scanWithVirusTotal } from './virustotal.js';
+export { rescanServer, rescanAll } from './rescan.js';
+
+// Type re-exports
+export type { PipelineInput, PipelineResult } from './pipeline.js';
+export type { SandboxResult, SandboxInput, BehaviorTrace, SandboxViolation } from './sandbox/index.js';
+export type { SbomDocument, SbomComponent } from './sbom.js';
+export type { VtScanResult } from './virustotal.js';
+export type { RescanTarget, RescanResult, RescanSummary } from './rescan.js';
+export type { ExternalScanResult, OsvResult, DepsDevResult } from './external-scan.js';

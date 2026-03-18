@@ -284,3 +284,35 @@ adminRoutes.post('/recalculate-badges', async (c) => {
     error: null,
   });
 });
+
+// POST /rescan -> re-scan all published servers' dependencies via OSV
+adminRoutes.post('/rescan', async (c) => {
+  const result = requireAdmin(c);
+  if (result === null) return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
+
+  const { results: servers } = await c.env.DB.prepare(
+    `SELECT id, version, badge_external
+     FROM servers WHERE is_published = 1`
+  ).all<{ id: string; version: string; badge_external: string }>();
+
+  const targets = servers.map(s => ({
+    serverId: s.id,
+    version: s.version,
+    dependencies: {} as Record<string, string>,
+    currentBadgeExternal: s.badge_external || 'unverified',
+  }));
+
+  const { rescanAll } = await import('@review/rescan.js');
+  const summary = await rescanAll(targets);
+
+  for (const r of summary.results) {
+    if (r.badgeChanged) {
+      await c.env.DB.prepare(
+        'UPDATE servers SET badge_external = ?, updated_at = ? WHERE id = ?'
+      ).bind(r.newBadge, new Date().toISOString(), r.serverId).run();
+    }
+  }
+
+  return c.json({ success: true, data: summary, error: null });
+});

@@ -6,6 +6,12 @@ import type { AllBadges } from './badge.js';
 import { createReviewReport } from './report.js';
 import { runExternalScan } from './external-scan.js';
 import type { ExternalScanResult } from './external-scan.js';
+import { runSandbox } from './sandbox/index.js';
+import type { SandboxResult } from './sandbox/index.js';
+import { generateSbom } from './sbom.js';
+import type { SbomDocument } from './sbom.js';
+import { scanWithVirusTotal } from './virustotal.js';
+import type { VtScanResult } from './virustotal.js';
 
 export interface PipelineInput {
   serverId: string;
@@ -25,11 +31,16 @@ export interface PipelineInput {
   totalStars: number;
   packageName?: string;
   packageVersion?: string;
+  virusTotalApiKey?: string;
+  knownLicenses?: Record<string, string>;
 }
 
 export interface PipelineResult {
   scanResult: ScanOutput;
+  sandboxResult: SandboxResult;
   externalScan: ExternalScanResult;
+  vtScan: VtScanResult;
+  sbom: SbomDocument;
   badges: AllBadges;
   report: ReviewReport;
 }
@@ -47,11 +58,30 @@ export async function runReviewPipeline(
     dependencies: input.dependencies,
   });
 
+  // Layer 2: Behavioral sandbox (analyzes source code patterns vs declarations)
+  const sandboxResult = await runSandbox({
+    serverId: input.serverId,
+    sourceCode: input.sourceCode,
+    declaredExternalUrls: input.declaredExternalUrls,
+    declaredPermissions: input.declaredPermissions,
+  });
+
   // Layer 1.5: External security scan (runs in parallel-safe, never blocks pipeline)
-  const externalScan = await runExternalScan(
+  const [externalScan, vtScan] = await Promise.all([
+    runExternalScan(
+      input.dependencies,
+      input.packageName,
+      input.packageVersion
+    ),
+    scanWithVirusTotal(input.sourceCode, input.virusTotalApiKey),
+  ]);
+
+  // Generate SBOM
+  const sbom = generateSbom(
+    input.packageName || input.serverId,
+    input.packageVersion || input.version,
     input.dependencies,
-    input.packageName,
-    input.packageVersion
+    input.knownLicenses
   );
 
   const scanDurationMs = Date.now() - start;
@@ -70,8 +100,10 @@ export async function runReviewPipeline(
     externalScan,
   });
 
-  // Create report
-  const reportStatus = scanResult.status === 'scan_failed' ? 'fail' as const
+  // Determine report status: sandbox fail or scan fail → fail
+  const isFail = scanResult.status === 'scan_failed'
+    || sandboxResult.status === 'sandbox_failed';
+  const reportStatus = isFail ? 'fail' as const
     : scanResult.hasWarnings ? 'warn' as const
     : 'pass' as const;
 
@@ -85,5 +117,5 @@ export async function runReviewPipeline(
     scanDurationMs,
   });
 
-  return { scanResult, externalScan, badges, report };
+  return { scanResult, sandboxResult, externalScan, vtScan, sbom, badges, report };
 }

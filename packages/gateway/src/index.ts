@@ -14,6 +14,7 @@ import { usageMiddleware } from './middleware/usage.js';
 import { securityHeaders } from './middleware/security-headers.js';
 import { attributionMiddleware } from './middleware/attribution.js';
 import { anomalyMiddleware } from './middleware/anomaly-logger.js';
+import { monitoringMiddleware } from './middleware/monitoring.js';
 import { validateEnv } from './lib/validate-env.js';
 
 const app = new Hono<{ Bindings: Env; Variables: { user: any; session: any } }>();
@@ -58,6 +59,9 @@ app.use('/api/*', attributionMiddleware());
 
 // Anomaly detection
 app.use('/api/*', anomalyMiddleware());
+
+// Runtime monitoring
+app.use('/api/*', monitoringMiddleware());
 
 // Routes
 app.route('/api/auth', authRoutes);

@@ -243,6 +243,21 @@ CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
 
 -- ============================================================
+-- Monitoring Alerts (runtime anomaly detection)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS monitoring_alerts (
+  id TEXT PRIMARY KEY,
+  server_id TEXT REFERENCES servers(id) ON DELETE CASCADE,
+  alert_type TEXT NOT NULL CHECK (alert_type IN ('tool_abuse', 'error_spike', 'new_url_detected')),
+  severity TEXT NOT NULL DEFAULT 'warn' CHECK (severity IN ('info', 'warn', 'critical')),
+  details TEXT NOT NULL DEFAULT '{}',
+  resolved INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
+);
+CREATE INDEX IF NOT EXISTS idx_monitoring_alerts_server ON monitoring_alerts(server_id);
+CREATE INDEX IF NOT EXISTS idx_monitoring_alerts_type ON monitoring_alerts(alert_type);
+
+-- ============================================================
 -- Privacy Requests (PDPA compliance — data query/correction/deletion)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS privacy_requests (

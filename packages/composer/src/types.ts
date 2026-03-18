@@ -22,6 +22,9 @@ export interface CompositionServerEntry {
   endpoint_url: string;
   enabled: boolean;
   pinned_version: string | null;
+  // Permission enforcement (optional, for soft checking)
+  declared_permissions?: 'readonly' | 'limited_write' | 'full_write' | 'system';
+  declared_external_urls?: string[];
 }
 
 export interface NamespacedTool {

@@ -15,7 +15,8 @@ async function loadComposition(env: Env, slug: string): Promise<CompositionConfi
   // Fallback to D1
   const comp = await env.DB.prepare(
     `SELECT c.*, cs.server_id, cs.namespace_prefix, cs.enabled, cs.pinned_version,
-            s.slug as server_slug, s.name as server_name, s.endpoint_url
+            s.slug as server_slug, s.name as server_name, s.endpoint_url,
+            s.declared_permissions, s.declared_external_urls
      FROM compositions c
      JOIN composition_servers cs ON cs.composition_id = c.id
      JOIN servers s ON s.id = cs.server_id
@@ -39,6 +40,8 @@ async function loadComposition(env: Env, slug: string): Promise<CompositionConfi
       endpoint_url: r.endpoint_url,
       enabled: !!r.enabled,
       pinned_version: r.pinned_version || null,
+      declared_permissions: r.declared_permissions || undefined,
+      declared_external_urls: r.declared_external_urls ? JSON.parse(r.declared_external_urls) : undefined,
     })),
   };
 

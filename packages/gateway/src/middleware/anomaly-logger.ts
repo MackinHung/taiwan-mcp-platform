@@ -5,7 +5,7 @@ import { defer } from '../lib/defer.js';
 type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 
 export interface AnomalyEvent {
-  readonly type: 'rate_exceeded' | 'geo_change' | 'auth_failed';
+  readonly type: 'rate_exceeded' | 'geo_change' | 'auth_failed' | 'tool_abuse' | 'error_spike' | 'new_url_detected';
   readonly api_key_hash: string;
   readonly ip: string;
   readonly country: string;
@@ -45,7 +45,7 @@ export function getAuthFailKey(ip: string, windowMinute: number): string {
 /**
  * Append an anomaly event to the daily KV log.
  */
-async function logAnomaly(kv: KVNamespace, event: AnomalyEvent): Promise<void> {
+export async function logAnomaly(kv: KVNamespace, event: AnomalyEvent): Promise<void> {
   const key = getAnomalyKey();
   const existing = await kv.get(key);
   const events: AnomalyEvent[] = existing ? JSON.parse(existing) : [];

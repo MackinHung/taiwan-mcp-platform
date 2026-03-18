@@ -45,7 +45,7 @@ function createEmptyOsvResult(): OsvResult {
   return { provider: 'osv', vulnerabilities: [], scannedAt: new Date().toISOString() };
 }
 
-function createEmptyDepsDevResult(): DepsDevResult {
+export function createEmptyDepsDevResult(): DepsDevResult {
   return {
     provider: 'deps_dev',
     scorecardScore: null,
