@@ -11,21 +11,24 @@
 
 ## 當前平台狀態
 
-- Gateway: **215 tests**, 全部 route 有 mock 測試，含 attribution + anomaly + privacy + cache-ttl
-- Review: 120 tests, Layer 1 完成, Layer 2 是 stub
-- Composer: 76 tests, 完整 namespace routing + proxy
+- Gateway: **215 tests**, 全部 route 有 mock 測試，含 attribution + anomaly + privacy + cache-ttl + security headers + rate limiting
+- Review: **151 tests**, Layer 1 完成 (5 掃描規則 + 4+1 維度標章), Layer 2 是 stub
+- Composer: **76 tests**, 完整 namespace routing + proxy
+- Shared: **105 tests**, 共用型別 + Zod 驗證 + 錯誤格式
 - UI: **9 頁面** (6 原有 + privacy + trust + admin), 全部有 footer (跨境揭露)
-- DB: Schema 完成 (**16 tables**, 含 privacy_requests)，尚未建立 D1 實例
+- DB: Schema 完成 (**16 tables**, 含 privacy_requests)，D1 已上線 + seed 資料
+- **MCP Servers**: 39 servers (Batch 1: 17, Batch 2: 14, Batch 3: 8) — 詳見 WG-1
+- **Total workspace tests**: 3,235+ passed (platform ~550 + 39 servers ~2,685)
 
 ---
 
 ## Backlog（按優先級）
 
-### P0 — 部署基礎
+### P0 — 部署基礎 ✅ (2026-03-18)
 
-1. Cloudflare D1/KV/R2 資源建立 + wrangler secret 設定
-2. GitHub OAuth App 註冊 + gateway auth 接通
-3. 部署 gateway worker + UI Pages
+1. ✅ Cloudflare D1/KV/R2 資源建立 + wrangler secrets (JWT, GitHub, Google)
+2. ✅ GitHub OAuth App 註冊 + Google OAuth 設定
+3. ✅ 部署 gateway worker + UI Pages → `https://tw-mcp.pages.dev`
 
 ### P1 — 合規 + 前後端整合
 
@@ -47,7 +50,19 @@
 9. Composition → Composer endpoint 生成
 10. MCP endpoint 端對端（Claude Desktop → composer → weather server）
 
-### P3 — 進階功能
+### P3 — 安全強化 ✅ (2026-03-17, commit `7421dde`)
+
+- Security headers middleware (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy)
+- CORS 限縮至 `FRONTEND_URL` only（原為 wildcard + credentials）
+- OAuth state validation with KV (one-time consumption, CSRF protection)
+- Cookie Secure flag on all session cookies
+- Email auto-link removed（防帳號接管）
+- Env startup validation for required secrets
+- API key cache TTL bug fixed（`expires_at` keys 不再永久快取）
+- Anonymous rate limiting (30 req/min per IP) + `X-RateLimit-*` headers
+- 19 new security tests
+
+### P4 — 進階功能
 
 11. MCP Chat 試玩頁面 (`chat.html`)
 12. Analytics Dashboard（usage_daily 視覺化）

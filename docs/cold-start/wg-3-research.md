@@ -32,6 +32,7 @@ docs/research/
 | 規模化 | 如何批量產生/審核/上架 MCP servers | WG-1 + WG-4 | 待研究 |
 | 技術趨勢 | SSE, Streamable HTTP, OAuth 2.1 for MCP | WG-2（protocol） | 待研究 |
 | 台灣 Open Data API 調研 | 政府/民間可用 API 盤點與可行性分析 | WG-1（Batch 2 規格） | ✅ 2026-03-17 |
+| Batch 3 缺口分析 | 開放資料 × 全球 MCP 對照 × 市民需求 → 8 servers | WG-1（Batch 3 規格） | ✅ 2026-03-18 |
 | 組合 MCP Server | 跨 API 智慧組合方案（生活/通勤/供應鏈/投資） | WG-1 + WG-2 | 🔜 下次研究 |
 | taiwan-housing 可行性 | 實價登錄無 REST API，CSV 批次方案調研 | WG-1 | 🔜 下次討論 |
 
@@ -42,6 +43,7 @@ docs/research/
 | 日期 | 報告 | 建議 |
 |------|------|------|
 | 2026-03-17 | `2026-03-17-competitive-analysis.md` | `2026-03-17-competitive-analysis-rec.md` |
+| 2026-03-18 | Batch 3 缺口分析（三角度交叉驗證） | → `wg-1-batch3-spec.md` (8 servers, 全部已完成) |
 
 ---
 
