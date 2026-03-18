@@ -15,7 +15,7 @@
 - Review: **151 tests**, Layer 1 完成 (5 掃描規則 + 4+1 維度標章), Layer 2 是 stub
 - Composer: **76 tests**, 完整 namespace routing + proxy
 - Shared: **105 tests**, 共用型別 + Zod 驗證 + 錯誤格式
-- UI: **9 頁面** (6 原有 + privacy + trust + admin), 全部有 footer (跨境揭露)
+- UI: **10 頁面** (6 原有 + privacy + trust + transparency + admin), 全部有 footer + 一致 nav + SEO meta
 - DB: Schema 完成 (**16 tables**, 含 privacy_requests)，D1 已上線 + seed 資料
 - **MCP Servers**: 39 servers (Batch 1: 17, Batch 2: 14, Batch 3: 8) — 詳見 WG-1
 - **Total workspace tests**: 3,235+ passed (platform ~550 + 39 servers ~2,685)
@@ -65,6 +65,36 @@
 - API key cache TTL bug fixed（`expires_at` keys 不再永久快取）
 - Anonymous rate limiting (30 req/min per IP) + `X-RateLimit-*` headers
 - 19 new security tests
+
+### P3.5 — UI/UX 美化 + SEO ✅ (2026-03-18)
+
+**UI/UX 美化**（commits `e8d43b2` → `295c073` → `0054d93` → `acb22ab`）:
+- SVG Icon 系統取代 emoji（25+ Lucide-style inline SVG）
+- Card 微互動（hover translateY + shadow）、Typography/Spacing 正規化
+- Mobile 漢堡選單（全 10 頁）、4-column Footer、Scroll-to-Top
+- Hero gradient 動畫 + counter 動畫、Skeleton loading 取代 spinner
+- Trust Grade A/B/C/D 四維度加權評分（source+data+permission+community）
+- Badge 教育區（首頁可收折，4 維度說明 + 範例 badge）
+- Badge Rich Tooltip（CSS-only，取代 browser title）
+- Card Badge 簡化為單行摘要（`renderCardSummary`）
+- Trust Grade 詳細說明移至 trust.html `#grade` 區塊
+- 全 10 頁 nav 一致化（search bar + 5 links + hamburger）
+
+**SEO 基礎設施**（commit `d056c90` → `c74b8ee`）:
+- `robots.txt` — 允許爬蟲，阻擋 4 私人頁面，指向 sitemap
+- `sitemap.xml` — 6 公開頁面，含 priority + lastmod
+- Canonical URL — 6 公開頁面
+- Open Graph meta（og:type/title/description/url/locale/site_name）
+- Twitter Card（首頁 summary_large_image）
+- JSON-LD WebSite schema + SearchAction（首頁）
+- `noindex/nofollow` — 4 私人頁面（my-mcp/my-servers/profile/admin）
+- 補缺 meta description（server.html、upload.html）
+- Google Search Console 驗證檔 + sitemap 已提交
+
+**SEO 診斷結論**:
+- Cloudflare Pages 免費版**無 SEO 限制**（不限頻寬、不阻擋爬蟲）
+- 排不到的原因：缺 robots.txt/sitemap/canonical/OG、未提交 GSC、無自訂域名
+- 長期建議：綁自訂域名（建立獨立域名權重）、建立反向連結
 
 ### P4 — 進階功能
 
@@ -129,6 +159,17 @@ cd packages/ui && npx wrangler pages deploy public --project-name=tw-mcp --branc
   - `/api/*` → Gateway Worker
   - `/mcp/*` → Composer Worker
   - 其餘 → `env.ASSETS.fetch(request)` 靜態資源
+
+### Badge Hover 跑版陷阱
+- **問題**: `.badge:hover { transform: scale(1.08) }` 在 flex 容器內會觸發 reflow，導致相鄰 badge 位移
+- **解法**: 移除 transform，改用 `filter: brightness(1.2)` — 純視覺效果不影響 layout
+- **Tooltip 動畫**: 不可用 `translateX/Y`（會與 edge-case 定位規則衝突），改用純 opacity 動畫 `badgeTipFade`
+
+### SEO 陷阱
+- **`.pages.dev` 子域名**: Google 把每個 `.pages.dev` 子域當獨立站，無域名權重繼承，長期需綁自訂域名
+- **Cloudflare Pages 免費版**: 無 SEO 限制（不限頻寬、不阻擋爬蟲、可綁 100 自訂域名）
+- **缺 robots.txt/sitemap**: Google 完全找不到我們的網站 — 這是最關鍵的缺失
+- **私人頁面**: 需要登入的頁面必須加 `<meta name="robots" content="noindex, nofollow" />`
 
 ---
 
