@@ -80,6 +80,8 @@ const auth = {
       if (loginBtn) loginBtn.style.display = 'block';
       if (userMenu) userMenu.style.display = 'none';
     }
+    // Reveal auth UI after state resolved — prevents login button flash
+    document.documentElement.classList.add('auth-ready');
   },
 
   login() {

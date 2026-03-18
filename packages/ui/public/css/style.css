@@ -81,6 +81,11 @@
   --nav-bg: rgba(248,250,252,0.95);
 }
 
+/* ── Auth Flash Prevention ─────────────────────────────────── */
+/* Hide login button and user menu until auth resolves to prevent FOUC */
+#login-btn, #user-menu { visibility: hidden; }
+html.auth-ready #login-btn, html.auth-ready #user-menu { visibility: visible; }
+
 /* ── Reset & Base ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
