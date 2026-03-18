@@ -305,7 +305,7 @@ const serverDetail = {
   }
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await auth.ready;
+document.addEventListener('DOMContentLoaded', () => {
+  // Don't wait for auth — server details are public
   serverDetail.init();
 });

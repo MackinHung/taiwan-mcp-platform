@@ -13,10 +13,11 @@ const marketplace = {
   totalPages: 0,
 
   async init() {
-    await this.loadServers();
-    this.renderStats();
     this.renderCategoryTabs();
     this.setupMobileToggle();
+    // Load servers and stats in parallel
+    this.loadServers();
+    this.renderStats();
   },
 
   async loadServers() {
@@ -198,7 +199,7 @@ const marketplace = {
   }
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await auth.ready;
+document.addEventListener('DOMContentLoaded', () => {
+  // Don't wait for auth — marketplace shows public data
   marketplace.init();
 });
