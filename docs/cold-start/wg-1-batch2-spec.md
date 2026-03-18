@@ -12,9 +12,9 @@
 
 | # | Server | 資料來源 | API | 狀態 |
 |---|--------|----------|-----|------|
-| 1 | `taiwan-law` | 法務部全國法規資料庫 | `https://law.moj.gov.tw/api/` | 待開發 |
-| 2 | `taiwan-judgment` | 司法院裁判書開放資料 | `http://data.judicial.gov.tw/jdg/api/` | 待開發 |
-| 3 | `taiwan-legislative` | 立法院開放資料 | `https://v2.ly.govapi.tw` | 待開發 |
+| 1 | ~~`taiwan-law`~~ | 法務部全國法規資料庫 | `https://law.moj.gov.tw/api/` | ✅ 76 tests |
+| 2 | ~~`taiwan-judgment`~~ | 司法院裁判書開放資料 | `http://data.judicial.gov.tw/jdg/api/` | ✅ 78 tests |
+| 3 | ~~`taiwan-legislative`~~ | 立法院開放資料 | `https://v2.ly.govapi.tw` | ✅ 73 tests |
 
 ### Phase B：企業類 🏢
 
@@ -22,39 +22,39 @@
 |---|--------|----------|-----|------|
 | 4 | ~~`taiwan-company`~~ | 經濟部商工登記 GCIS | `https://data.gcis.nat.gov.tw/od/data/api/` | ✅ Module M (58 tests) — Batch 1 已完成 |
 | 5 | ~~`taiwan-exchange-rate`~~ | 台灣銀行匯率 | `https://rate.bot.com.tw/xrt/flcsv/0/day` | ✅ Module O (60 tests) — Batch 1 已完成 |
-| 6 | `taiwan-procurement` | 政府採購標案 | `https://pms.sme.gov.tw/PMSApi/v2/ODT/OPN` | 待開發 |
+| 6 | ~~`taiwan-procurement`~~ | 政府採購標案 | `https://pms.sme.gov.tw/PMSApi/v2/ODT/OPN` | ✅ 76 tests |
 
 ### Phase C：勞動/保險類 🛡️
 
 | # | Server | 資料來源 | API | 狀態 |
 |---|--------|----------|-----|------|
 | 7 | ~~`taiwan-labor`~~ | 勞動部開放資料 | `https://apiservice.mol.gov.tw/OdService/` | ✅ Module V (47 tests) — Batch 1 已完成 |
-| 8 | `taiwan-insurance-calc` | 公式計算（勞保/健保/勞退） | 無外部 API — 純演算法 | 待開發 |
+| 8 | ~~`taiwan-insurance-calc`~~ | 公式計算（勞保/健保/勞退） | 無外部 API — 純演算法 | ✅ 68 tests |
 
 ### Phase D：醫療/衛生類 🏥
 
 | # | Server | 資料來源 | API | 狀態 |
 |---|--------|----------|-----|------|
 | 9 | ~~`taiwan-hospital`~~ | 健保署特約院所 | `https://data.nhi.gov.tw/` | ✅ Module L (57 tests) — Batch 1 已完成 |
-| 10 | `taiwan-drug` | 食藥署藥品許可證 | `https://data.fda.gov.tw/opendata/exportDataList.do` | 待開發 |
-| 11 | `taiwan-cdc` | 疾管署傳染病監測 | `https://data.cdc.gov.tw/api/action/datastore_search` | 待開發 |
+| 10 | ~~`taiwan-drug`~~ | 食藥署藥品許可證 | `https://data.fda.gov.tw/opendata/exportDataList.do` | ✅ 71 tests |
+| 11 | ~~`taiwan-cdc`~~ | 疾管署傳染病監測 | `https://data.cdc.gov.tw/api/action/datastore_search` | ✅ 69 tests |
 
 ### Phase E：生活類 🏠
 
 | # | Server | 資料來源 | API | 狀態 |
 |---|--------|----------|-----|------|
-| 12 | `taiwan-oil-price` | 中油主產品牌價 | `https://vipmbr.cpc.com.tw/opendata/swagger/index.html` | 待開發 |
-| 13 | `taiwan-reservoir` | 水利署水庫水情 | `https://opendata.wra.gov.tw/openapi/swagger/index.html` | 待開發 |
-| 14 | `taiwan-disaster` | NCDR 民生示警 | `https://alerts.ncdr.nat.gov.tw/api_swagger/index.html` | 待開發 |
-| 15 | `taiwan-agri-price` | 農業部農產品交易行情 | `https://data.moa.gov.tw/api.aspx` (Dataset #037) | 待開發 |
-| 16 | `taiwan-parking` | TDX 即時停車 | `https://tdx.transportdata.tw/` | 待開發 |
+| 12 | ~~`taiwan-oil-price`~~ | 中油主產品牌價 | `https://vipmbr.cpc.com.tw/opendata/swagger/index.html` | ✅ 70 tests |
+| 13 | ~~`taiwan-reservoir`~~ | 水利署水庫水情 | `https://opendata.wra.gov.tw/openapi/swagger/index.html` | ✅ 65 tests |
+| 14 | ~~`taiwan-disaster`~~ | NCDR 民生示警 | `https://alerts.ncdr.nat.gov.tw/api_swagger/index.html` | ✅ 65 tests |
+| 15 | ~~`taiwan-agri-price`~~ | 農業部農產品交易行情 | `https://data.moa.gov.tw/api.aspx` (Dataset #037) | ✅ 72 tests |
+| 16 | ~~`taiwan-parking`~~ | TDX 即時停車 | `https://tdx.transportdata.tw/` | ✅ 68 tests |
 
 ### Phase F：開發者工具類 🔧
 
 | # | Server | 資料來源 | API | 狀態 |
 |---|--------|----------|-----|------|
-| 17 | `taiwan-validator` | 純演算法 | 無外部 API — 身分證/統編/手機/銀行帳號/車牌 | 待開發 |
-| 18 | `taiwan-calendar` | 行政院人事行政總處假日表 | `https://data.gov.tw/dataset/14718` + 農曆演算法 | 待開發 |
+| 17 | ~~`taiwan-validator`~~ | 純演算法 | 無外部 API — 身分證/統編/手機/銀行帳號/車牌 | ✅ 73 tests |
+| 18 | ~~`taiwan-calendar`~~ | 行政院人事行政總處假日表 | `https://data.gov.tw/dataset/14718` + 農曆演算法 | ✅ 72 tests |
 
 ---
 

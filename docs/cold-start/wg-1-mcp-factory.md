@@ -121,20 +121,20 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 
 | Phase | # | Server | 資料來源 | 狀態 |
 |-------|---|--------|----------|------|
-| A 法律 | 20 | taiwan-law | 法務部全國法規資料庫 | 待開發 |
-| A 法律 | 21 | taiwan-judgment | 司法院裁判書 | 待開發 |
-| A 法律 | 22 | taiwan-legislative | 立法院開放資料 | 待開發 |
-| B 企業 | 23 | taiwan-procurement | 政府採購標案 | 待開發 |
-| C 勞動 | 24 | taiwan-insurance-calc | 勞健保費試算（純演算法） | 待開發 |
-| D 醫療 | 25 | taiwan-drug | 食藥署藥品許可證 | 待開發 |
-| D 醫療 | 26 | taiwan-cdc | 疾管署傳染病監測 | 待開發 |
-| E 生活 | 27 | taiwan-oil-price | 中油牌價 | 待開發 |
-| E 生活 | 28 | taiwan-reservoir | 水利署水庫水情 | 待開發 |
-| E 生活 | 29 | taiwan-disaster | NCDR 民生示警 | 待開發 |
-| E 生活 | 30 | taiwan-agri-price | 農產品交易行情 | 待開發 |
-| E 生活 | 31 | taiwan-parking | TDX 即時停車 | 待開發 |
-| F 工具 | 32 | taiwan-validator | 身分證/統編/手機驗證（純演算法） | 待開發 |
-| F 工具 | 33 | taiwan-calendar | 國定假日+農曆轉換 | 待開發 |
+| A 法律 | 20 | ~~taiwan-law~~ | 法務部全國法規資料庫 | ✅ 76 tests |
+| A 法律 | 21 | ~~taiwan-judgment~~ | 司法院裁判書 | ✅ 78 tests |
+| A 法律 | 22 | ~~taiwan-legislative~~ | 立法院開放資料 | ✅ 73 tests |
+| B 企業 | 23 | ~~taiwan-procurement~~ | 政府採購標案 | ✅ 76 tests |
+| C 勞動 | 24 | ~~taiwan-insurance-calc~~ | 勞健保費試算（純演算法） | ✅ 68 tests |
+| D 醫療 | 25 | ~~taiwan-drug~~ | 食藥署藥品許可證 | ✅ 71 tests |
+| D 醫療 | 26 | ~~taiwan-cdc~~ | 疾管署傳染病監測 | ✅ 69 tests |
+| E 生活 | 27 | ~~taiwan-oil-price~~ | 中油牌價 | ✅ 70 tests |
+| E 生活 | 28 | ~~taiwan-reservoir~~ | 水利署水庫水情 | ✅ 65 tests |
+| E 生活 | 29 | ~~taiwan-disaster~~ | NCDR 民生示警 | ✅ 65 tests |
+| E 生活 | 30 | ~~taiwan-agri-price~~ | 農產品交易行情 | ✅ 72 tests |
+| E 生活 | 31 | ~~taiwan-parking~~ | TDX 即時停車 | ✅ 68 tests |
+| F 工具 | 32 | ~~taiwan-validator~~ | 身分證/統編/手機驗證（純演算法） | ✅ 73 tests |
+| F 工具 | 33 | ~~taiwan-calendar~~ | 國定假日+農曆轉換 | ✅ 72 tests |
 
 ## 已完成 MCP Servers
 
@@ -157,6 +157,20 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 | taiwan-labor | 5 | 47 | data.gov.tw + hardcoded labor laws/rates | None |
 | taiwan-patent | 5 | 73 | TIPO tiponet.tipo.gov.tw CSV + data.gov.tw | None |
 | taiwan-customs | 5 | 65 | customs.gov.tw + trade.gov.tw | None |
+| taiwan-law | 5 | 76 | MOJ law.moj.gov.tw/api/ | None |
+| taiwan-judgment | 5 | 78 | Judicial data.judicial.gov.tw/jdg/api/ | None |
+| taiwan-legislative | 5 | 73 | LY v2.ly.govapi.tw | Optional (LY_API_KEY) |
+| taiwan-procurement | 5 | 76 | PMS pms.sme.gov.tw/PMSApi/v2/ODT/OPN | None |
+| taiwan-insurance-calc | 5 | 68 | N/A (pure algorithm) | None |
+| taiwan-drug | 5 | 71 | FDA data.fda.gov.tw/opendata | None |
+| taiwan-cdc | 5 | 69 | CDC data.cdc.gov.tw/api/action/datastore_search | None |
+| taiwan-oil-price | 5 | 70 | CPC vipmbr.cpc.com.tw/opendata | None |
+| taiwan-reservoir | 5 | 65 | WRA data.wra.gov.tw | None |
+| taiwan-disaster | 5 | 65 | NCDR alerts.ncdr.nat.gov.tw/api | Optional (NCDR_API_KEY) |
+| taiwan-agri-price | 5 | 72 | MOA data.moa.gov.tw | Optional (MOA_API_KEY) |
+| taiwan-parking | 5 | 68 | TDX tdx.transportdata.tw | Required (OAuth2) |
+| taiwan-validator | 5 | 73 | N/A (pure algorithm) | None |
+| taiwan-calendar | 5 | 72 | data.gov.tw + lunar algorithm | None |
 
 ---
 
