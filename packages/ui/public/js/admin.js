@@ -8,6 +8,7 @@ const admin = {
   reviewQueue: [],
   users: [],
   reports: [],
+  anomalyLogs: [],
 
   async init() {
     if (!auth.user || auth.user.role !== 'admin') {
@@ -26,6 +27,7 @@ const admin = {
       this.loadReviewQueue(),
       this.loadUsers(),
       this.loadReports(),
+      this.loadAnomalyLogs(),
     ]);
   },
 
@@ -53,6 +55,9 @@ const admin = {
         <div class="stat-card">
           <div class="stat-value">${formatNumber(stats.total_calls)}</div>
           <div class="stat-label">累計呼叫</div>
+        </div>
+        <div class="stat-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <button class="btn btn-secondary btn-sm" onclick="admin.recalculateBadges()" id="recalc-badges-btn">重算社群徽章</button>
         </div>
       `;
     } catch (e) {
@@ -487,6 +492,85 @@ const admin = {
       showToast(`回報狀態已更新為：${this.reportStatusLabel(status)}`);
     } catch (e) {
       showToast('更新回報狀態失敗');
+    }
+  },
+
+  // ── Anomaly Detection ──
+  async loadAnomalyLogs(date) {
+    const dateInput = $('#anomaly-date');
+    if (!date) {
+      date = new Date().toISOString().slice(0, 10);
+      if (dateInput) dateInput.value = date;
+    }
+    try {
+      const res = await api.get(`/admin/anomaly-logs?date=${date}`);
+      this.anomalyLogs = res.data?.events || [];
+    } catch (e) {
+      console.error('Failed to load anomaly logs:', e);
+      this.anomalyLogs = [];
+    }
+    this.renderAnomalyLogs();
+  },
+
+  renderAnomalyLogs() {
+    const el = $('#anomaly-list');
+    if (!el) return;
+
+    if (this.anomalyLogs.length === 0) {
+      el.innerHTML = '<div class="empty-state"><h3>無異常記錄</h3><p class="text-muted">選定日期內未偵測到異常事件</p></div>';
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>類型</th>
+              <th>IP</th>
+              <th>國家</th>
+              <th>時間</th>
+              <th>詳情</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${this.anomalyLogs.map(e => `
+              <tr>
+                <td><span class="badge ${this.anomalyTypeClass(e.type)}">${this.anomalyTypeLabel(e.type)}</span></td>
+                <td><code>${escapeHtml(e.ip || '')}</code></td>
+                <td>${escapeHtml(e.country || '')}</td>
+                <td class="text-muted">${e.timestamp ? new Date(e.timestamp).toLocaleString('zh-TW') : ''}</td>
+                <td class="text-sm" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHtml(e.details || '')}">${escapeHtml(e.details || '')}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  },
+
+  anomalyTypeLabel(type) {
+    const labels = { rate_exceeded: '速率超限', auth_failed: '認證失敗', geo_change: '地理異常' };
+    return labels[type] || type || '未知';
+  },
+
+  anomalyTypeClass(type) {
+    const classes = { rate_exceeded: 'badge-red', auth_failed: 'badge-orange', geo_change: 'badge-amber' };
+    return classes[type] || 'badge-gray';
+  },
+
+  // ── Recalculate Badges ──
+  async recalculateBadges() {
+    const btn = $('#recalc-badges-btn');
+    if (btn) btn.disabled = true;
+    try {
+      const res = await api.post('/admin/recalculate-badges');
+      const { total_checked, total_updated } = res.data;
+      showToast(`已更新 ${total_updated} / ${total_checked} 個伺服器的社群徽章`);
+    } catch (e) {
+      showToast('重算社群徽章失敗');
+    } finally {
+      if (btn) btn.disabled = false;
     }
   },
 };

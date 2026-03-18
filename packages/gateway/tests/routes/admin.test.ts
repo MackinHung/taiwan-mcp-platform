@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Hono } from 'hono';
 import type { Env } from '../../src/env.js';
-import { createMockEnv, createMockDB, createMockUser, createMockServer } from '../helpers.js';
+import { createMockEnv, createMockDB, createMockKV, createMockUser, createMockServer } from '../helpers.js';
 
 describe('Admin Routes', () => {
   const adminUser = createMockUser({ role: 'admin' });
@@ -262,6 +262,120 @@ describe('Admin Routes', () => {
         body: JSON.stringify({ status: 'resolved' }),
       }, env);
       expect(res.status).toBe(403);
+    });
+  });
+
+  describe('GET /api/admin/anomaly-logs', () => {
+    it('should return anomaly events for a date', async () => {
+      const events = [
+        { type: 'rate_exceeded', ip: '1.2.3.4', country: 'TW', timestamp: '2026-03-18T10:00:00Z', details: 'Too many requests' },
+      ];
+      const kvStore: Record<string, string> = { 'anomaly:2026-03-18': JSON.stringify(events) };
+      const env = createMockEnv({ RATE_LIMITS: createMockKV(kvStore) });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/anomaly-logs?date=2026-03-18', {}, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.success).toBe(true);
+      expect(data.data.date).toBe('2026-03-18');
+      expect(data.data.events).toHaveLength(1);
+      expect(data.data.events[0].type).toBe('rate_exceeded');
+    });
+
+    it('should return empty array when no logs exist', async () => {
+      const env = createMockEnv({ RATE_LIMITS: createMockKV() });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/anomaly-logs?date=2026-01-01', {}, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.success).toBe(true);
+      expect(data.data.events).toHaveLength(0);
+    });
+
+    it('should default to today when no date param', async () => {
+      const env = createMockEnv({ RATE_LIMITS: createMockKV() });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/anomaly-logs', {}, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.success).toBe(true);
+      expect(data.data.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    });
+
+    it('should reject non-admin (403)', async () => {
+      const env = createMockEnv();
+      const app = await createApp(env, regularUser);
+
+      const res = await app.request('/api/admin/anomaly-logs', {}, env);
+      expect(res.status).toBe(403);
+    });
+
+    it('should reject unauthenticated (401)', async () => {
+      const env = createMockEnv();
+      const app = await createApp(env);
+
+      const res = await app.request('/api/admin/anomaly-logs', {}, env);
+      expect(res.status).toBe(401);
+    });
+  });
+
+  describe('POST /api/admin/recalculate-badges', () => {
+    it('should recalculate and update changed badges', async () => {
+      const servers = [
+        createMockServer({ id: 'srv-1', total_calls: 15000, total_stars: 60, badge_community: 'new', is_published: 1 }),
+        createMockServer({ id: 'srv-2', total_calls: 50, total_stars: 0, badge_community: 'new', is_published: 1 }),
+      ];
+      const env = createMockEnv({
+        DB: createMockDB({
+          allFn: () => ({ results: servers }),
+          runFn: () => ({ success: true, meta: { changes: 1 } }),
+        }),
+      });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/recalculate-badges', { method: 'POST' }, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.success).toBe(true);
+      expect(data.data.total_checked).toBe(2);
+      expect(data.data.total_updated).toBe(1); // srv-1: new -> trusted
+    });
+
+    it('should return zero updates when all badges correct', async () => {
+      const servers = [
+        createMockServer({ id: 'srv-1', total_calls: 50, total_stars: 0, badge_community: 'new', is_published: 1 }),
+      ];
+      const env = createMockEnv({
+        DB: createMockDB({
+          allFn: () => ({ results: servers }),
+        }),
+      });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/recalculate-badges', { method: 'POST' }, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.data.total_checked).toBe(1);
+      expect(data.data.total_updated).toBe(0);
+    });
+
+    it('should reject non-admin (403)', async () => {
+      const env = createMockEnv();
+      const app = await createApp(env, regularUser);
+
+      const res = await app.request('/api/admin/recalculate-badges', { method: 'POST' }, env);
+      expect(res.status).toBe(403);
+    });
+
+    it('should reject unauthenticated (401)', async () => {
+      const env = createMockEnv();
+      const app = await createApp(env);
+
+      const res = await app.request('/api/admin/recalculate-badges', { method: 'POST' }, env);
+      expect(res.status).toBe(401);
     });
   });
 });

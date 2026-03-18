@@ -124,6 +124,16 @@ const api = {
     const res = await fetch(`${API_BASE}${path}`, opts);
     const data = await res.json();
 
+    if (res.status === 429) {
+      const retryAfter = res.headers.get('Retry-After') || '60';
+      showToast(`請求過於頻繁，請於 ${retryAfter} 秒後重試`);
+      throw { status: 429, retryAfter: Number(retryAfter), ...data };
+    }
+    if (res.status === 402) {
+      showToast('已達月度用量上限，請至個人資料頁升級方案');
+      throw { status: 402, ...data };
+    }
+
     if (!res.ok) {
       throw { status: res.status, ...data };
     }

@@ -40,6 +40,7 @@
       <button class="tab-btn active" data-tab="reviews" onclick="admin.switchTab('reviews')">審核佇列</button>
       <button class="tab-btn" data-tab="users" onclick="admin.switchTab('users')">使用者</button>
       <button class="tab-btn" data-tab="reports" onclick="admin.switchTab('reports')">回報</button>
+      <button class="tab-btn" data-tab="anomaly" onclick="admin.switchTab('anomaly')">異常偵測</button>
     </div>
 
     <!-- Review Queue -->
@@ -55,6 +56,15 @@
     <!-- Reports -->
     <div class="tab-panel" id="tab-reports">
       <div id="report-list"></div>
+    </div>
+
+    <!-- Anomaly Detection -->
+    <div class="tab-panel" id="tab-anomaly">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <label for="anomaly-date" style="font-size:0.875rem;">日期：</label>
+        <input type="date" id="anomaly-date" onchange="admin.loadAnomalyLogs(this.value)" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-elevated);color:var(--text-primary);font-size:0.875rem;" />
+      </div>
+      <div id="anomaly-list"></div>
     </div>
   </div>
 

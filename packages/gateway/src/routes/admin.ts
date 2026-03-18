@@ -227,3 +227,60 @@ adminRoutes.put('/reports/:id', async (c) => {
 
   return c.json({ success: true, data: { id: reportId, status: body.status }, error: null });
 });
+
+// GET /anomaly-logs -> anomaly detection logs from KV
+adminRoutes.get('/anomaly-logs', async (c) => {
+  const result = requireAdmin(c);
+  if (result === null) return c.json({ success: false, error: '未授權', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
+
+  const dateParam = c.req.query('date');
+  const dateStr = dateParam || new Date().toISOString().slice(0, 10);
+  const key = `anomaly:${dateStr}`;
+  const raw = await c.env.RATE_LIMITS.get(key);
+  const events = raw ? JSON.parse(raw) : [];
+
+  return c.json({ success: true, data: { date: dateStr, events }, error: null });
+});
+
+// POST /recalculate-badges -> recalculate community badges for all published servers
+adminRoutes.post('/recalculate-badges', async (c) => {
+  const result = requireAdmin(c);
+  if (result === null) return c.json({ success: false, error: '未授權', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
+
+  const { results: servers } = await c.env.DB.prepare(
+    'SELECT id, total_calls, total_stars, badge_community FROM servers WHERE is_published = 1'
+  ).all<{ id: string; total_calls: number; total_stars: number; badge_community: string }>();
+
+  let totalUpdated = 0;
+
+  for (const server of servers) {
+    const calls = server.total_calls || 0;
+    const stars = server.total_stars || 0;
+    let newBadge: string;
+
+    if (calls >= 10000 && stars >= 50) {
+      newBadge = 'trusted';
+    } else if (calls >= 1000) {
+      newBadge = 'popular';
+    } else if (calls >= 100) {
+      newBadge = 'rising';
+    } else {
+      newBadge = 'new';
+    }
+
+    if (newBadge !== server.badge_community) {
+      await c.env.DB.prepare(
+        'UPDATE servers SET badge_community = ?, updated_at = ? WHERE id = ?'
+      ).bind(newBadge, new Date().toISOString(), server.id).run();
+      totalUpdated++;
+    }
+  }
+
+  return c.json({
+    success: true,
+    data: { total_checked: servers.length, total_updated: totalUpdated },
+    error: null,
+  });
+});
