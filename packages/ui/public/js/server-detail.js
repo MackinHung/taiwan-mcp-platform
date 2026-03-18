@@ -43,7 +43,24 @@ const serverDetail = {
     const tools = s.tools || [];
     const gatewayBase = window.location.origin;
 
+    const tg = calculateTrustGrade(s);
+    const safetySummary = this.generateSafetySummary(s);
+
     $('#server-detail').innerHTML = `
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" aria-label="breadcrumb">
+        <a href="/">探索</a>
+        <span class="breadcrumb-sep">${icons.chevronRight}</span>
+        ${s.category ? `<a href="/?category=${s.category}">${categoryLabels[s.category] || s.category}</a><span class="breadcrumb-sep">${icons.chevronRight}</span>` : ''}
+        <span class="breadcrumb-current">${escapeHtml(s.name)}</span>
+      </nav>
+
+      <!-- Safety Summary -->
+      <div class="alert alert-info mb-16" style="display:flex;align-items:center;gap:12px;">
+        <span class="trust-grade ${tg.class}">${tg.grade}</span>
+        <span>${safetySummary}</span>
+      </div>
+
       <!-- Header -->
       <div class="detail-header">
         <div>
@@ -60,7 +77,7 @@ const serverDetail = {
         </div>
         <div class="detail-actions">
           <button class="btn btn-secondary" onclick="serverDetail.toggleStar()">
-            ${this.starred ? '⭐ 已收藏' : '☆ 收藏'} <span id="star-count">${s.total_stars}</span>
+            <span class="icon icon-sm">${this.starred ? icons.starFilled : icons.star}</span> ${this.starred ? '已收藏' : '收藏'} <span id="star-count">${s.total_stars}</span>
           </button>
           <button class="btn btn-primary" onclick="serverDetail.addToMcp()">加入我的 MCP</button>
           <button class="btn btn-ghost" onclick="serverDetail.openReportModal()">回報</button>
@@ -189,6 +206,24 @@ const serverDetail = {
     `;
   },
 
+  generateSafetySummary(server) {
+    const parts = [];
+    if (server.badge_data === 'public') parts.push('僅讀取公開資料');
+    else if (server.badge_data === 'account') parts.push('需要帳號資料');
+    else if (server.badge_data === 'personal') parts.push('會存取個人資料');
+    else parts.push('會存取敏感資料');
+
+    if (server.badge_source === 'open_audited') parts.push('程式碼已開源審計');
+    else if (server.badge_source === 'open') parts.push('程式碼已開源');
+    else if (server.badge_source === 'declared') parts.push('程式碼行為已聲明');
+
+    if (server.badge_permission === 'readonly') parts.push('僅讀取不修改');
+
+    if (server.badge_external === 'verified') parts.push('通過第三方安全驗證');
+
+    return '此伺服器' + parts.join('，') + '。';
+  },
+
   getBadgeExplain(type, value) {
     const explains = {
       source: {
@@ -261,7 +296,7 @@ const serverDetail = {
       const newCount = this.starred ? current + 1 : Math.max(0, current - 1);
       count.textContent = newCount;
       const btn = count.parentElement;
-      btn.innerHTML = `${this.starred ? '⭐ 已收藏' : '☆ 收藏'} <span id="star-count">${newCount}</span>`;
+      btn.innerHTML = `<span class="icon icon-sm">${this.starred ? icons.starFilled : icons.star}</span> ${this.starred ? '已收藏' : '收藏'} <span id="star-count">${newCount}</span>`;
       showToast(this.starred ? '已收藏' : '已取消收藏');
     } catch (e) {
       showToast('操作失敗，請稍後再試');

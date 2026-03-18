@@ -15,9 +15,29 @@ const marketplace = {
   async init() {
     this.renderCategoryTabs();
     this.setupMobileToggle();
+    this.renderSkeletonCards();
     // Load servers and stats in parallel
     this.loadServers();
     this.renderStats();
+  },
+
+  renderSkeletonCards() {
+    const el = $('#server-grid');
+    if (!el) return;
+    const skeleton = Array(6).fill('').map(() => `
+      <div class="skeleton-card">
+        <div class="skeleton-line skeleton-title"></div>
+        <div class="skeleton-line skeleton-desc"></div>
+        <div class="skeleton-line skeleton-desc-short"></div>
+        <div style="margin-top:12px;">
+          <span class="skeleton-line skeleton-badge"></span>
+          <span class="skeleton-line skeleton-badge"></span>
+          <span class="skeleton-line skeleton-badge"></span>
+        </div>
+        <div class="skeleton-line skeleton-meta"></div>
+      </div>
+    `).join('');
+    el.innerHTML = skeleton;
   },
 
   async loadServers() {
@@ -58,9 +78,9 @@ const marketplace = {
       const elServers = $('#stat-servers');
       const elTools = $('#stat-tools');
       const elCalls = $('#stat-calls');
-      if (elServers) elServers.textContent = stats.total_published;
-      if (elTools) elTools.textContent = stats.total_tools;
-      if (elCalls) elCalls.textContent = formatNumber(stats.total_calls);
+      if (elServers) animateCounter(elServers, stats.total_published);
+      if (elTools) animateCounter(elTools, stats.total_tools);
+      if (elCalls) animateCounter(elCalls, stats.total_calls, 1500);
     } catch {
       // Stats are non-critical; keep default values
     }
@@ -75,10 +95,15 @@ const marketplace = {
     if (el) el.innerHTML = html;
   },
 
+  _debouncedSearch: null,
+
   handleSearch(query) {
     this.searchQuery = query.toLowerCase().trim();
     this.page = 1;
-    this.loadServers();
+    if (!this._debouncedSearch) {
+      this._debouncedSearch = debounce(() => this.loadServers(), 300);
+    }
+    this._debouncedSearch();
   },
 
   handleCategoryFilter(cat) {
@@ -110,7 +135,7 @@ const marketplace = {
       const el = $('#server-grid');
       if (el) el.innerHTML = `
         <div class="empty-state" style="grid-column: 1/-1;">
-          <div class="empty-icon">🔍</div>
+          <div class="empty-icon"><span class="icon icon-xl" style="color:var(--text-muted)">${icons.search}</span></div>
           <h3>找不到符合的伺服器</h3>
           <p class="text-muted">試試其他搜尋條件或篩選</p>
         </div>`;
@@ -122,14 +147,16 @@ const marketplace = {
     const countEl = $('#result-count');
     if (countEl) countEl.textContent = `${this.totalCount} 個伺服器`;
 
-    const html = pageServers.map(server => `
+    const html = pageServers.map(server => {
+      const tg = calculateTrustGrade(server);
+      return `
       <div class="card">
         <div class="card-header">
           <div class="card-title">
             <a href="/server.html?slug=${escapeHtml(server.slug)}">${escapeHtml(server.name)}</a>
             ${server.is_official ? '<span class="badge badge-official">官方</span>' : ''}
           </div>
-          <span class="text-xs text-muted">v${escapeHtml(server.version)}</span>
+          <span class="trust-grade ${tg.class}" title="信任等級 ${tg.grade}: ${tg.label}">${tg.grade}</span>
         </div>
         <div class="card-desc">${escapeHtml(server.description)}</div>
         ${badges.renderAll(server)}
@@ -137,13 +164,13 @@ const marketplace = {
           ${(server.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
         </div>
         <div class="card-meta mt-8">
-          <span title="呼叫次數">📞 ${formatNumber(server.total_calls)}</span>
-          <span title="星數">⭐ ${server.total_stars}</span>
-          <span title="工具數">🔧 ${server.tools_count || 0}</span>
+          <span title="呼叫次數"><span class="icon icon-sm">${icons.phone}</span> ${formatNumber(server.total_calls)}</span>
+          <span title="星數"><span class="icon icon-sm">${icons.star}</span> ${server.total_stars}</span>
+          <span title="工具數"><span class="icon icon-sm">${icons.wrench}</span> ${server.tools_count || 0}</span>
           <span>${escapeHtml(server.owner.display_name)}</span>
         </div>
       </div>
-    `).join('');
+    `;}).join('');
 
     const el = $('#server-grid');
     if (el) el.innerHTML = html;
