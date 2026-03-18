@@ -15,14 +15,15 @@
 ```
 servers/{name}/
   src/
-    index.ts         — Hono Worker entry (POST / → MCP handler)
+    index.ts         — Hono Worker entry (POST / → legacy, POST /mcp → MCP SDK)
     types.ts         — Server-specific types + Env interface
     client.ts        — External API client (fetch wrapper)
-    mcp-handler.ts   — JSON-RPC handler (initialize, tools/list, tools/call)
+    mcp-handler.ts   — Legacy JSON-RPC handler (backward compatible)
+    mcp-server.ts    — McpServer factory (MCP SDK + Zod schemas)
     tools/           — One file per tool function
   tests/             — Vitest tests (mock all external APIs)
   wrangler.toml      — Worker config + secrets
-  package.json       — deps: hono; devDeps: vitest, typescript, @cloudflare/workers-types
+  package.json       — deps: hono, @modelcontextprotocol/sdk, agents, zod; devDeps: vitest, typescript, @cloudflare/workers-types
 ```
 
 ## MCP Protocol 必須實作
@@ -31,6 +32,33 @@ servers/{name}/
 - `tools/list` → `{ tools: [{ name, description, inputSchema }] }`
 - `tools/call` → route to handler → `{ content: [{ type: 'text', text }] }`
 - Error → `{ error: { code, message } }` (JSON-RPC 2.0)
+
+## Streamable HTTP (MCP SDK)
+
+每個 server 現在支援雙端點：
+
+| Path | Transport | Description |
+|------|-----------|-------------|
+| `POST /mcp` | MCP Streamable HTTP | Claude Desktop / Cursor / MCP clients (via MCP SDK) |
+| `POST /` | JSON-RPC 2.0 | Legacy — Composer backward compatible |
+| `GET /` | HTTP | Server info |
+
+**Pattern**: `createMcpServer(env)` factory in `mcp-server.ts` → `createMcpHandler(server)` from `agents/mcp` in `index.ts`
+
+```typescript
+// mcp-server.ts
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
+
+export function createMcpServer(env: Env): McpServer {
+  const server = new McpServer({ name: env.SERVER_NAME, version: env.SERVER_VERSION });
+  server.tool('tool_name', 'description', { param: z.string() }, async ({ param }) => {
+    // implementation
+    return { content: [{ type: 'text', text: JSON.stringify(result) }] };
+  });
+  return server;
+}
+```
 
 ## Tool Function Signature
 
@@ -155,10 +183,16 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 - **統一發票期別**: 雙月制 (02/04/06/08/10/12), 民國年格式 `YYMM` (e.g. 11502=2026年2月)
 - **發票對獎邏輯**: 從最高獎(特別獎8碼)往下比對到六獎(末3碼)+增開六獎; 每層獎可能有多組號碼
 - **data.gov.tw filters**: JSON 字串格式 `{"欄位":"值"}`, 用 `url.searchParams.set('filters', JSON.stringify(...))`
+- **`@cloudflare/agents` deprecated**: 改用 `agents` npm package; `import { createMcpHandler } from 'agents/mcp'` 需 Cloudflare Workers runtime
+- **vitest mock `agents/mcp`**: `agents/mcp` 只在 Workers runtime 可用 → vitest 中需 `vi.mock('agents/mcp', () => ({ createMcpHandler: vi.fn(() => new Response('ok')) }))`
+- **MCP SDK Zod schemas**: tool inputSchema 用 Zod 定義 → MCP SDK 自動轉 JSON Schema; 注意 `z.optional()` vs `z.string().optional()` 差異
+- **雙端點共存**: `POST /mcp` (MCP SDK) + `POST /` (legacy JSON-RPC) → 兩者 tool 結果必須一致; 重構時需同步更新
 
 ## 參考實作
 
 `servers/taiwan-weather/` (8 tools, 66 tests, CWA API)
+- 完整雙端點: `mcp-server.ts` (MCP SDK) + `mcp-handler.ts` (legacy JSON-RPC)
+- Zod schema 定義所有 tool 參數
 
 ---
 
@@ -169,7 +203,7 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 - `CLAUDE.md` + `PIPELINE.md`：完整 7 Stage 流水線規格
 - `scripts/security-scan.ts`：10 條安全掃描規則（自包含）
 - `scripts/token-check.ts`：Token 成本估算工具
-- 84 tests, 全部綠燈
+- 135 tests, 全部綠燈
 - 每個 server 通過 7 個品質關卡後「畢業」推送到獨立 Git repo
 
 ---
