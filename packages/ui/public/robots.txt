@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /profile.html
+Disallow: /my-mcp.html
+Disallow: /my-servers.html
+
+Sitemap: https://tw-mcp.pages.dev/sitemap.xml
