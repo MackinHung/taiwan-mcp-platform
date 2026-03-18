@@ -27,11 +27,19 @@
 2. GitHub OAuth App 註冊 + gateway auth 接通
 3. 部署 gateway worker + UI Pages
 
-### P1 — 前後端整合
+### P1 — 合規 + 前後端整合
 
-4. UI mock data → 真實 API 替換（marketplace, server-detail）
-5. 登入流程端對端（GitHub OAuth → session → UI state）
-6. API key 建立 + 使用流程
+4. **合規任務 C1-C7** — 詳見 [`wg-2-compliance-tasks.md`](wg-2-compliance-tasks.md)
+   - C1: 隱私政策頁面 (`privacy.html` + API endpoints)
+   - C2: 資料來源歸屬系統 (response headers + UI 顯示)
+   - C3: 資料外洩通報 SOP (文件 + 內部 API)
+   - C4: 快取 TTL 個資審計 (KV cache 設定)
+   - C5: 跨境傳輸揭露 (隱私政策 + UI footer)
+   - C6: 異常偵測基礎 (Gateway middleware)
+   - C7: 安全信任頁面 (`trust.html`)
+5. UI mock data → 真實 API 替換（marketplace, server-detail）
+6. 登入流程端對端（GitHub OAuth → session → UI state）
+7. API key 建立 + 使用流程
 
 ### P2 — 核心功能整合
 
