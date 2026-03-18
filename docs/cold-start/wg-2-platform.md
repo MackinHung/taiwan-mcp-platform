@@ -30,9 +30,9 @@
 2. ✅ GitHub OAuth App 註冊 + Google OAuth 設定
 3. ✅ 部署 gateway worker + UI Pages → `https://tw-mcp.pages.dev`
 
-### P1 — 合規 + 前後端整合
+### P1 — 合規 + 前後端整合 ✅ (2026-03-18)
 
-4. **合規任務 C1-C7** ✅ — 全部完成 (2026-03-18)
+4. **合規任務 C1-C7** ✅ — 全部完成
    - ✅ C1: 隱私政策頁面 (`privacy.html` + `/api/privacy/*` endpoints)
    - ✅ C2: 資料來源歸屬系統 (`X-Data-Source` header + `ATTRIBUTION_DISPLAY_MAP`)
    - ✅ C3: 資料外洩通報 SOP (`docs/security/incident-response-sop.md`)
@@ -40,15 +40,17 @@
    - ✅ C5: 跨境傳輸揭露 (全 9 頁 footer)
    - ✅ C6: 異常偵測基礎 (`middleware/anomaly-logger.ts`)
    - ✅ C7: 安全信任頁面 (`trust.html`)
-5. UI mock data → 真實 API 替換（marketplace, server-detail）
-6. 登入流程端對端（GitHub OAuth → session → UI state）
-7. API key 建立 + 使用流程
+5. ✅ UI 全部 JS 已使用真實 API（`api.get()`/`api.post()` 等，無 mock data）
+6. ✅ 登入流程代碼就緒（GitHub + Google OAuth → session → UI state）— 需人工瀏覽器測試
+7. ✅ API key 建立 + 使用流程代碼就緒（profile.js + keys.ts）— 需人工測試
 
-### P2 — 核心功能整合
+### P2 — 核心功能整合 ✅ (2026-03-18)
 
-8. Upload → Review Pipeline 觸發（gateway → review worker）
-9. Composition → Composer endpoint 生成
-10. MCP endpoint 端對端（Claude Desktop → composer → weather server）
+8. ✅ Upload → Review Pipeline 同步觸發（`upload.ts` → `runScanAndPersist()` → badge 更新）
+9. ✅ Composition → Composer endpoint 生成（`my-mcp.js` CRUD UI + `composer/index.ts` `/mcp/u/:slug`）
+10. ✅ MCP endpoint 代碼就緒（Composer 支援 `tools/list` + `tools/call` + namespace routing）
+    - 新增 Pages Function proxy: `functions/mcp/[[path]].ts` → Composer Worker
+    - **待部署**: Composer Worker + 設定 `COMPOSER_URL` 環境變數
 
 ### P3 — 安全強化 ✅ (2026-03-17, commit `7421dde`)
 
@@ -68,6 +70,28 @@
 12. Analytics Dashboard（usage_daily 視覺化）
 13. Webhook 通知（新 server 上架、審核結果）
 14. E2E 測試
+
+---
+
+## 架構要點
+
+### 雙 Worker 設計
+```
+Pages (tw-mcp.pages.dev)
+  ├── /api/*  → functions/api/[[path]].ts  → Gateway Worker (mcp-gateway)
+  ├── /mcp/*  → functions/mcp/[[path]].ts  → Composer Worker (mcp-composer)
+  └── /*      → public/ 靜態檔案
+```
+- **Gateway Worker**: 認證、CRUD API、rate limit、合規中間件
+- **Composer Worker**: MCP 協議、namespace routing、upstream proxy
+- 兩個 Worker 共享同一個 D1 database (`mcp-platform`)
+- Pages 環境變數: `GATEWAY_URL`, `COMPOSER_URL`
+
+### Composer 部署步驟
+```bash
+cd packages/composer && npx wrangler deploy
+# 然後在 Pages dashboard 設定 COMPOSER_URL = https://mcp-composer.{account}.workers.dev
+```
 
 ---
 
