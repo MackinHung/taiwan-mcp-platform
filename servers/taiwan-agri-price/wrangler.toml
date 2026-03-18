@@ -1,0 +1,10 @@
+name = "taiwan-agri-price-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVER_NAME = "taiwan-agri-price"
+SERVER_VERSION = "1.0.0"
+
+# MOA_API_KEY is optional — set via `wrangler secret put MOA_API_KEY` for higher rate limits

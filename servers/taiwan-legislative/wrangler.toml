@@ -1,0 +1,11 @@
+name = "taiwan-legislative-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVER_NAME = "taiwan-legislative"
+SERVER_VERSION = "1.0.0"
+
+# Optional: LY_API_KEY can be set as a secret
+# wrangler secret put LY_API_KEY

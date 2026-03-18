@@ -1,0 +1,12 @@
+name = "taiwan-disaster-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVER_NAME = "taiwan-disaster"
+SERVER_VERSION = "1.0.0"
+
+# Optional: NCDR API key for higher rate limits
+# [secrets]
+# NCDR_API_KEY = ""
