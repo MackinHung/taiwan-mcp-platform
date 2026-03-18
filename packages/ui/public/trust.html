@@ -11,9 +11,16 @@
   <nav class="nav">
     <div class="nav-inner">
       <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+      <div class="nav-search">
+        <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." />
+      </div>
       <div class="nav-links">
         <a href="/">探索</a>
-        <a href="/privacy.html" class="hide-mobile">隱私政策</a>
+        <a href="/my-mcp.html" class="hide-mobile">我的 MCP</a>
+        <a href="/my-servers.html" class="hide-mobile">我的伺服器</a>
+        <a href="/upload.html" class="hide-mobile">上架</a>
+        <a href="/trust.html" class="active hide-mobile">信任與安全</a>
         <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()" title="切換主題"></button>
         <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
         <div id="user-menu" style="display:none;">
@@ -125,6 +132,73 @@
           完整的事件處理 SOP 已就緒。
         </p>
       </div>
+    </div>
+
+    <!-- Trust Grade -->
+    <div class="policy-section" id="grade">
+      <h2>信任等級說明</h2>
+      <p style="color:var(--text-secondary);margin-bottom:16px;">
+        每個伺服器卡片右上角顯示一個 A～D 的信任等級。此等級由四個維度自動計算而成，滿分 16 分。
+      </p>
+
+      <div class="trust-grid" style="margin-bottom:24px;">
+        <div class="trust-card" style="border-left:4px solid #16a34a;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+            <span class="trust-grade trust-grade-a">A</span>
+            <div>
+              <h3 style="margin:0;">最安全</h3>
+              <span class="text-xs text-muted">14 ～ 16 分</span>
+            </div>
+          </div>
+          <p>開源已審計、僅讀取公開資料、唯讀權限、社群信賴。可放心使用。</p>
+        </div>
+        <div class="trust-card" style="border-left:4px solid #2563eb;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+            <span class="trust-grade trust-grade-b">B</span>
+            <div>
+              <h3 style="margin:0;">良好</h3>
+              <span class="text-xs text-muted">11 ～ 13 分</span>
+            </div>
+          </div>
+          <p>大部分維度表現良好，可能需帳號資料或有限寫入。一般用途安全。</p>
+        </div>
+        <div class="trust-card" style="border-left:4px solid #d97706;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+            <span class="trust-grade trust-grade-c">C</span>
+            <div>
+              <h3 style="margin:0;">注意</h3>
+              <span class="text-xs text-muted">8 ～ 10 分</span>
+            </div>
+          </div>
+          <p>存取個人資料或需要較高權限。使用前請詳閱安全聲明與隱私政策。</p>
+        </div>
+        <div class="trust-card" style="border-left:4px solid #dc2626;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+            <span class="trust-grade trust-grade-d">D</span>
+            <div>
+              <h3 style="margin:0;">高風險</h3>
+              <span class="text-xs text-muted">4 ～ 7 分</span>
+            </div>
+          </div>
+          <p>程式碼未公開、存取敏感資料或需系統權限。請確認你充分信任此來源。</p>
+        </div>
+      </div>
+
+      <h3 style="font-size:0.95rem;margin-bottom:12px;">四維度計分方式</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>維度</th><th>4 分</th><th>3 分</th><th>2 分</th><th>1 分</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>程式碼透明度</strong></td><td>開源已審計</td><td>開源</td><td>已聲明</td><td>未聲明</td></tr>
+            <tr><td><strong>資料敏感度</strong></td><td>公開資料</td><td>帳號資料</td><td>個人資料</td><td>敏感資料</td></tr>
+            <tr><td><strong>權限範圍</strong></td><td>唯讀</td><td>有限寫入</td><td>完整寫入</td><td>系統權限</td></tr>
+            <tr><td><strong>社群信任</strong></td><td>信賴</td><td>熱門</td><td>成長中</td><td>新上架</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-muted" style="margin-top:8px;">四維度各 1～4 分相加，總分 4～16 分。等級由系統自動計算，不可由上架者自行修改。</p>
     </div>
 
     <!-- Data sources -->

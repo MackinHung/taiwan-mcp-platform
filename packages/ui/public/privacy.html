@@ -11,8 +11,15 @@
   <nav class="nav">
     <div class="nav-inner">
       <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+      <div class="nav-search">
+        <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." />
+      </div>
       <div class="nav-links">
         <a href="/">探索</a>
+        <a href="/my-mcp.html" class="hide-mobile">我的 MCP</a>
+        <a href="/my-servers.html" class="hide-mobile">我的伺服器</a>
+        <a href="/upload.html" class="hide-mobile">上架</a>
         <a href="/trust.html" class="hide-mobile">信任與安全</a>
         <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()" title="切換主題"></button>
         <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
