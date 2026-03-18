@@ -19,7 +19,7 @@ function stripComments(code: string): string {
 const FAIL_PATTERNS = [
   { regex: /\beval\s*\(/, label: 'eval()' },
   { regex: /\bnew\s+Function\s*\(/, label: 'new Function()' },
-  { regex: /\.exec\s*\(/, label: 'exec()' },
+  { regex: /child_process\.\s*exec\s*\(/, label: 'child_process.exec()' },
   { regex: /\bexecSync\s*\(/, label: 'execSync()' },
   { regex: /\bspawn\s*\(/, label: 'spawn()' },
   { regex: /\bspawnSync\s*\(/, label: 'spawnSync()' },
