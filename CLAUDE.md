@@ -19,7 +19,7 @@
 
 **Repo**: `MackinHung/taiwan-mcp-platform` (private), branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
-**Current**: 1,510+ tests, 0 failures
+**Current**: 2,570+ tests, 31 servers (17 Batch 1 + 14 Batch 2)
 
 ---
 
@@ -51,6 +51,21 @@ servers/
   taiwan-labor/       → Module V: 5 labor law/insurance tools (47 tests)
   taiwan-patent/      → Module W: 5 patent/trademark tools (73 tests)
   taiwan-customs/     → Module X: 5 customs/trade tools (65 tests)
+  # Batch 2 (14 servers) — 完成於 2026-03-18
+  taiwan-law/          → 5 MOJ law tools (76 tests)
+  taiwan-judgment/     → 5 judicial tools (78 tests)
+  taiwan-legislative/  → 5 LY open data tools (73 tests)
+  taiwan-procurement/  → 5 procurement tools (76 tests)
+  taiwan-insurance-calc/ → 5 insurance calc tools (68 tests)
+  taiwan-drug/         → 5 FDA drug tools (71 tests)
+  taiwan-cdc/          → 5 CDC disease tools (69 tests)
+  taiwan-oil-price/    → 5 CPC oil price tools (70 tests)
+  taiwan-reservoir/    → 5 WRA reservoir tools (65 tests)
+  taiwan-disaster/     → 5 NCDR disaster tools (65 tests)
+  taiwan-agri-price/   → 5 MOA agri price tools (72 tests)
+  taiwan-parking/      → 5 TDX parking tools (68 tests)
+  taiwan-validator/    → 5 validation tools (73 tests)
+  taiwan-calendar/     → 5 calendar/holiday tools (72 tests)
 docs/
   cold-start/ → WG 詳細規格（本文件下方有索引）
   research/   → WG-3 研究產出
@@ -109,7 +124,7 @@ cd packages/db && npm run migrate:local && npm run seed:local  # DB
 
 | 用戶說的 | 工作群 | 詳細文件 |
 |---------|--------|---------|
-| 「做新的 MCP server」「加一個交通 server」 | WG-1 MCP 工廠 | [`docs/cold-start/wg-1-mcp-factory.md`](docs/cold-start/wg-1-mcp-factory.md) + [`wg-1-batch2-spec.md`](docs/cold-start/wg-1-batch2-spec.md) |
+| 「做新的 MCP server」「加一個交通 server」 | WG-1 MCP 工廠 | [`wg-1-mcp-factory.md`](docs/cold-start/wg-1-mcp-factory.md) + [`wg-1-batch2-spec.md`](docs/cold-start/wg-1-batch2-spec.md) + [`wg-1-batch3-spec.md`](docs/cold-start/wg-1-batch3-spec.md) |
 | 「改平台」「修 gateway」「部署」「接 API」「改 UI」 | WG-2 平台迭代 | [`docs/cold-start/wg-2-platform.md`](docs/cold-start/wg-2-platform.md) |
 | 「研究 MCP」「競品分析」「搬運策略」「商業模式」 | WG-3 研究 | [`docs/cold-start/wg-3-research.md`](docs/cold-start/wg-3-research.md) |
 | 「安全規則」「標章改進」「沙箱設計」「掃描規則」 | WG-4 安全 | [`docs/cold-start/wg-4-security.md`](docs/cold-start/wg-4-security.md) |

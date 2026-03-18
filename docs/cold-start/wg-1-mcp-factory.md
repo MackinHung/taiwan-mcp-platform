@@ -136,6 +136,22 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 | F 工具 | 32 | ~~taiwan-validator~~ | 身分證/統編/手機驗證（純演算法） | ✅ 73 tests |
 | F 工具 | 33 | ~~taiwan-calendar~~ | 國定假日+農曆轉換 | ✅ 72 tests |
 
+### Batch 3（研究團隊 2026-03-18 缺口分析提供）
+
+> 詳細規格見 [`docs/cold-start/wg-1-batch3-spec.md`](wg-1-batch3-spec.md)
+> 三角度交叉驗證：開放資料 × 全球 MCP 對照 × 市民需求
+
+| Phase | # | Server | 資料來源 | 狀態 |
+|-------|---|--------|----------|------|
+| G 即時交通 | 34 | taiwan-youbike | 各市 YouBike 2.0 開放資料 | 待開發 |
+| G 即時交通 | 35 | taiwan-traffic-accident | 警政署交通事故 | 待開發 |
+| H 生活服務 | 36 | taiwan-garbage | 環境部 + 各縣市清潔隊 | 待開發 |
+| H 生活服務 | 37 | taiwan-demographics | 內政部戶政司 | 待開發 |
+| I 觀光休閒 | 38 | taiwan-tourism | 觀光署 + 文化部 TDX | 待開發 |
+| I 觀光休閒 | 39 | taiwan-sports | 體育署 iPlay | 待開發 |
+| J 教育公民 | 40 | taiwan-education | 教育部 + data.gov.tw | 待開發 |
+| J 教育公民 | 41 | taiwan-election | 中選會 | 待開發 |
+
 ## 已完成 MCP Servers
 
 | Server | Tools | Tests | API | API Key |
