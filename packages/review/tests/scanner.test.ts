@@ -63,7 +63,7 @@ describe('runScanner (Layer 1)', () => {
 
   it('aggregates results from all rules', () => {
     const result = runScanner(cleanInput);
-    expect(result.results.length).toBeGreaterThanOrEqual(5);
+    expect(result.results.length).toBeGreaterThanOrEqual(8);
   });
 
   it('each result has ruleName, pass, severity, details', () => {
@@ -119,5 +119,8 @@ describe('runScanner (Layer 1)', () => {
     expect(ruleNames).toContain('env-leak');
     expect(ruleNames).toContain('prompt-injection');
     expect(ruleNames).toContain('cve-check');
+    expect(ruleNames).toContain('obfuscation-detect');
+    expect(ruleNames).toContain('typosquatting-detect');
+    expect(ruleNames).toContain('suspicious-pattern');
   });
 });

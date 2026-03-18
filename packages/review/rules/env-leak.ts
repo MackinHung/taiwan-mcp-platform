@@ -29,6 +29,12 @@ const SECRET_PATTERNS = [
   { regex: /["'`]ghp_[a-zA-Z0-9]{10,}["'`]/, label: 'GitHub token (ghp_)' },
   { regex: /["'`]gho_[a-zA-Z0-9]{10,}["'`]/, label: 'GitHub OAuth token (gho_)' },
   { regex: /["'`]AKIA[0-9A-Z]{16}["'`]/, label: 'AWS access key' },
+  { regex: /["'`]sk_live_[a-zA-Z0-9]{10,}["'`]/, label: 'Stripe secret key' },
+  { regex: /["'`]pk_live_[a-zA-Z0-9]{10,}["'`]/, label: 'Stripe publishable key' },
+  { regex: /["'`]xox[bpras]-[a-zA-Z0-9-]{10,}["'`]/, label: 'Slack token' },
+  { regex: /["'`]SG\.[a-zA-Z0-9_-]{10,}\.[a-zA-Z0-9_-]{10,}["'`]/, label: 'SendGrid API key' },
+  { regex: /-----BEGIN\s(?:RSA\s)?PRIVATE\sKEY-----/, label: 'Private key' },
+  { regex: /["'`]eyJ[a-zA-Z0-9_-]{20,}\.eyJ[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}["'`]/, label: 'JWT token' },
 ] as const;
 
 export function envLeak(sourceCode: string): RuleResult {

@@ -22,6 +22,10 @@ const FAIL_PATTERNS = [
   { regex: /\.exec\s*\(/, label: 'exec()' },
   { regex: /\bexecSync\s*\(/, label: 'execSync()' },
   { regex: /\bspawn\s*\(/, label: 'spawn()' },
+  { regex: /\bspawnSync\s*\(/, label: 'spawnSync()' },
+  { regex: /require\s*\(\s*["'`]child_process["'`]\s*\)/, label: 'require("child_process")' },
+  { regex: /from\s+["'`]child_process["'`]/, label: 'import child_process' },
+  { regex: /\bvm\.run\w*\s*\(/, label: 'vm.run*()' },
 ] as const;
 
 // setTimeout/setInterval with string first argument (implicit eval)

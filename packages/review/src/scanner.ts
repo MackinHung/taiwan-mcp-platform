@@ -3,6 +3,9 @@ import { networkCheck } from '../rules/network-check.js';
 import { envLeak } from '../rules/env-leak.js';
 import { promptInjection } from '../rules/prompt-injection.js';
 import { cveCheck } from '../rules/cve-check.js';
+import { obfuscationDetect } from '../rules/obfuscation-detect.js';
+import { typosquattingDetect } from '../rules/typosquatting-detect.js';
+import { suspiciousPattern } from '../rules/suspicious-pattern.js';
 
 export interface ScanInput {
   sourceCode: string;
@@ -51,6 +54,15 @@ export function runScanner(input: ScanInput): ScanOutput {
 
   // Rule 5: CVE check (stub)
   results.push(cveCheck(input.dependencies));
+
+  // Rule 6: Code obfuscation detection
+  results.push(obfuscationDetect(input.sourceCode));
+
+  // Rule 7: Typosquatting detection
+  results.push(typosquattingDetect(input.dependencies));
+
+  // Rule 8: Suspicious behavioral patterns
+  results.push(suspiciousPattern(input.sourceCode));
 
   // Aggregate
   const hasFail = results.some((r) => !r.pass && r.severity === 'fail');
