@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>隱私政策 — 台灣 MCP 市集</title>
+  <meta name="description" content="台灣 MCP 市集隱私政策 — 了解我們如何收集、使用、儲存你的資料" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+      <div class="nav-links">
+        <a href="/">探索</a>
+        <a href="/trust.html">信任與安全</a>
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()">☀️</button>
+        <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
+        <div id="user-menu" style="display:none;">
+          <a href="/profile.html"><img id="user-avatar" src="" alt="avatar" /></a>
+          <span id="user-name"></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="policy-page">
+    <h1>隱私政策</h1>
+    <p class="policy-updated">最後更新：2026 年 3 月 18 日</p>
+
+    <!-- 30-second summary -->
+    <div class="policy-summary">
+      <h2>30 秒摘要</h2>
+      <p>
+        台灣 MCP 市集是一個<strong>唯讀代理平台</strong>，僅代理台灣政府公開資料。
+        我們只儲存你的 OAuth 帳號資訊（email、名稱）和 API 使用紀錄。
+        <strong>不收集密碼、不儲存付款資訊、不使用追蹤型 Cookie</strong>。
+        你可以隨時查詢、更正或刪除你的資料。
+      </p>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="policy-section">
+      <h2>1. 資料收集範圍</h2>
+      <ul>
+        <li><strong>帳號資料</strong>：GitHub/Google OAuth 提供的 email、顯示名稱、大頭貼</li>
+        <li><strong>使用資料</strong>：API 呼叫紀錄（endpoint、時間戳、IP、API key hash）</li>
+        <li><strong>不收集</strong>：密碼、付款資訊、生物辨識、位置資訊</li>
+      </ul>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="policy-section">
+      <h2>2. 資料使用目的</h2>
+      <ul>
+        <li>帳號驗證與 session 管理</li>
+        <li>API 用量統計與 rate limiting</li>
+        <li>平台服務改善（匿名統計，不涉及個人識別）</li>
+      </ul>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="policy-section">
+      <h2>3. 資料儲存</h2>
+      <ul>
+        <li><strong>儲存位置</strong>：Cloudflare D1（SQL）、KV（快取）、R2（檔案）</li>
+        <li><strong>資料中心</strong>：Cloudflare 全球 CDN（見「跨境傳輸」章節）</li>
+        <li><strong>保留期限</strong>：帳號資料保留至用戶刪除帳號；API 紀錄保留 90 天</li>
+      </ul>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="policy-section">
+      <h2>4. 資料分享</h2>
+      <ul>
+        <li>不出售、不分享個人資料給第三方</li>
+        <li>政府機關依法要求時配合提供</li>
+        <li>匿名統計資料可能用於平台透明度報告</li>
+      </ul>
+    </div>
+
+    <!-- Section 5 -->
+    <div class="policy-section">
+      <h2>5. 用戶權利（個人資料保護法第 3 條）</h2>
+      <p style="color:var(--text-secondary);margin-bottom:12px;">你擁有以下權利：</p>
+      <ul>
+        <li><strong>查詢</strong>：查詢平台持有的個人資料</li>
+        <li><strong>更正</strong>：要求更正不正確的資料</li>
+        <li><strong>刪除</strong>：要求刪除帳號及相關資料</li>
+        <li><strong>停止處理</strong>：要求停止特定資料處理</li>
+      </ul>
+      <div style="margin-top:16px;" id="privacy-actions">
+        <button class="btn btn-secondary btn-sm" onclick="privacy.viewMyData()">查詢我的資料</button>
+        <button class="btn btn-danger btn-sm" onclick="privacy.deleteMyData()" style="margin-left:8px;">刪除我的帳號</button>
+      </div>
+    </div>
+
+    <!-- Section 6 -->
+    <div class="policy-section">
+      <h2>6. 跨境傳輸</h2>
+      <ul>
+        <li>本平台使用 Cloudflare 全球基礎設施，資料可能經由不同國家的節點傳送</li>
+        <li>台灣為 APEC CBPR（跨境隱私規則）成員，跨境傳輸受相關規範保障</li>
+        <li>Cloudflare 符合 ISO 27001、SOC 2 Type II 國際安全認證</li>
+      </ul>
+    </div>
+
+    <!-- Section 7 -->
+    <div class="policy-section">
+      <h2>7. Cookie 政策</h2>
+      <ul>
+        <li>僅使用 session cookie（OAuth 驗證用途）</li>
+        <li>不使用追蹤型 cookie 或第三方 cookie</li>
+        <li>Cookie 存在時間與 session 相同（最長 24 小時）</li>
+      </ul>
+    </div>
+
+    <!-- Section 8 -->
+    <div class="policy-section">
+      <h2>8. 修改通知</h2>
+      <ul>
+        <li>隱私政策修改時於平台公告</li>
+        <li>重大變更以 email 通知已註冊用戶</li>
+        <li>繼續使用平台即視為同意最新版本之隱私政策</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Data Modal -->
+  <div class="modal-overlay hidden" id="data-modal">
+    <div class="modal" style="max-width:700px;">
+      <div class="modal-header">
+        <h2>你的資料</h2>
+        <button class="modal-close" onclick="privacy.closeDataModal()">&times;</button>
+      </div>
+      <div id="data-modal-content" style="max-height:60vh;overflow-y:auto;">
+        <div class="loading"><div class="spinner"></div></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="privacy.closeDataModal()">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="/">探索市集</a>
+        <a href="/privacy.html">隱私政策</a>
+        <a href="/trust.html">信任與安全</a>
+      </div>
+      <div>&copy; 2026 台灣 MCP 市集</div>
+      <div class="footer-disclosure">
+        Powered by Cloudflare — 資料受 APEC CBPR 跨境規範保障
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    const privacy = {
+      async viewMyData() {
+        if (!auth.requireLogin()) return;
+        const modal = document.getElementById('data-modal');
+        const content = document.getElementById('data-modal-content');
+        modal.classList.remove('hidden');
+        content.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+        try {
+          const res = await api.get('/privacy/my-data');
+          const d = res.data;
+          content.innerHTML = `
+            <div style="margin-bottom:16px;">
+              <h3 style="margin-bottom:8px;">帳號資料</h3>
+              <div class="code-block"><pre>${JSON.stringify(d.profile, null, 2)}</pre></div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <h3 style="margin-bottom:8px;">API Keys (${d.api_keys.length})</h3>
+              <div class="code-block"><pre>${JSON.stringify(d.api_keys, null, 2)}</pre></div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <h3 style="margin-bottom:8px;">使用紀錄 (最近 90 天, ${d.usage_history.length} 筆)</h3>
+              <div class="code-block"><pre>${JSON.stringify(d.usage_history.slice(0, 20), null, 2)}${d.usage_history.length > 20 ? '\n... 更多' : ''}</pre></div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <h3 style="margin-bottom:8px;">收藏 (${d.stars.length})</h3>
+              <div class="code-block"><pre>${JSON.stringify(d.stars, null, 2)}</pre></div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <h3 style="margin-bottom:8px;">資料保留政策</h3>
+              <ul style="color:var(--text-secondary);">
+                ${Object.entries(d.data_retention).map(([k, v]) => '<li><strong>' + escapeHtml(k) + '</strong>: ' + escapeHtml(String(v)) + '</li>').join('')}
+              </ul>
+            </div>
+          `;
+        } catch (e) {
+          content.innerHTML = '<div class="alert alert-danger">無法載入資料：' + escapeHtml(e.error || '未知錯誤') + '</div>';
+        }
+      },
+
+      closeDataModal() {
+        document.getElementById('data-modal').classList.add('hidden');
+      },
+
+      async deleteMyData() {
+        if (!auth.requireLogin()) return;
+        if (!confirm('確定要刪除帳號嗎？此操作無法復原，所有資料將被永久刪除。')) return;
+        if (!confirm('最後確認：刪除後無法復原。請輸入確認。')) return;
+        try {
+          await api.delete('/privacy/my-data');
+          alert('帳號已刪除。');
+          window.location.href = '/';
+        } catch (e) {
+          alert('刪除失敗：' + (e.error || '未知錯誤'));
+        }
+      }
+    };
+  </script>
+</body>
+</html>

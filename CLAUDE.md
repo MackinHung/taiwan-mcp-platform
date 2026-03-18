@@ -19,7 +19,7 @@
 
 **Repo**: `MackinHung/taiwan-mcp-platform` (private), branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
-**Current**: 1,440 tests, 0 failures
+**Current**: 1,510+ tests, 0 failures
 
 ---
 
@@ -29,7 +29,7 @@
 packages/
   shared/    → Module S: 共用型別、常數、Zod 驗證、錯誤格式 (105 tests)
   db/        → Module A: D1 schema (15 tables), seed, migrations
-  gateway/   → Module B: Hono API gateway, GitHub+Google OAuth, rate limit (146 tests)
+  gateway/   → Module B: Hono API gateway, GitHub+Google OAuth, rate limit, attribution, anomaly detection, privacy (215 tests)
   review/    → Module D: 5 掃描規則、4+1 維度標章計算、第三方驗證、報告生成 (151 tests)
   composer/  → Module E: MCP proxy, namespace routing, lazy loading (76 tests)
   ui/        → Module F: 6 HTML pages, 7 JS modules, CSS design system (vanilla)

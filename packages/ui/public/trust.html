@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>信任與安全 — 台灣 MCP 市集</title>
+  <meta name="description" content="了解台灣 MCP 市集如何保護你的資料 — 唯讀架構、OAuth 認證、營養標示系統" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+      <div class="nav-links">
+        <a href="/">探索</a>
+        <a href="/privacy.html">隱私政策</a>
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()">☀️</button>
+        <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
+        <div id="user-menu" style="display:none;">
+          <a href="/profile.html"><img id="user-avatar" src="" alt="avatar" /></a>
+          <span id="user-name"></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="policy-page">
+    <h1>信任與安全</h1>
+    <p class="policy-updated">了解我們如何保護你的資料與平台安全</p>
+
+    <!-- Architecture overview -->
+    <div class="policy-summary">
+      <h2>唯讀代理架構</h2>
+      <p>
+        台灣 MCP 市集採用<strong>唯讀代理架構</strong>，僅代理台灣政府公開資料，
+        不儲存、不修改原始資料。你的請求從平台直接轉發至政府 API，
+        回應原封不動地傳回 — 平台只是一個安全的中間層。
+      </p>
+      <div style="text-align:center;padding:16px 0;color:var(--text-muted);font-size:0.875rem;">
+        使用者 &rarr; MCP 平台（唯讀代理）&rarr; 政府 API（原始資料）
+      </div>
+    </div>
+
+    <!-- Security features grid -->
+    <div class="trust-grid">
+      <div class="trust-card">
+        <span class="trust-icon">🔐</span>
+        <h3>認證安全</h3>
+        <p>
+          OAuth 2.0 登入（GitHub / Google），平台不經手密碼。
+          PKCE 防護授權碼攔截，CSRF Token 保護每個 session，
+          Secure + HttpOnly Cookie 防止 XSS 竊取。
+        </p>
+      </div>
+
+      <div class="trust-card">
+        <span class="trust-icon">🛡️</span>
+        <h3>API 安全</h3>
+        <p>
+          所有通訊 HTTPS 加密。API Key 以 SHA-256 hash 儲存，
+          即使資料庫被存取也無法還原。Rate Limiting 防止濫用：
+          匿名 30 次/分鐘，認證 50-2000 次/分鐘（依方案）。
+        </p>
+      </div>
+
+      <div class="trust-card">
+        <span class="trust-icon">☁️</span>
+        <h3>基礎設施</h3>
+        <p>
+          Cloudflare Workers 無伺服器架構，無 SSH 攻擊面。
+          Cloudflare WAF 網頁應用防火牆 + DDoS 防護自動生效。
+          基礎設施通過 ISO 27001、SOC 2 Type II 認證。
+        </p>
+      </div>
+
+      <div class="trust-card">
+        <span class="trust-icon">🏷️</span>
+        <h3>營養標示</h3>
+        <p>
+          每個 MCP Server 都有透明的安全評分，四大維度標章：
+          程式碼透明度、資料敏感度、權限範圍、社群信任度。
+          讓你一目了然每個工具的安全性。
+        </p>
+        <div style="margin-top:12px;">
+          <span class="badge badge-green">🛡️ 開源已審計</span>
+          <span class="badge badge-green">🟢 公開資料</span>
+          <span class="badge badge-green">👁️ 唯讀</span>
+          <span class="badge badge-gold">⭐ 信賴</span>
+        </div>
+      </div>
+
+      <div class="trust-card">
+        <span class="trust-icon">🔍</span>
+        <h3>異常偵測</h3>
+        <p>
+          平台持續監控 API 使用模式，自動偵測三種異常：
+          API Key 異常使用（暴量請求）、Session 跨國異常、
+          暴力破解嘗試。發現異常時自動記錄並通知管理員。
+        </p>
+      </div>
+
+      <div class="trust-card">
+        <span class="trust-icon">⚖️</span>
+        <h3>法規合規</h3>
+        <p>
+          台灣個人資料保護法（PDPA）合規。
+          APEC CBPR 跨境隱私保障。
+          72 小時資料外洩通報承諾。
+          完整的事件處理 SOP 已就緒。
+        </p>
+      </div>
+    </div>
+
+    <!-- Data sources -->
+    <div class="policy-section">
+      <h2>資料來源透明</h2>
+      <p style="color:var(--text-secondary);margin-bottom:16px;">
+        所有 API 回應都標示政府資料來源（X-Data-Source header），不修改原始資料。
+        以下是平台目前代理的 17 個政府機關資料來源：
+      </p>
+      <div class="trust-sources-grid">
+        <div class="trust-source-item">中央氣象署 (CWA)</div>
+        <div class="trust-source-item">環境部 (MOENV)</div>
+        <div class="trust-source-item">台灣電力公司 (Taipower)</div>
+        <div class="trust-source-item">台灣證券交易所 (TWSE)</div>
+        <div class="trust-source-item">衛生福利部中央健康保險署 (NHI)</div>
+        <div class="trust-source-item">經濟部商業司 (GCIS)</div>
+        <div class="trust-source-item">交通部運輸資料流通服務 (TDX)</div>
+        <div class="trust-source-item">中央銀行 (BOT)</div>
+        <div class="trust-source-item">食品藥物管理署 (FDA)</div>
+        <div class="trust-source-item">財政部電子發票平台</div>
+        <div class="trust-source-item">政府資料開放平臺</div>
+        <div class="trust-source-item">財政部</div>
+        <div class="trust-source-item">勞動部</div>
+        <div class="trust-source-item">智慧財產局 (TIPO)</div>
+        <div class="trust-source-item">財政部關務署</div>
+        <div class="trust-source-item">各媒體 RSS 來源</div>
+      </div>
+    </div>
+
+    <!-- Report -->
+    <div class="policy-section">
+      <h2>回報安全問題</h2>
+      <p style="color:var(--text-secondary);">
+        發現安全漏洞？我們重視每一個安全回報。請透過以下方式聯繫我們：
+      </p>
+      <ul>
+        <li>在市集中對特定伺服器提交安全回報（每個伺服器詳情頁都有「回報問題」按鈕）</li>
+        <li>嚴重漏洞請直接聯繫平台管理員</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="/">探索市集</a>
+        <a href="/privacy.html">隱私政策</a>
+        <a href="/trust.html">信任與安全</a>
+      </div>
+      <div>&copy; 2026 台灣 MCP 市集</div>
+      <div class="footer-disclosure">
+        Powered by Cloudflare — 資料受 APEC CBPR 跨境規範保障
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
