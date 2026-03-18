@@ -48,9 +48,11 @@
 
 8. ✅ Upload → Review Pipeline 同步觸發（`upload.ts` → `runScanAndPersist()` → badge 更新）
 9. ✅ Composition → Composer endpoint 生成（`my-mcp.js` CRUD UI + `composer/index.ts` `/mcp/u/:slug`）
-10. ✅ MCP endpoint 代碼就緒（Composer 支援 `tools/list` + `tools/call` + namespace routing）
-    - 新增 Pages Function proxy: `functions/mcp/[[path]].ts` → Composer Worker
-    - **待部署**: Composer Worker + 設定 `COMPOSER_URL` 環境變數
+10. ✅ MCP endpoint 完整上線（`5511cf5`）
+    - `_worker.js` 新增 `/mcp/*` proxy → Composer Worker（Pages Functions 被 `_worker.js` 覆蓋，見陷阱段落）
+    - 4 MCP servers 已部署：weather, air-quality, electricity, stock（D1 `endpoint_url` 已設定）
+    - 2 preset templates（生活助手、投資理財）一鍵建立組合
+    - Auth 狀態快閃已修復（CSS `visibility` + `auth-ready` class）
 
 ### P3 — 安全強化 ✅ (2026-03-17, commit `7421dde`)
 
@@ -77,21 +79,56 @@
 
 ### 雙 Worker 設計
 ```
-Pages (tw-mcp.pages.dev)
-  ├── /api/*  → functions/api/[[path]].ts  → Gateway Worker (mcp-gateway)
-  ├── /mcp/*  → functions/mcp/[[path]].ts  → Composer Worker (mcp-composer)
-  └── /*      → public/ 靜態檔案
+Pages (tw-mcp.pages.dev) — _worker.js (Advanced Mode)
+  ├── /api/*  → proxy → mcp-gateway.watermelom5404.workers.dev
+  ├── /mcp/*  → proxy → mcp-composer.watermelom5404.workers.dev
+  └── /*      → env.ASSETS.fetch(request) 靜態資源
 ```
+- **⚠️ 重要**: `_worker.js` 存在時 `functions/` 完全被忽略，所有路由必須寫在 `_worker.js`
 - **Gateway Worker**: 認證、CRUD API、rate limit、合規中間件
 - **Composer Worker**: MCP 協議、namespace routing、upstream proxy
 - 兩個 Worker 共享同一個 D1 database (`mcp-platform`)
-- Pages 環境變數: `GATEWAY_URL`, `COMPOSER_URL`
 
-### Composer 部署步驟
+### 部署步驟
 ```bash
+# Composer
 cd packages/composer && npx wrangler deploy
-# 然後在 Pages dashboard 設定 COMPOSER_URL = https://mcp-composer.{account}.workers.dev
+
+# MCP Servers (4 已部署)
+cd servers/taiwan-weather && npx wrangler deploy
+cd servers/taiwan-air-quality && npx wrangler deploy
+cd servers/taiwan-electricity && npx wrangler deploy
+cd servers/taiwan-stock && npx wrangler deploy
+
+# 設定 D1 endpoint_url
+npx wrangler d1 execute mcp-platform --remote --command "UPDATE servers SET endpoint_url = 'https://{name}-mcp.watermelom5404.workers.dev/' WHERE slug = '{slug}';"
+
+# UI
+cd packages/ui && npx wrangler pages deploy public --project-name=tw-mcp --branch=master --commit-dirty=true
 ```
+
+---
+
+## UI 實作經驗與陷阱
+
+### Auth 狀態快閃 (FOUC)
+- **問題**: 頁面載入時 `#login-btn` 預設可見、`#user-menu` 隱藏 → `auth.init()` fetch `/api/auth/me` 的 ~100ms 期間，已登入用戶會看到「登入」按鈕閃現
+- **根因**: 9 個 HTML 頁面的 nav 都寫死 `<button id="login-btn">` 可見、`<div id="user-menu" style="display:none">`，auth 是非同步解析
+- **解法**: CSS `visibility: hidden` + `html.auth-ready` class
+  ```css
+  #login-btn, #user-menu { visibility: hidden; }
+  html.auth-ready #login-btn, html.auth-ready #user-menu { visibility: visible; }
+  ```
+  `auth.updateUI()` 末尾加 `document.documentElement.classList.add('auth-ready')`
+- **為何用 visibility 而非 display**: visibility 保留佈局空間，不會造成 nav 跳動
+- **通用原則**: 任何依賴非同步狀態的 UI 元素，預設應隱藏直到狀態確定
+
+### _worker.js 覆蓋 Pages Functions
+- **問題**: `_worker.js` (Advanced Mode) 存在時，`functions/` 目錄的 Pages Functions **完全被忽略**
+- **解法**: 所有路由代理必須寫在 `_worker.js` 裡
+  - `/api/*` → Gateway Worker
+  - `/mcp/*` → Composer Worker
+  - 其餘 → `env.ASSETS.fetch(request)` 靜態資源
 
 ---
 
