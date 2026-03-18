@@ -2155,6 +2155,25 @@ tr:hover td { background: var(--bg-surface-hover); }
   font-size: var(--text-xs);
 }
 
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  padding-bottom: 12px;
+}
+
+.footer-social a {
+  color: var(--text-muted);
+  transition: color var(--transition);
+  display: inline-flex;
+  align-items: center;
+}
+
+.footer-social a:hover {
+  color: var(--text-primary);
+}
+
 /* ── Privacy / Trust Pages ────────────────────────────────── */
 .policy-page {
   max-width: 800px;
