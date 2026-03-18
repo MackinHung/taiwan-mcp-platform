@@ -23,13 +23,9 @@ describe('Server Routes', () => {
       const server = createMockServer();
       const env = createMockEnv({
         DB: createMockDB({
-          firstFn: (query) => {
-            if (query.includes('COUNT')) return { total: 1 };
-            return null;
-          },
           allFn: (query) => {
-            if (query.includes('servers') && !query.includes('COUNT'))
-              return { results: [server] };
+            if (query.includes('COUNT')) return { results: [{ total: 1 }] };
+            if (query.includes('servers')) return { results: [server] };
             return { results: [] };
           },
         }),
@@ -48,9 +44,9 @@ describe('Server Routes', () => {
       let capturedQuery = '';
       const env = createMockEnv({
         DB: createMockDB({
-          firstFn: () => ({ total: 0 }),
           allFn: (query) => {
             capturedQuery = query;
+            if (query.includes('COUNT')) return { results: [{ total: 0 }] };
             return { results: [] };
           },
         }),
@@ -65,9 +61,9 @@ describe('Server Routes', () => {
       let capturedQuery = '';
       const env = createMockEnv({
         DB: createMockDB({
-          firstFn: () => ({ total: 0 }),
           allFn: (query) => {
             capturedQuery = query;
+            if (query.includes('COUNT')) return { results: [{ total: 0 }] };
             return { results: [] };
           },
         }),
@@ -82,9 +78,9 @@ describe('Server Routes', () => {
       let capturedQuery = '';
       const env = createMockEnv({
         DB: createMockDB({
-          firstFn: () => ({ total: 0 }),
           allFn: (query) => {
             capturedQuery = query;
+            if (query.includes('COUNT')) return { results: [{ total: 0 }] };
             return { results: [] };
           },
         }),
@@ -99,9 +95,9 @@ describe('Server Routes', () => {
       let capturedQuery = '';
       const env = createMockEnv({
         DB: createMockDB({
-          firstFn: () => ({ total: 50 }),
           allFn: (query) => {
             capturedQuery = query;
+            if (query.includes('COUNT')) return { results: [{ total: 50 }] };
             return { results: [] };
           },
         }),
@@ -117,9 +113,9 @@ describe('Server Routes', () => {
       let capturedQuery = '';
       const env = createMockEnv({
         DB: createMockDB({
-          firstFn: () => ({ total: 0 }),
           allFn: (query) => {
             capturedQuery = query;
+            if (query.includes('COUNT')) return { results: [{ total: 0 }] };
             return { results: [] };
           },
         }),
@@ -134,9 +130,9 @@ describe('Server Routes', () => {
       let capturedQuery = '';
       const env = createMockEnv({
         DB: createMockDB({
-          firstFn: () => ({ total: 0 }),
           allFn: (query) => {
             capturedQuery = query;
+            if (query.includes('COUNT')) return { results: [{ total: 0 }] };
             return { results: [] };
           },
         }),
@@ -151,9 +147,9 @@ describe('Server Routes', () => {
       let capturedQuery = '';
       const env = createMockEnv({
         DB: createMockDB({
-          firstFn: () => ({ total: 0 }),
           allFn: (query) => {
             capturedQuery = query;
+            if (query.includes('COUNT')) return { results: [{ total: 0 }] };
             return { results: [] };
           },
         }),
@@ -168,9 +164,9 @@ describe('Server Routes', () => {
       let capturedQuery = '';
       const env = createMockEnv({
         DB: createMockDB({
-          firstFn: () => ({ total: 0 }),
           allFn: (query) => {
             capturedQuery = query;
+            if (query.includes('COUNT')) return { results: [{ total: 0 }] };
             return { results: [] };
           },
         }),
@@ -185,13 +181,9 @@ describe('Server Routes', () => {
       const server = createMockServer({ owner_username: 'admin', owner_display_name: 'Admin', tools_count: 5 });
       const env = createMockEnv({
         DB: createMockDB({
-          firstFn: (query) => {
-            if (query.includes('COUNT')) return { total: 1 };
-            return null;
-          },
           allFn: (query) => {
-            if (query.includes('LEFT JOIN users'))
-              return { results: [server] };
+            if (query.includes('LEFT JOIN users')) return { results: [server] };
+            if (query.includes('COUNT')) return { results: [{ total: 1 }] };
             return { results: [] };
           },
         }),

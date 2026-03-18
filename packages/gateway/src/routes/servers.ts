@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import type { Env } from '../env.js';
 import { serverQuerySchema, reportCreateSchema } from '@shared/validation.js';
+import { defer } from '../lib/defer.js';
 
 type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 
@@ -13,9 +14,14 @@ const SORT_COLUMNS: Record<string, string> = {
   name: 's.name ASC',
 };
 
-// GET /stats -> aggregate stats for published servers
+// GET /stats -> aggregate stats for published servers (cached 60s)
 serverRoutes.get('/stats', async (c) => {
   const env = c.env;
+
+  // KV cache for stats
+  const cacheKey = 'cache:servers:stats';
+  const cached = await env.SERVER_CACHE.get(cacheKey);
+  if (cached) return c.json(JSON.parse(cached));
 
   const row = await env.DB.prepare(
     `SELECT
@@ -26,7 +32,7 @@ serverRoutes.get('/stats', async (c) => {
      WHERE s.is_published = 1 AND s.review_status = 'approved'`
   ).first<{ total_published: number; total_tools: number; total_calls: number }>();
 
-  return c.json({
+  const response = {
     success: true,
     data: {
       total_published: row?.total_published ?? 0,
@@ -34,7 +40,13 @@ serverRoutes.get('/stats', async (c) => {
       total_calls: row?.total_calls ?? 0,
     },
     error: null,
-  });
+  };
+
+  // Cache for 60 seconds (non-blocking)
+  const putPromise = env.SERVER_CACHE.put(cacheKey, JSON.stringify(response), { expirationTtl: 60 });
+  defer(c, putPromise);
+
+  return c.json(response);
 });
 
 // GET / -> list published servers
@@ -87,28 +99,35 @@ serverRoutes.get('/', async (c) => {
   }
 
   const offset = (page - 1) * limit;
-
-  const countRow = await env.DB.prepare(
-    `SELECT COUNT(*) as total FROM servers s ${whereClause}`
-  ).bind(...countParams).first<{ total: number }>();
-
-  const total = countRow?.total ?? 0;
-
   const orderBy = SORT_COLUMNS[sort || 'popular'] || SORT_COLUMNS.popular;
 
-  const { results } = await env.DB.prepare(
-    `SELECT s.*,
-       u.username as owner_username,
-       u.display_name as owner_display_name,
-       (SELECT COUNT(*) FROM tools t WHERE t.server_id = s.id) as tools_count
-     FROM servers s
-     LEFT JOIN users u ON s.owner_id = u.id
-     ${whereClause}
-     ORDER BY ${orderBy}
-     LIMIT ? OFFSET ?`
-  ).bind(...queryParams, limit, offset).all();
+  // KV cache for server listings (60s TTL)
+  const cacheKey = `cache:servers:${category || 'all'}:${badge_data || ''}:${badge_source || ''}:${search || ''}:${sort}:${page}:${limit}`;
+  const cached = await env.SERVER_CACHE.get(cacheKey);
+  if (cached) return c.json(JSON.parse(cached));
 
-  return c.json({
+  // D1 batch — run COUNT + SELECT in single round-trip
+  const [countResult, dataResult] = await env.DB.batch([
+    env.DB.prepare(
+      `SELECT COUNT(*) as total FROM servers s ${whereClause}`
+    ).bind(...countParams),
+    env.DB.prepare(
+      `SELECT s.*,
+         u.username as owner_username,
+         u.display_name as owner_display_name,
+         (SELECT COUNT(*) FROM tools t WHERE t.server_id = s.id) as tools_count
+       FROM servers s
+       LEFT JOIN users u ON s.owner_id = u.id
+       ${whereClause}
+       ORDER BY ${orderBy}
+       LIMIT ? OFFSET ?`
+    ).bind(...queryParams, limit, offset),
+  ]);
+
+  const total = (countResult.results[0] as any)?.total ?? 0;
+  const results = dataResult.results;
+
+  const response = {
     success: true,
     data: results,
     error: null,
@@ -118,7 +137,13 @@ serverRoutes.get('/', async (c) => {
       limit,
       total_pages: Math.ceil(total / limit),
     },
-  });
+  };
+
+  // Cache for 60 seconds (non-blocking)
+  const putPromise = env.SERVER_CACHE.put(cacheKey, JSON.stringify(response), { expirationTtl: 60 });
+  defer(c, putPromise);
+
+  return c.json(response);
 });
 
 // GET /:slug -> server detail

@@ -43,7 +43,15 @@ export function createMockDB(overrides: {
       return stmt;
     },
     async batch(stmts: any[]) {
-      return stmts.map(() => ({ results: [] }));
+      const results = [];
+      for (const stmt of stmts) {
+        if (typeof stmt.all === 'function') {
+          results.push(await stmt.all());
+        } else {
+          results.push({ results: [] });
+        }
+      }
+      return results;
     },
   } as unknown as D1Database;
 }

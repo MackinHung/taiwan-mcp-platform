@@ -1,5 +1,6 @@
 import { createMiddleware } from 'hono/factory';
 import type { Env } from '../env.js';
+import { defer } from '../lib/defer.js';
 
 type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 
@@ -40,7 +41,8 @@ export function rateLimitMiddleware() {
         );
       }
 
-      await env.RATE_LIMITS.put(anonKey, String(anonCount + 1), { expirationTtl: 120 });
+      // Non-blocking KV write
+      defer(c, env.RATE_LIMITS.put(anonKey, String(anonCount + 1), { expirationTtl: 120 }));
 
       await next();
       c.header('X-RateLimit-Limit', String(ANON_LIMIT));
@@ -89,8 +91,8 @@ export function rateLimitMiddleware() {
       }
     }
 
-    // Increment per-minute counter
-    await env.RATE_LIMITS.put(rlKey, String(currentCount + 1), { expirationTtl: 120 });
+    // Non-blocking KV write
+    defer(c, env.RATE_LIMITS.put(rlKey, String(currentCount + 1), { expirationTtl: 120 }));
 
     await next();
 

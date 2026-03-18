@@ -1,5 +1,6 @@
 import { createMiddleware } from 'hono/factory';
 import type { Env } from '../env.js';
+import { defer } from '../lib/defer.js';
 
 type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 
@@ -59,76 +60,86 @@ async function logAnomaly(kv: KVNamespace, event: AnomalyEvent): Promise<void> {
  * 1. rate_exceeded — single IP > 100 requests in 5 minutes
  * 2. auth_failed — single IP > 20 auth failures in 10 minutes
  * 3. geo_change — same session from different country within 30 minutes
+ *
+ * Skips GET requests to minimize I/O on public read endpoints.
+ * All writes are non-blocking via defer().
  */
 export function anomalyMiddleware() {
   return createMiddleware<HonoEnv>(async (c, next) => {
+    // Skip anomaly tracking for safe GET requests — not worth the I/O cost
+    if (c.req.method === 'GET') {
+      await next();
+      return;
+    }
+
     const ip = c.req.header('cf-connecting-ip') || c.req.header('x-forwarded-for') || 'unknown';
     const country = c.req.header('cf-ipcountry') || 'unknown';
     const env = c.env;
 
-    // Track request rate per IP (5-minute window)
+    // Track request rate per IP (5-minute window) — non-blocking write
     const currentWindow = Math.floor(Date.now() / (RATE_WINDOW_MINUTES * 60000));
     const rateKey = getRateKey(ip, currentWindow);
     const rateCount = parseInt(await env.RATE_LIMITS.get(rateKey) || '0', 10);
 
     if (rateCount >= RATE_THRESHOLD) {
-      await logAnomaly(env.RATE_LIMITS, {
+      defer(c, logAnomaly(env.RATE_LIMITS, {
         type: 'rate_exceeded',
         api_key_hash: '',
         ip,
         country,
         timestamp: new Date().toISOString(),
         details: `${rateCount + 1} requests in ${RATE_WINDOW_MINUTES} minutes`,
-      });
+      }));
     }
 
-    await env.RATE_LIMITS.put(rateKey, String(rateCount + 1), {
+    defer(c, env.RATE_LIMITS.put(rateKey, String(rateCount + 1), {
       expirationTtl: RATE_WINDOW_MINUTES * 60 * 2,
-    });
+    }));
 
     await next();
 
-    // Check for auth failures (401/403 responses)
+    // Check for auth failures (401/403 responses) — all non-blocking
     if (c.res.status === 401 || c.res.status === 403) {
-      const authWindow = Math.floor(Date.now() / (AUTH_FAIL_WINDOW_MINUTES * 60000));
-      const authKey = getAuthFailKey(ip, authWindow);
-      const failCount = parseInt(await env.RATE_LIMITS.get(authKey) || '0', 10);
-
-      await env.RATE_LIMITS.put(authKey, String(failCount + 1), {
-        expirationTtl: AUTH_FAIL_WINDOW_MINUTES * 60 * 2,
-      });
-
-      if (failCount + 1 >= AUTH_FAIL_THRESHOLD) {
-        await logAnomaly(env.RATE_LIMITS, {
-          type: 'auth_failed',
-          api_key_hash: '',
-          ip,
-          country,
-          timestamp: new Date().toISOString(),
-          details: `${failCount + 1} auth failures in ${AUTH_FAIL_WINDOW_MINUTES} minutes`,
+      const afterWork = async () => {
+        const authWindow = Math.floor(Date.now() / (AUTH_FAIL_WINDOW_MINUTES * 60000));
+        const authKey = getAuthFailKey(ip, authWindow);
+        const failCount = parseInt(await env.RATE_LIMITS.get(authKey) || '0', 10);
+        await env.RATE_LIMITS.put(authKey, String(failCount + 1), {
+          expirationTtl: AUTH_FAIL_WINDOW_MINUTES * 60 * 2,
         });
-      }
+        if (failCount + 1 >= AUTH_FAIL_THRESHOLD) {
+          await logAnomaly(env.RATE_LIMITS, {
+            type: 'auth_failed',
+            api_key_hash: '',
+            ip,
+            country,
+            timestamp: new Date().toISOString(),
+            details: `${failCount + 1} auth failures in ${AUTH_FAIL_WINDOW_MINUTES} minutes`,
+          });
+        }
+      };
+      defer(c, afterWork());
     }
 
-    // Geo-change detection for authenticated sessions
+    // Geo-change detection — non-blocking
     const user = c.get('user');
     if (user && country !== 'unknown') {
-      const geoKey = `anomaly-geo:${user.id}`;
-      const lastGeo = await env.RATE_LIMITS.get(geoKey);
-
-      if (lastGeo && lastGeo !== country) {
-        await logAnomaly(env.RATE_LIMITS, {
-          type: 'geo_change',
-          api_key_hash: '',
-          ip,
-          country,
-          timestamp: new Date().toISOString(),
-          details: `Country changed from ${lastGeo} to ${country}`,
-        });
-      }
-
-      // Store current country with 30-minute TTL
-      await env.RATE_LIMITS.put(geoKey, country, { expirationTtl: 1800 });
+      const geoWork = async () => {
+        const geoKey = `anomaly-geo:${user.id}`;
+        const lastGeo = await env.RATE_LIMITS.get(geoKey);
+        if (lastGeo && lastGeo !== country) {
+          await logAnomaly(env.RATE_LIMITS, {
+            type: 'geo_change',
+            api_key_hash: '',
+            ip,
+            country,
+            timestamp: new Date().toISOString(),
+            details: `Country changed from ${lastGeo} to ${country}`,
+          });
+        }
+        await env.RATE_LIMITS.put(geoKey, country, { expirationTtl: 1800 });
+      };
+      defer(c, geoWork());
     }
   });
 }
