@@ -175,7 +175,7 @@ const marketplace = {
           <span class="trust-grade ${tg.class}">${tg.grade}<span class="grade-tip">${tg.tip}</span></span>
         </div>
         <div class="card-desc">${escapeHtml(server.description)}</div>
-        ${badges.renderAll(server)}
+        ${badges.renderCardSummary(server)}
         <div class="card-tags">
           ${(server.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
         </div>

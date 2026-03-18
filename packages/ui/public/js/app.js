@@ -269,6 +269,24 @@ const badges = {
         </div>
       </div>
     `;
+  },
+
+  renderCardSummary(server) {
+    const items = [];
+    const dataB = this.data[server.badge_data];
+    const permB = this.permission[server.badge_permission];
+    const srcB = this.source[server.badge_source];
+    const comB = this.community[server.badge_community];
+
+    if (dataB) items.push(dataB.label);
+    if (permB) items.push(permB.label);
+    if (srcB) items.push(srcB.label);
+    if (comB) items.push(comB.label);
+
+    const tg = calculateTrustGrade(server);
+    const dotClass = 'dot-' + tg.grade.toLowerCase();
+
+    return `<div class="badge-summary"><span class="summary-dot ${dotClass}"></span>${items.join('<span class="sep"> · </span>')}</div>`;
   }
 };
 

@@ -415,14 +415,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* Badge Hover Effect */
 .badge {
-  transition: filter 0.15s ease, transform 0.15s ease;
+  transition: filter 0.15s ease;
   cursor: default;
   position: relative;
 }
 
 .badge:hover {
-  filter: brightness(1.15);
-  transform: scale(1.08);
+  filter: brightness(1.2);
   z-index: 5;
 }
 
@@ -473,12 +472,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .badge:hover .badge-tip {
   display: block;
-  animation: badgeTipIn 0.2s ease forwards;
+  animation: badgeTipFade 0.15s ease forwards;
 }
 
-@keyframes badgeTipIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
-  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+@keyframes badgeTipFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Ensure tooltip doesn't overflow viewport on edges */
@@ -495,6 +494,67 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   padding-top: 12px;
   margin-top: 12px;
   border-top: 1px dashed var(--border);
+}
+
+/* Badge Summary (compact single-line for cards) */
+.badge-summary {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.4;
+}
+
+.badge-summary .summary-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.summary-dot.dot-a { background: #16a34a; }
+.summary-dot.dot-b { background: #2563eb; }
+.summary-dot.dot-c { background: #d97706; }
+.summary-dot.dot-d { background: #dc2626; }
+
+.badge-summary .sep { color: var(--text-muted); }
+
+/* Grade Legend */
+.grade-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.grade-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.grade-legend-item .trust-grade {
+  width: 24px;
+  height: 24px;
+  font-size: 0.65rem;
+}
+
+/* Grade tip in card: right-align to avoid overflow */
+.card .trust-grade .grade-tip {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+.card .trust-grade .grade-tip::after {
+  left: auto;
+  right: 10px;
+  transform: none;
 }
 
 /* ── SVG Icons ─────────────────────────────────────────────── */
@@ -610,17 +670,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-weight: 700;
   color: #fff;
   flex-shrink: 0;
+  position: relative;
+  cursor: help;
 }
 
 .trust-grade-a { background: #16a34a; }
 .trust-grade-b { background: #2563eb; }
 .trust-grade-c { background: #d97706; }
 .trust-grade-d { background: #dc2626; }
-
-.trust-grade {
-  position: relative;
-  cursor: help;
-}
 
 .trust-grade .grade-tip {
   display: none;
@@ -653,7 +710,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .trust-grade:hover .grade-tip {
   display: block;
-  animation: badgeTipIn 0.2s ease forwards;
+  animation: badgeTipFade 0.15s ease forwards;
 }
 
 /* ── Server Card Grid ──────────────────────────────────────── */
@@ -1672,6 +1729,7 @@ tr:hover td { background: var(--bg-surface-hover); }
 
 .badge-education-body.open {
   display: block;
+  overflow: visible;
 }
 
 .badge-education-grid {
