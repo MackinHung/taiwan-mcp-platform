@@ -1,0 +1,10 @@
+name = "taiwan-garbage-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVER_NAME = "taiwan-garbage"
+SERVER_VERSION = "1.0.0"
+# MOENV_API_KEY — set via `wrangler secret put MOENV_API_KEY` for production
+# Falls back to public demo key if not set

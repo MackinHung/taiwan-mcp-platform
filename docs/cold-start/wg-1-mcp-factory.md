@@ -143,14 +143,14 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 
 | Phase | # | Server | 資料來源 | 狀態 |
 |-------|---|--------|----------|------|
-| G 即時交通 | 34 | taiwan-youbike | 各市 YouBike 2.0 開放資料 | 待開發 |
-| G 即時交通 | 35 | taiwan-traffic-accident | 警政署交通事故 | 待開發 |
-| H 生活服務 | 36 | taiwan-garbage | 環境部 + 各縣市清潔隊 | 待開發 |
-| H 生活服務 | 37 | taiwan-demographics | 內政部戶政司 | 待開發 |
-| I 觀光休閒 | 38 | taiwan-tourism | 觀光署 + 文化部 TDX | 待開發 |
-| I 觀光休閒 | 39 | taiwan-sports | 體育署 iPlay | 待開發 |
-| J 教育公民 | 40 | taiwan-education | 教育部 + data.gov.tw | 待開發 |
-| J 教育公民 | 41 | taiwan-election | 中選會 | 待開發 |
+| G 即時交通 | 34 | ~~taiwan-youbike~~ | 各市 YouBike 2.0 開放資料 | ✅ 70 tests |
+| G 即時交通 | 35 | ~~taiwan-traffic-accident~~ | 警政署交通事故 | ✅ 79 tests |
+| H 生活服務 | 36 | ~~taiwan-garbage~~ | 環境部 + 各縣市清潔隊 | ✅ 81 tests |
+| H 生活服務 | 37 | ~~taiwan-demographics~~ | 內政部戶政司 | ✅ 82 tests |
+| I 觀光休閒 | 38 | ~~taiwan-tourism~~ | 觀光署 + 文化部 TDX | ✅ 96 tests |
+| I 觀光休閒 | 39 | ~~taiwan-sports~~ | 體育署 iPlay | ✅ 95 tests |
+| J 教育公民 | 40 | ~~taiwan-education~~ | 教育部 + data.gov.tw | ✅ 95 tests |
+| J 教育公民 | 41 | ~~taiwan-election~~ | 中選會 | ✅ 67 tests |
 
 ## 已完成 MCP Servers
 
@@ -187,6 +187,14 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 | taiwan-parking | 5 | 68 | TDX tdx.transportdata.tw | Required (OAuth2) |
 | taiwan-validator | 5 | 73 | N/A (pure algorithm) | None |
 | taiwan-calendar | 5 | 72 | data.gov.tw + lunar algorithm | None |
+| taiwan-youbike | 5 | 70 | 各市 YouBike 2.0 APIs (Taipei/NTP/Taoyuan/Kaohsiung/Taichung/Hsinchu) | None |
+| taiwan-traffic-accident | 5 | 79 | data.gov.tw 警政署交通事故 | None |
+| taiwan-garbage | 5 | 81 | MOENV GPS data.moenv.gov.tw + per-city schedule APIs | Optional (MOENV_API_KEY, public demo fallback) |
+| taiwan-demographics | 5 | 82 | RIS ris.gov.tw/rs-opendata/api/v1 | None |
+| taiwan-tourism | 5 | 96 | data.gov.tw 觀光署景點/活動/住宿 | None |
+| taiwan-sports | 5 | 95 | iPlay iplay-um.sports.gov.tw | Optional (SPORTS_API_KEY) |
+| taiwan-education | 5 | 95 | MOE stats.moe.gov.tw JSON datasets | None |
+| taiwan-election | 5 | 67 | 中選會 + hardcoded historical data | None |
 
 ---
 
@@ -263,7 +271,7 @@ QA: 每批完成後跑 `servers/` 下所有測試
 |------|---------|--------|
 | Batch 1 (已完成) | 17 | ~43% |
 | + Batch 2 (已完成) | 31 | ~78% |
-| + Batch 3 (規格完成，待開發) | 39 | ~95% |
+| + Batch 3 (已完成) | 39 | ~95% |
 
 ### 待評估（有部分 API，但整合困難）
 

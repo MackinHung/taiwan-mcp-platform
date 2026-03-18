@@ -19,7 +19,7 @@
 
 **Repo**: `MackinHung/taiwan-mcp-platform` (private), branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
-**Current**: 2,570+ tests, 31 servers (17 Batch 1 + 14 Batch 2)
+**Current**: 3,235+ tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3)
 
 ---
 
@@ -66,6 +66,15 @@ servers/
   taiwan-parking/      → 5 TDX parking tools (68 tests)
   taiwan-validator/    → 5 validation tools (73 tests)
   taiwan-calendar/     → 5 calendar/holiday tools (72 tests)
+  # Batch 3 (8 servers) — 完成於 2026-03-18
+  taiwan-youbike/      → 5 YouBike 2.0 station tools (70 tests)
+  taiwan-traffic-accident/ → 5 traffic accident tools (79 tests)
+  taiwan-garbage/      → 5 garbage truck GPS/schedule tools (81 tests)
+  taiwan-demographics/ → 5 population/demographics tools (82 tests)
+  taiwan-tourism/      → 5 tourism attraction tools (96 tests)
+  taiwan-sports/       → 5 sports facility tools (95 tests)
+  taiwan-education/    → 5 school directory tools (95 tests)
+  taiwan-election/     → 5 election results tools (67 tests)
 docs/
   cold-start/ → WG 詳細規格（本文件下方有索引）
   research/   → WG-3 研究產出
