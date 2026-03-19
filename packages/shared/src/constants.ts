@@ -4,8 +4,10 @@ import type {
 } from './types.js';
 
 export const PLAN_LIMITS: Record<Plan, { monthly_calls: number; calls_per_minute: number }> = {
-  free: { monthly_calls: 50_000, calls_per_minute: 100 },
-  rag_pro: { monthly_calls: 100_000, calls_per_minute: 200 },
+  free: { monthly_calls: 10_000, calls_per_minute: 50 },
+  developer: { monthly_calls: 100_000, calls_per_minute: 200 },
+  team: { monthly_calls: 500_000, calls_per_minute: 500 },
+  enterprise: { monthly_calls: -1, calls_per_minute: 2_000 }, // -1 = unlimited
 };
 
 export const BADGE_SOURCE_LEVELS: readonly BadgeSource[] = ['undeclared', 'declared', 'open', 'open_audited'] as const;

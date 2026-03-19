@@ -129,7 +129,7 @@ adminRoutes.put('/users/:id', async (c) => {
   }
 
   if (body.plan) {
-    if (!['free', 'rag_pro'].includes(body.plan)) {
+    if (!['free', 'developer', 'team', 'enterprise'].includes(body.plan)) {
       return c.json({ success: false, error: '無效的方案', data: null }, 400);
     }
     fields.push('plan = ?');

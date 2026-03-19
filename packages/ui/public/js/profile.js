@@ -41,8 +41,10 @@ const profile = {
   render() {
     const u = this.user;
     const planLimits = {
-      free: { calls: 50000, keys: 20 },
-      rag_pro: { calls: 100000, keys: 50 },
+      free: { calls: 10000, keys: 5 },
+      developer: { calls: 100000, keys: 20 },
+      team: { calls: 500000, keys: 50 },
+      enterprise: { calls: Infinity, keys: Infinity },
     };
     const limits = planLimits[u.plan] || planLimits.free;
     const usedCalls = u.monthly_calls || 0;
@@ -77,12 +79,6 @@ const profile = {
             <div class="stat-label">API Keys</div>
           </div>
         </div>
-        ${u.plan === 'free' ? `
-          <div class="alert alert-info">
-            <strong>RAG Intelligence</strong> 即將推出 — 語義搜索、智慧路由、推薦引擎。
-            <a href="/pricing.html" class="btn btn-primary btn-sm" style="margin-left:8px;">了解更多</a>
-          </div>
-        ` : ''}
 
         <!-- Usage Bar -->
         <div style="margin-top:12px;">
@@ -110,21 +106,32 @@ const profile = {
               </thead>
               <tbody>
                 <tr${u.plan === 'free' ? ' style="background:rgba(37,99,235,0.05);"' : ''}>
-                  <td><strong>免費方案</strong></td>
-                  <td>100 次/分鐘</td>
-                  <td>50,000 次/月</td>
+                  <td><strong>Free</strong></td>
+                  <td>50 次/分鐘</td>
+                  <td>10,000 次/月</td>
                   <td>${u.plan === 'free' ? '<span class="badge badge-green">目前方案</span>' : ''}</td>
                 </tr>
-                <tr${u.plan === 'rag_pro' ? ' style="background:rgba(37,99,235,0.05);"' : ''}>
-                  <td><strong>RAG Intelligence</strong></td>
+                <tr${u.plan === 'developer' ? ' style="background:rgba(37,99,235,0.05);"' : ''}>
+                  <td><strong>Developer</strong></td>
                   <td>200 次/分鐘</td>
                   <td>100,000 次/月</td>
-                  <td>${u.plan === 'rag_pro' ? '<span class="badge badge-green">目前方案</span>' : '<span class="badge badge-amber">即將推出</span>'}</td>
+                  <td>${u.plan === 'developer' ? '<span class="badge badge-green">目前方案</span>' : ''}</td>
+                </tr>
+                <tr${u.plan === 'team' ? ' style="background:rgba(37,99,235,0.05);"' : ''}>
+                  <td><strong>Team</strong></td>
+                  <td>500 次/分鐘</td>
+                  <td>500,000 次/月</td>
+                  <td>${u.plan === 'team' ? '<span class="badge badge-green">目前方案</span>' : ''}</td>
+                </tr>
+                <tr${u.plan === 'enterprise' ? ' style="background:rgba(37,99,235,0.05);"' : ''}>
+                  <td><strong>Enterprise</strong></td>
+                  <td>2,000 次/分鐘</td>
+                  <td>無限制</td>
+                  <td>${u.plan === 'enterprise' ? '<span class="badge badge-green">目前方案</span>' : ''}</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <p class="text-xs text-muted mt-8">詳細功能比較請參閱<a href="/pricing.html" style="color:var(--color-primary);margin-left:4px;">方案與定價</a>頁面。</p>
         </div>
       </div>
 
@@ -184,7 +191,7 @@ const profile = {
   },
 
   planLabel(plan) {
-    const labels = { free: '免費方案', rag_pro: 'RAG 智慧方案' };
+    const labels = { free: '免費方案', developer: '開發者方案', team: '團隊方案', enterprise: '企業方案' };
     return labels[plan] || plan;
   },
 

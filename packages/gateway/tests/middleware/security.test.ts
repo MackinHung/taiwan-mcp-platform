@@ -187,7 +187,7 @@ describe('Security Middleware', () => {
       const res = await app.request('/test', {}, env);
 
       expect(res.status).toBe(200);
-      expect(res.headers.get('X-RateLimit-Limit')).toBe('100'); // free plan
+      expect(res.headers.get('X-RateLimit-Limit')).toBe('50'); // free plan
       expect(res.headers.get('X-RateLimit-Remaining')).toBeTruthy();
     });
   });

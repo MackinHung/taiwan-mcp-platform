@@ -7,8 +7,10 @@ type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 const ANON_LIMIT = 30; // 30 req/min for anonymous users
 
 const PLAN_LIMITS: Record<string, { monthly_calls: number; calls_per_minute: number }> = {
-  free: { monthly_calls: 50_000, calls_per_minute: 100 },
-  rag_pro: { monthly_calls: 100_000, calls_per_minute: 200 },
+  free: { monthly_calls: 10_000, calls_per_minute: 50 },
+  developer: { monthly_calls: 100_000, calls_per_minute: 200 },
+  team: { monthly_calls: 500_000, calls_per_minute: 500 },
+  enterprise: { monthly_calls: -1, calls_per_minute: 2_000 },
 };
 
 export function rateLimitMiddleware() {
@@ -72,19 +74,21 @@ export function rateLimitMiddleware() {
       );
     }
 
-    // Monthly usage check
-    const now = new Date();
-    const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
-    const row = await env.DB.prepare(
-      'SELECT COALESCE(SUM(call_count), 0) as total FROM usage_daily WHERE user_id = ? AND date >= ?'
-    ).bind(user.id, monthStart).first<{ total: number }>();
+    // Monthly usage check (skip for enterprise unlimited)
+    if (limits.monthly_calls !== -1) {
+      const now = new Date();
+      const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+      const row = await env.DB.prepare(
+        'SELECT COALESCE(SUM(call_count), 0) as total FROM usage_daily WHERE user_id = ? AND date >= ?'
+      ).bind(user.id, monthStart).first<{ total: number }>();
 
-    const monthlyTotal = row?.total ?? 0;
-    if (monthlyTotal > limits.monthly_calls) {
-      return c.json(
-        { success: false, error: '已達月度用量上限，請稍後再試', data: null },
-        { status: 402 },
-      );
+      const monthlyTotal = row?.total ?? 0;
+      if (monthlyTotal > limits.monthly_calls) {
+        return c.json(
+          { success: false, error: '已達用量上限，請升級方案', data: null },
+          { status: 402 },
+        );
+      }
     }
 
     // Non-blocking KV write
