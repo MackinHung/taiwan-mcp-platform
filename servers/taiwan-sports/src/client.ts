@@ -1,7 +1,5 @@
 import type { FacilityRecord } from './types.js';
 
-export const IPLAY_BASE = 'https://iplay-um.sports.gov.tw/WebAPI';
-
 export const SPORT_TYPES = [
   '籃球', '游泳', '健身', '足球', '棒球',
   '網球', '羽球', '桌球', '田徑', '高爾夫',

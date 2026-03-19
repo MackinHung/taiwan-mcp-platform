@@ -1,11 +1,5 @@
 // 2026 台灣勞健保費率常數
 
-/** 基本工資 (月薪) */
-export const MINIMUM_WAGE_MONTHLY = 29500;
-
-/** 基本工資 (時薪) */
-export const MINIMUM_WAGE_HOURLY = 204;
-
 /** 勞保普通事故費率 */
 export const LABOR_INSURANCE_RATE = 0.115;
 

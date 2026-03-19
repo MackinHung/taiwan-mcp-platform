@@ -4,62 +4,6 @@ import { CANDIDATES_BY_ELECTION } from './data/candidates.js';
 import { VOTING_STATS_BY_YEAR } from './data/voting-stats.js';
 import { PARTY_RESULTS_BY_YEAR } from './data/party-results.js';
 
-export const CEC_BASE = 'https://data.cec.gov.tw';
-export const DATA_GOV_BASE = 'https://data.gov.tw/api/v2/rest/datastore';
-export const ELECTION_RESOURCE_ID = '13119';
-
-// --- CSV Parser Helper ---
-export function parseCsv(csvText: string): Record<string, string>[] {
-  const lines = csvText.trim().split('\n');
-  if (lines.length < 2) return [];
-
-  const headers = parseCsvLine(lines[0]);
-  const records: Record<string, string>[] = [];
-
-  for (let i = 1; i < lines.length; i++) {
-    const values = parseCsvLine(lines[i]);
-    if (values.length === 0) continue;
-    const record: Record<string, string> = {};
-    for (let j = 0; j < headers.length; j++) {
-      record[headers[j]] = values[j] ?? '';
-    }
-    records.push(record);
-  }
-
-  return records;
-}
-
-function parseCsvLine(line: string): string[] {
-  const result: string[] = [];
-  let current = '';
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-    if (inQuotes) {
-      if (char === '"' && line[i + 1] === '"') {
-        current += '"';
-        i++;
-      } else if (char === '"') {
-        inQuotes = false;
-      } else {
-        current += char;
-      }
-    } else {
-      if (char === '"') {
-        inQuotes = true;
-      } else if (char === ',') {
-        result.push(current.trim());
-        current = '';
-      } else {
-        current += char;
-      }
-    }
-  }
-  result.push(current.trim());
-  return result;
-}
-
 // --- Election type normalization ---
 const ELECTION_TYPE_MAP: Record<string, ElectionType> = {
   'president': 'president',
@@ -162,11 +106,6 @@ export function findElectionByYearAndType(
   return ALL_ELECTIONS.find(
     (e) => e.electionYear === year && e.electionType === type
   );
-}
-
-export function getAvailableYears(): number[] {
-  const years = new Set(ALL_ELECTIONS.map((e) => e.electionYear));
-  return [...years].sort((a, b) => b - a);
 }
 
 export function getAvailablePresidentialYears(): number[] {
