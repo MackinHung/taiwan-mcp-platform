@@ -76,7 +76,7 @@ servers/
   taiwan-education/    → 5 school directory tools (95 tests)
   taiwan-election/     → 5 election results tools (67 tests)
 docs/
-  cold-start/ → WG 詳細規格（本文件下方有索引）
+  cold-start/ → WG 詳細規格（本文件下方有索引，含 WG-5 OpenClaw 生態）
   research/   → WG-3 研究產出
   security/   → WG-4 安全研究產出
 ```
@@ -125,9 +125,9 @@ cd packages/db && npm run migrate:local && npm run seed:local  # DB
 
 ---
 
-## 四大工作群 — 索引
+## 五大工作群 — 索引
 
-本專案劃分為四個獨立工作群。用戶指定要啟動哪個（例如「啟動 WG-1」），再載入對應文件。
+本專案劃分為五個獨立工作群。用戶指定要啟動哪個（例如「啟動 WG-1」），再載入對應文件。
 
 ### 判斷用戶意圖 → 對應工作群
 
@@ -137,6 +137,7 @@ cd packages/db && npm run migrate:local && npm run seed:local  # DB
 | 「改平台」「修 gateway」「部署」「接 API」「改 UI」 | WG-2 平台迭代 | [`docs/cold-start/wg-2-platform.md`](docs/cold-start/wg-2-platform.md) |
 | 「研究 MCP」「競品分析」「搬運策略」「商業模式」 | WG-3 研究 | [`docs/cold-start/wg-3-research.md`](docs/cold-start/wg-3-research.md) |
 | 「安全規則」「標章改進」「沙箱設計」「掃描規則」 | WG-4 安全 | [`docs/cold-start/wg-4-security.md`](docs/cold-start/wg-4-security.md) |
+| 「OpenClaw」「ClawHub」「MCPorter」「Streamable HTTP」「SSE transport」「openclaw.json」 | WG-5 OpenClaw 生態 | [`docs/cold-start/wg-5-openclaw-ecosystem.md`](docs/cold-start/wg-5-openclaw-ecosystem.md) |
 
 **API 路由 & 型別參考**: [`docs/cold-start/api-reference.md`](docs/cold-start/api-reference.md)
 

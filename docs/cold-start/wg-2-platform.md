@@ -103,6 +103,15 @@
 13. Webhook 通知（新 server 上架、審核結果）
 14. E2E 測試
 
+### P5 — OpenClaw 生態整合（詳見 [`wg-5-openclaw-ecosystem.md`](wg-5-openclaw-ecosystem.md)）
+
+> 將平台定位為 OpenClaw 生態的台灣政府資料供應商。WG-2 負責以下平台側任務：
+
+15. **P5.1: Streamable HTTP Transport** — 升級 `/mcp/u/:slug`、`/mcp/s/:slug` 支援 Streamable HTTP + SSE（`Accept` header negotiation），修改 `composer/src/index.ts` + `_worker.js`
+16. **P5.2: OpenClaw Config Generator** — UI 加「加入 OpenClaw」按鈕（`server-detail.js` + `my-mcp.js`），API `GET /api/servers/:slug/config?client=openclaw` 返回 `openclaw.json` snippet
+17. **P5.3: MCPorter Discovery API** — `GET /api/discover` 返回 MCPorter 相容格式（所有公開 server 列表 + MCP endpoint URL + trust_grade）
+18. **P5.4: 批次 Config 匯出** — `GET /api/my/servers/config?client=openclaw` 一次匯出已訂閱的所有 server 完整 `openclaw.json`
+
 ---
 
 ## 架構要點
