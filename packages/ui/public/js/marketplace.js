@@ -16,25 +16,9 @@ const marketplace = {
     this.renderCategoryTabs();
     this.setupMobileToggle();
     this.renderSkeletonCards();
-    this.renderBadgeEducationExamples();
     // Load servers and stats in parallel
     this.loadServers();
     this.renderStats();
-  },
-
-  renderBadgeEducationExamples() {
-    const dimensions = {
-      source: ['open_audited', 'open', 'declared', 'undeclared'],
-      data: ['public', 'account', 'personal', 'sensitive'],
-      permission: ['readonly', 'limited_write', 'full_write', 'system'],
-      community: ['new', 'rising', 'popular', 'trusted'],
-    };
-    for (const [type, values] of Object.entries(dimensions)) {
-      const el = $(`#edu-badges-${type}`);
-      if (el) {
-        el.innerHTML = values.map(v => badges.render(type, v)).join('');
-      }
-    }
   },
 
   renderSkeletonCards() {

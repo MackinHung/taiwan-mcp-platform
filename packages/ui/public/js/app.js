@@ -39,6 +39,23 @@ const icons = {
   server: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>',
   compass: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>',
   layers: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22.54 12.43-1.42-.65-8.28 3.78a2 2 0 0 1-1.66 0l-8.29-3.78-1.42.65a1 1 0 0 0 0 1.84l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.85Z"/></svg>',
+  // Badge-specific icons
+  code: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+  eyeOff: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>',
+  globe: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+  keyRound: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg>',
+  userRound: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
+  fingerprint: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg>',
+  pencilLine: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>',
+  penSquare: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>',
+  terminal: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
+  sparkles: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>',
+  flame: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+  award: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>',
+  shieldX: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m14.5 9.5-5 5"/><path d="m9.5 9.5 5 5"/></svg>',
+  shieldAlert: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>',
+  circleDashed: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.1 2.182a10 10 0 0 1 3.8 0"/><path d="M13.9 21.818a10 10 0 0 1-3.8 0"/><path d="M17.609 3.721a10 10 0 0 1 2.69 2.7"/><path d="M21.818 10.1a10 10 0 0 1 0 3.8"/><path d="M20.279 17.609a10 10 0 0 1-2.7 2.69"/><path d="M3.721 6.391a10 10 0 0 1 2.7-2.69"/><path d="M2.182 13.9a10 10 0 0 1 0-3.8"/><path d="M6.391 20.279a10 10 0 0 1-2.69-2.7"/></svg>',
+  clipboardCheck: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>',
 };
 
 // ── Auth State ──────────────────────────────────────────────
@@ -221,33 +238,33 @@ const badgeTooltips = {
 const badges = {
   source: {
     open_audited: { label: '開源已審計', icon: icons.shieldCheck, class: 'badge-green' },
-    open: { label: '開源', icon: icons.lockOpen, class: 'badge-blue' },
-    declared: { label: '已聲明', icon: icons.fileText, class: 'badge-amber' },
-    undeclared: { label: '未聲明', icon: icons.helpCircle, class: 'badge-gray' },
+    open: { label: '開源', icon: icons.code, class: 'badge-blue' },
+    declared: { label: '已聲明', icon: icons.clipboardCheck, class: 'badge-amber' },
+    undeclared: { label: '未聲明', icon: icons.eyeOff, class: 'badge-gray' },
   },
   data: {
-    public: { label: '公開資料', icon: icons.checkCircle, class: 'badge-green' },
-    account: { label: '帳號資料', icon: icons.lock, class: 'badge-yellow' },
-    personal: { label: '個人資料', icon: icons.alertTriangle, class: 'badge-orange' },
-    sensitive: { label: '敏感資料', icon: icons.xCircle, class: 'badge-red' },
+    public: { label: '公開資料', icon: icons.globe, class: 'badge-green' },
+    account: { label: '帳號資料', icon: icons.keyRound, class: 'badge-yellow' },
+    personal: { label: '個人資料', icon: icons.userRound, class: 'badge-orange' },
+    sensitive: { label: '敏感資料', icon: icons.fingerprint, class: 'badge-red' },
   },
   permission: {
     readonly: { label: '唯讀', icon: icons.eye, class: 'badge-green' },
-    limited_write: { label: '有限寫入', icon: icons.fileText, class: 'badge-yellow' },
-    full_write: { label: '完整寫入', icon: icons.lock, class: 'badge-orange' },
-    system: { label: '系統權限', icon: icons.wrench, class: 'badge-red' },
+    limited_write: { label: '有限寫入', icon: icons.pencilLine, class: 'badge-yellow' },
+    full_write: { label: '完整寫入', icon: icons.penSquare, class: 'badge-orange' },
+    system: { label: '系統權限', icon: icons.terminal, class: 'badge-red' },
   },
   community: {
-    new: { label: '新上架', icon: icons.package, class: 'badge-gray' },
+    new: { label: '新上架', icon: icons.sparkles, class: 'badge-gray' },
     rising: { label: '成長中', icon: icons.trendingUp, class: 'badge-green' },
-    popular: { label: '熱門', icon: icons.trendingUp, class: 'badge-blue' },
-    trusted: { label: '信賴', icon: icons.starFilled, class: 'badge-gold' },
+    popular: { label: '熱門', icon: icons.flame, class: 'badge-blue' },
+    trusted: { label: '信賴', icon: icons.award, class: 'badge-gold' },
   },
   external: {
-    verified: { label: '第三方驗證', icon: icons.checkCircle, class: 'badge-green' },
-    partial: { label: '部分驗證', icon: icons.alertTriangle, class: 'badge-amber' },
-    unverified: { label: '未驗證', icon: icons.helpCircle, class: 'badge-gray' },
-    failed: { label: '驗證失敗', icon: icons.xCircle, class: 'badge-red' },
+    verified: { label: '第三方驗證', icon: icons.shieldCheck, class: 'badge-green' },
+    partial: { label: '部分驗證', icon: icons.shieldAlert, class: 'badge-amber' },
+    unverified: { label: '未驗證', icon: icons.circleDashed, class: 'badge-gray' },
+    failed: { label: '驗證失敗', icon: icons.shieldX, class: 'badge-red' },
   },
 
   render(type, value) {
@@ -411,10 +428,10 @@ function calculateTrustGrade(server) {
     (scoreMap.permission[server.badge_permission] || 1) +
     (scoreMap.community[server.badge_community] || 1);
 
-  if (score >= 14) return { grade: 'A', label: '最安全', class: 'trust-grade-a', tip: '信任等級 A — 最安全（' + score + '/16）' };
-  if (score >= 11) return { grade: 'B', label: '良好', class: 'trust-grade-b', tip: '信任等級 B — 良好（' + score + '/16）' };
-  if (score >= 8)  return { grade: 'C', label: '注意', class: 'trust-grade-c', tip: '信任等級 C — 注意（' + score + '/16）' };
-  return { grade: 'D', label: '高風險', class: 'trust-grade-d', tip: '信任等級 D — 高風險（' + score + '/16）' };
+  if (score >= 14) return { grade: 'A', label: '放心用', class: 'trust-grade-a', tip: '信任 A — 放心用（' + score + '/16）' };
+  if (score >= 11) return { grade: 'B', label: '不錯', class: 'trust-grade-b', tip: '信任 B — 不錯（' + score + '/16）' };
+  if (score >= 8)  return { grade: 'C', label: '留意', class: 'trust-grade-c', tip: '信任 C — 看清楚再用（' + score + '/16）' };
+  return { grade: 'D', label: '小心', class: 'trust-grade-d', tip: '信任 D — 要特別小心（' + score + '/16）' };
 }
 
 function toggleMobileMenu() {
