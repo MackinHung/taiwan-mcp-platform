@@ -530,80 +530,75 @@ function reviewStatusClass(status) {
   return 'badge-amber';
 }
 
-// ── Beginner Guide ───────────────────────────────────────────
+// ── Onboarding Band (Quick Start) ────────────────────────────
 const guide = {
+  STORAGE_KEY: 'onboarding-dismissed',
+
   init() {
-    const header = document.querySelector('.beginner-guide-header');
-    if (!header) return;
+    const band = document.getElementById('onboarding-band');
+    if (!band) return;
 
-    const body = header.nextElementSibling;
-    const icon = header.querySelector('.toggle-icon');
-    const collapsed = localStorage.getItem('guide-collapsed') === 'true';
-
-    if (!collapsed) {
-      body.classList.add('open');
-      if (icon) icon.classList.add('open');
+    if (localStorage.getItem(this.STORAGE_KEY) === 'true') {
+      band.classList.add('hidden');
+      return;
     }
 
-    header.addEventListener('click', () => {
-      const isOpen = body.classList.toggle('open');
-      if (icon) icon.classList.toggle('open', isOpen);
-      localStorage.setItem('guide-collapsed', !isOpen);
-    });
+    const dismissBtn = document.getElementById('onboarding-dismiss');
+    if (dismissBtn) {
+      dismissBtn.addEventListener('click', () => this.dismiss());
+    }
 
-    // Card accordion — click + keyboard
-    document.querySelectorAll('.guide-card').forEach(card => {
-      card.setAttribute('role', 'button');
-      card.setAttribute('tabindex', '0');
-      card.setAttribute('aria-expanded', 'false');
-      card.addEventListener('click', () => this.toggleCard(card));
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          this.toggleCard(card);
-        }
+    const ctaBtn = document.getElementById('onboarding-cta-btn');
+    if (ctaBtn) {
+      ctaBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const grid = document.getElementById('server-grid');
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
-    });
+    }
 
-    // Hash jump
     if (window.location.hash === '#guide') {
       this.scrollToGuide();
     }
   },
 
-  toggleCard(card) {
-    const targetId = card.getAttribute('data-guide');
-    const steps = document.getElementById(targetId);
-    if (!steps) return;
+  dismiss() {
+    const band = document.getElementById('onboarding-band');
+    if (!band) return;
 
-    const wasActive = card.classList.contains('active');
+    band.style.transition = 'opacity 0.3s ease, max-height 0.4s ease 0.1s';
+    band.style.opacity = '0';
+    band.style.maxHeight = band.offsetHeight + 'px';
 
-    // Close all
-    document.querySelectorAll('.guide-card').forEach(c => {
-      c.classList.remove('active');
-      c.setAttribute('aria-expanded', 'false');
+    requestAnimationFrame(() => {
+      band.style.maxHeight = '0';
+      band.style.padding = '0 16px';
+      band.style.borderWidth = '0';
+      band.style.overflow = 'hidden';
     });
-    document.querySelectorAll('.guide-steps').forEach(s => s.classList.remove('open'));
 
-    // Toggle if wasn't active
-    if (!wasActive) {
-      card.classList.add('active');
-      card.setAttribute('aria-expanded', 'true');
-      steps.classList.add('open');
+    setTimeout(() => {
+      band.classList.add('hidden');
+      band.removeAttribute('style');
+    }, 500);
+
+    localStorage.setItem(this.STORAGE_KEY, 'true');
+  },
+
+  show() {
+    localStorage.removeItem(this.STORAGE_KEY);
+    const band = document.getElementById('onboarding-band');
+    if (band) {
+      band.classList.remove('hidden');
+      band.removeAttribute('style');
     }
   },
 
   scrollToGuide() {
-    const el = document.getElementById('beginner-guide');
-    if (!el) return;
-    const body = el.querySelector('.beginner-guide-body');
-    const icon = el.querySelector('.toggle-icon');
-    if (body && !body.classList.contains('open')) {
-      body.classList.add('open');
-      if (icon) icon.classList.add('open');
-      localStorage.setItem('guide-collapsed', 'false');
-    }
-    setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100);
+    const band = document.getElementById('onboarding-band');
+    if (!band) return;
+    if (band.classList.contains('hidden')) this.show();
+    setTimeout(() => band.scrollIntoView({ behavior: 'smooth' }), 100);
   }
 };
 
