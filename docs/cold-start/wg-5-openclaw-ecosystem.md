@@ -56,9 +56,10 @@ OpenClaw（前身 Clawdbot/Moltbot，由 Peter Steinberger 創建）是 2026 年
 
 ### Backlog（按優先級）
 
-#### P0 — Streamable HTTP Transport（Owner: WG-2）
+#### P0 — Streamable HTTP Transport（Owner: WG-2）✅ (2026-03-19, commit `395e03a`)
 
 升級現有 MCP endpoint 支援 MCP spec 2025-03-26 定義的 Streamable HTTP transport。
+**已完成**: POST/GET/DELETE + SSE + Session 管理 + Origin 驗證，29 new tests，Composer 142 total。
 
 > **研究確認**: Streamable HTTP 是 MCP 標準 transport（取代舊版 HTTP+SSE），規範明確。
 > 單一 endpoint 支援 POST（JSON-RPC）和 GET（SSE），Content-Type negotiation 決定回應格式。
@@ -86,9 +87,10 @@ OpenClaw（前身 Clawdbot/Moltbot，由 Peter Steinberger 創建）是 2026 年
 - [ ] `Origin` header 驗證（拒絕非白名單來源）
 - [ ] 任意 MCP client（不限 OpenClaw）可成功連線並呼叫 tool
 
-#### P1 — OpenClaw Config Generator（Owner: WG-2）
+#### P1 — OpenClaw Config Generator（Owner: WG-2）✅ (2026-03-19, commit `2a16d6c`)
 
 讓用戶一鍵生成 OpenClaw 配置。
+**已完成**: 2 API endpoints + UI buttons (server-detail + my-mcp) + modal + copy/download，10 new tests。
 
 **UI 變更**:
 - `server-detail.js`: 加「加入 OpenClaw」按鈕，點擊顯示 `openclaw.json` snippet
@@ -109,7 +111,7 @@ GET /api/my/servers/config?client=openclaw
 - [ ] UI 按鈕正確顯示並可複製 snippet
 - [ ] API key placeholder 清楚標示需替換
 
-#### P2 — MCP Well-Known Discovery（Owner: WG-2）
+#### P2 — MCP Well-Known Discovery（Owner: WG-2）⏸️ 暫緩（等 MCP SEP-1649/1960 定案）
 
 > **研究修正**: MCPorter 是 client-side CLI，不是 discovery protocol。
 > MCP 社群正在制定標準 discovery 機制：SEP-1649（`/.well-known/mcp/server-card.json`）和 SEP-1960（`/.well-known/mcp`）。
@@ -143,7 +145,7 @@ GET /.well-known/mcp
 - [ ] Response 有 `Cache-Control: max-age=3600`
 - [ ] `_worker.js` 正確路由 `/.well-known/*`
 
-#### P3 — ClawHub Publishing（Owner: WG-1 + WG-2）
+#### P3 — ClawHub Publishing（Owner: WG-1 + WG-2）✅ (2026-03-19, commit `2a16d6c`)
 
 將 39 個 server 發布到 ClawHub marketplace。
 
@@ -207,7 +209,7 @@ metadata:
 - [ ] `mcporter call --http-url <url>` 可遠端呼叫
 - [ ] npm 版本號與平台同步
 
-#### P5 — 文件 + 使用者指南（Owner: WG-5）
+#### P5 — 文件 + 使用者指南（Owner: WG-5）✅ (2026-03-19, commit `395e03a`)
 
 撰寫中英文整合指南。
 
