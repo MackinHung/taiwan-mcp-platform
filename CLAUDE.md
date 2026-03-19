@@ -9,17 +9,15 @@
 
 ## Project Overview
 
-台灣第一個 MCP (Model Context Protocol) 平台：Marketplace + 樂高組合器 + 營養標示信任系統。
+台灣第一個 MCP (Model Context Protocol) 開源平台：Marketplace + 組合器 + 安全審查標示。
 
-**商業模式 — 規模門檻制**:
-- 樂高組合功能完全免費，所有用戶都能使用
-- 1-10 個 MCP servers：用戶可自行配置（不強制走平台路由）
-- **10+ 個 MCP servers：必須使用平台 Composer 路由** → 平台獲得 usage data、可做 rate limit、analytics
-- 增值：usage dashboard、優先路由、SLA 保證、team 管理、企業版
+**開源（AGPL-3.0）**，自由取用、自由部署。
+- 1-10 個 MCP servers：用戶可自行配置
+- 10+ 個 MCP servers：使用平台 Composer 路由（usage data、rate limit、analytics）
 
 **Repo**: `MackinHung/taiwan-mcp-platform`, branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
-**Current**: 3,580+ tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3), dead code cleaned (`b8d7910`)
+**Current**: 3,619+ tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3), OpenClaw 生態整合完成 (`a60d5a2`)
 
 ---
 
@@ -29,10 +27,10 @@
 packages/
   shared/    → Module S: 共用型別、常數、Zod 驗證、錯誤格式 (105 tests)
   db/        → Module A: D1 schema (15 tables), seed, migrations
-  gateway/   → Module B: Hono API gateway, GitHub+Google OAuth, rate limit, attribution, anomaly detection, privacy (215 tests)
+  gateway/   → Module B: Hono API gateway, GitHub+Google OAuth, rate limit, attribution, anomaly detection, privacy, OpenClaw config (284 tests)
   review/    → Module D: 5 掃描規則、4+1 維度標章計算、第三方驗證、報告生成 (151 tests)
-  composer/  → Module E: MCP proxy, namespace routing, lazy loading (76 tests)
-  ui/        → Module F: 6 HTML pages, 7 JS modules, CSS design system (vanilla)
+  composer/  → Module E: MCP proxy, namespace routing, Streamable HTTP, session management (142 tests)
+  ui/        → Module F: 6 HTML pages, 7 JS modules, CSS design system, OpenClaw modals (vanilla)
 servers/
   taiwan-weather/     → Module G: 8 CWA weather tools (66 tests)
   taiwan-air-quality/ → Module H: 5 MOENV AQI tools (50 tests)
@@ -75,8 +73,13 @@ servers/
   taiwan-sports/       → 5 sports facility tools (95 tests)
   taiwan-education/    → 5 school directory tools (95 tests)
   taiwan-election/     → 5 election results tools (67 tests)
+skills/
+  taiwan-*/SKILL.md    → 39 ClawHub skill definitions (YAML frontmatter + usage)
+scripts/
+  clawhub-publish.ts   → ClawHub 批次上架腳本 (27 tests)
 docs/
   cold-start/ → WG 詳細規格（本文件下方有索引，含 WG-5 OpenClaw、WG-6 RAG）
+  guides/     → OpenClaw quickstart + troubleshooting（中英雙語）
   research/   → WG-3 研究產出
   security/   → WG-4 安全研究產出
 services/                    # 下階段：非 TypeScript 微服務

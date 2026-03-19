@@ -333,3 +333,27 @@ QA: 每個階段結束跑相關 package 測試，確保向下相容
 2. **MCPorter 不是你想的那樣**: MCPorter 是 client-side config reader，不是 server-side discovery protocol。真正的 MCP discovery 在 SEP-1649/1960，尚未正式 spec。
 3. **ClawHub rate limit 嚴格**: 批次上架 39 servers 要用 `--concurrency 2`，不要用預設 4。VPS/共享 IP 更容易被 throttle。
 4. **安全風險是真的**: CrowdStrike 已實證 OpenClaw prompt injection → 資料外洩。我們的 server 回傳政府開放資料（非個資），但仍應在文件中告知用戶啟用 sandbox。
+
+### 部署階段發現（2026-03-19）
+
+5. **Cloudflare Pages Advanced Mode env vars 不可靠**: `_worker.js` 的 `env` 物件**不保證包含 `wrangler pages secret put` 設定的 secrets**。即使用 `npx wrangler pages secret put GATEWAY_WORKER_URL` 設定了值，`env.GATEWAY_WORKER_URL` 在 runtime 仍可能是 `undefined`。
+   - **根因**: Pages Advanced Mode 的 secrets 注入機制與 Workers 不同，不是所有部署方式都能正確注入。
+   - **解法**: 在 `_worker.js` 使用 fallback pattern：
+     ```javascript
+     const GATEWAY_URL = env.GATEWAY_WORKER_URL || 'https://mcp-gateway.watermelom5404.workers.dev';
+     const COMPOSER_URL = env.COMPOSER_WORKER_URL || 'https://mcp-composer.watermelom5404.workers.dev';
+     ```
+   - **絕對不要**在 `_worker.js` 做 env validation 並返回 503 — 那會讓整個站掛掉。
+   - Commit: `a60d5a2` 修復此問題。
+
+6. **wrangler.toml 真實 ID vs placeholder**: Code review 會把真實的 Cloudflare resource ID 改為 `<YOUR_*>` placeholder（repo 公開準備）。部署前需從 git history 恢復真實 ID：
+   ```bash
+   git show <commit-before-review> -- packages/composer/wrangler.toml > /tmp/real.toml
+   # 複製真實 ID 進行部署，部署後 checkout 回 placeholder
+   ```
+
+7. **SSE proxy headers**: `_worker.js` 代理 `/mcp/*` 到 Composer Worker 時，必須顯式轉發以下 headers，否則 SSE stream 會中斷：
+   - `Content-Type` (必須是 `text/event-stream`)
+   - `Cache-Control` (通常 `no-cache`)
+   - `Connection` (通常 `keep-alive`)
+   - `Mcp-Session-Id` (MCP session 識別)

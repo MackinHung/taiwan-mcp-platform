@@ -11,14 +11,14 @@
 
 ## 當前平台狀態
 
-- Gateway: **215 tests**, 全部 route 有 mock 測試，含 attribution + anomaly + privacy + cache-ttl + security headers + rate limiting
+- Gateway: **284 tests**, 全部 route 有 mock 測試，含 attribution + anomaly + privacy + cache-ttl + security headers + rate limiting + OpenClaw config
 - Review: **151 tests**, Layer 1 完成 (5 掃描規則 + 4+1 維度標章), Layer 2 是 stub
-- Composer: **76 tests**, 完整 namespace routing + proxy
+- Composer: **142 tests**, 完整 namespace routing + proxy + Streamable HTTP + session management + origin validation
 - Shared: **105 tests**, 共用型別 + Zod 驗證 + 錯誤格式
-- UI: **10 頁面** (6 原有 + privacy + trust + transparency + admin), 全部有 footer + 一致 nav + SEO meta
+- UI: **10 頁面** (6 原有 + privacy + trust + transparency + admin), 全部有 footer + 一致 nav + SEO meta + OpenClaw modals
 - DB: Schema 完成 (**16 tables**, 含 privacy_requests)，D1 已上線 + seed 資料
 - **MCP Servers**: 39 servers (Batch 1: 17, Batch 2: 14, Batch 3: 8) — 詳見 WG-1
-- **Total workspace tests**: 3,235+ passed (platform ~550 + 39 servers ~2,685)
+- **Total workspace tests**: 3,619+ passed (platform ~660 + 39 servers ~2,685 + scripts 27)
 
 ---
 
@@ -127,14 +127,14 @@
 13. Webhook 通知（新 server 上架、審核結果）
 14. E2E 測試
 
-### P5 — OpenClaw 生態整合（詳見 [`wg-5-openclaw-ecosystem.md`](wg-5-openclaw-ecosystem.md)）
+### P5 — OpenClaw 生態整合 ✅ P5.1/P5.2/P5.4 完成（詳見 [`wg-5-openclaw-ecosystem.md`](wg-5-openclaw-ecosystem.md)）
 
 > 將平台定位為 OpenClaw 生態的台灣政府資料供應商。WG-2 負責以下平台側任務：
 
-15. **P5.1: Streamable HTTP Transport** — 升級 `/mcp/u/:slug`、`/mcp/s/:slug` 支援 Streamable HTTP + SSE（`Accept` header negotiation），修改 `composer/src/index.ts` + `_worker.js`
-16. **P5.2: OpenClaw Config Generator** — UI 加「加入 OpenClaw」按鈕（`server-detail.js` + `my-mcp.js`），API `GET /api/servers/:slug/config?client=openclaw` 返回 `openclaw.json` snippet
-17. **P5.3: MCP Well-Known Discovery** — `GET /.well-known/mcp` 返回 MCP 標準 discovery 格式（追蹤 SEP-1649/1960），含所有公開 server 列表 + MCP endpoint URL + trust_grade
-18. **P5.4: 批次 Config 匯出** — `GET /api/my/servers/config?client=openclaw` 一次匯出已訂閱的所有 server 完整 `openclaw.json`
+15. ✅ **P5.1: Streamable HTTP Transport** — 升級 `/mcp/s/:slug` 支援 Streamable HTTP + SSE（POST/GET/DELETE + Session + Origin 驗證），`composer/src/streamable-http.ts` + `session-manager.ts` + `origin-validator.ts`（commit `395e03a`）
+16. ✅ **P5.2: OpenClaw Config Generator** — UI「加入 OpenClaw」按鈕 + modal（`server-detail.js` + `my-mcp.js`），API `GET /api/servers/:slug/config?client=openclaw`（commit `2a16d6c`）
+17. ⏸️ **P5.3: MCP Well-Known Discovery** — 暫緩，等 MCP SEP-1649/1960 定案
+18. ✅ **P5.4: 批次 Config 匯出** — `GET /api/my/servers/config?client=openclaw` 批次匯出 + 下載 `openclaw.json`（commit `2a16d6c`）
 
 ---
 
@@ -190,8 +190,18 @@ cd packages/ui && npx wrangler pages deploy public --project-name=tw-mcp --branc
 - **問題**: `_worker.js` (Advanced Mode) 存在時，`functions/` 目錄的 Pages Functions **完全被忽略**
 - **解法**: 所有路由代理必須寫在 `_worker.js` 裡
   - `/api/*` → Gateway Worker
-  - `/mcp/*` → Composer Worker
+  - `/mcp/*` → Composer Worker（含 SSE headers 轉發：Content-Type, Cache-Control, Connection, Mcp-Session-Id）
   - 其餘 → `env.ASSETS.fetch(request)` 靜態資源
+
+### _worker.js env vars 不可靠（⚠️ 嚴重）
+- **問題**: `wrangler pages secret put` 設定的 secrets 不保證注入到 `_worker.js` 的 `env` 物件
+- **根因**: Pages Advanced Mode 的 secrets 注入機制與 Workers 不同
+- **解法**: 使用 fallback pattern，**絕對不要**做 env validation 返回 503
+  ```javascript
+  const GATEWAY_URL = env.GATEWAY_WORKER_URL || 'https://mcp-gateway.watermelom5404.workers.dev';
+  const COMPOSER_URL = env.COMPOSER_WORKER_URL || 'https://mcp-composer.watermelom5404.workers.dev';
+  ```
+- 詳見 commit `a60d5a2`
 
 ### Badge Hover 跑版陷阱
 - **問題**: `.badge:hover { transform: scale(1.08) }` 在 flex 容器內會觸發 reflow，導致相鄰 badge 位移
