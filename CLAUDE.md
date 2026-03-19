@@ -19,7 +19,7 @@
 
 **Repo**: `MackinHung/taiwan-mcp-platform`, branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
-**Current**: 3,235+ tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3)
+**Current**: 3,235+ tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3), dead code cleaned (`b8d7910`)
 
 ---
 

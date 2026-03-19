@@ -96,6 +96,30 @@
 - 排不到的原因：缺 robots.txt/sitemap/canonical/OG、未提交 GSC、無自訂域名
 - 長期建議：綁自訂域名（建立獨立域名權重）、建立反向連結
 
+### P3.6 — Code Review + Dead Code Cleanup ✅ (2026-03-19, commits `0274e16` → `b8d7910`)
+
+**Code Review Fixes** (`0274e16`):
+- CRITICAL: `sleepSync` busy-wait → `Atomics.wait` (clawhub-publish.ts)
+- HIGH: wrangler.toml 真實 ID → placeholder（repo 公開準備）
+- HIGH: `_worker.js` fallback URL → 503 env validation
+- HIGH: clipboard `.writeText()` → 加 `.catch()` 錯誤處理
+- MEDIUM: `Object.assign` mutation → `Object.fromEntries()` (openclaw-config.ts)
+- MEDIUM: `c: any` → `Context<HonoEnv>` 正確型別 (openclaw-config.ts)
+- MEDIUM: `execSync` → `execFileSync` 防注入 (clawhub-publish.ts)
+
+**Dead Code Cleanup** (`b8d7910`, -395 lines):
+- 刪除 39 個 `servers/*/src/security.ts`（legacy 安全聲明檔，零 import）
+- 刪除 election client 死碼：`CEC_BASE`, `DATA_GOV_BASE`, `ELECTION_RESOURCE_ID`, `parseCsv`, `parseCsvLine`, `getAvailableYears`
+- 刪除 `IPLAY_BASE` (taiwan-sports), `MINIMUM_WAGE_MONTHLY/HOURLY` (taiwan-insurance-calc)
+- knip 分析的 false positives（保留）：UI 檔案（HTML `<script>` 引用）、`_worker.js`/`functions/`（Cloudflare 入口）、RuleResult interfaces（內部使用）、大量 server 常數（內部使用或測試 mock）
+
+**未清理項目（backlog）**:
+- CSS `style.css` 2490 行 — 需拆分為模組（低優先）
+- 3 個未使用 type-only interfaces（`InsuranceBreakdown` 等）— 零 runtime 影響，保留作文件
+- `typescript` / `wrangler` depcheck 誤報 — 實際為開發工具
+
+**注意**: 此輪 refactor-clean **僅覆蓋平台代碼與 MCP servers**。PowerReader Next 的 Knowledge Browser（1,121 entries、23 batch files）**尚未進行 dead code 清理**，相關 `vi.hoisted()` pattern + fs mock、build-time static JSON 等程式碼未經 knip/depcheck 分析。
+
 ### P4 — 進階功能
 
 11. MCP Chat 試玩頁面 (`chat.html`)
