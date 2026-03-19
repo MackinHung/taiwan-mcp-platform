@@ -6,31 +6,31 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "mcp-platform"
-database_id = "14d6f8bf-e51a-4085-9978-9d35c88d3865"
+database_id = "<YOUR_D1_DATABASE_ID>"
 
 [[kv_namespaces]]
 binding = "RATE_LIMITS"
-id = "7e8637e4bb664fb2b4253f3a0c656f1d"
+id = "<YOUR_KV_RATE_LIMITS_ID>"
 
 [[kv_namespaces]]
 binding = "API_KEY_CACHE"
-id = "3dcd3af1db0f40f6a0ebc2d1ba93e82e"
+id = "<YOUR_KV_API_KEY_CACHE_ID>"
 
 [[kv_namespaces]]
 binding = "SESSION_CACHE"
-id = "4756e7f844fe4dc089e450e97526c11f"
+id = "<YOUR_KV_SESSION_CACHE_ID>"
 
 [[kv_namespaces]]
 binding = "SERVER_CACHE"
-id = "aab645fdd2d5447cae01d90fd9fbbcec"
+id = "<YOUR_KV_SERVER_CACHE_ID>"
 
 [[r2_buckets]]
 binding = "PACKAGES"
 bucket_name = "mcp-packages"
 
 [vars]
-GITHUB_CLIENT_ID = "Ov23liNVsier85WHRqoU"
-GITHUB_REDIRECT_URI = "https://tw-mcp.pages.dev/api/auth/github/callback"
-GOOGLE_CLIENT_ID = "712094505177-gv0gvb8ubbo3at0a7o172bftvm2h9hdp.apps.googleusercontent.com"
-GOOGLE_REDIRECT_URI = "https://tw-mcp.pages.dev/api/auth/google/callback"
-FRONTEND_URL = "https://tw-mcp.pages.dev"
+GITHUB_CLIENT_ID = "<YOUR_GITHUB_OAUTH_CLIENT_ID>"
+GITHUB_REDIRECT_URI = "https://<YOUR_PAGES_DOMAIN>/api/auth/github/callback"
+GOOGLE_CLIENT_ID = "<YOUR_GOOGLE_OAUTH_CLIENT_ID>"
+GOOGLE_REDIRECT_URI = "https://<YOUR_PAGES_DOMAIN>/api/auth/google/callback"
+FRONTEND_URL = "https://<YOUR_PAGES_DOMAIN>"

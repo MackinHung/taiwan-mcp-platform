@@ -7,7 +7,7 @@ import {
   publishAll,
 } from '../clawhub-publish.js';
 import * as fs from 'node:fs';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 vi.mock('node:fs');
 vi.mock('node:child_process');
@@ -355,28 +355,28 @@ describe('execWithRetry', () => {
   });
 
   it('succeeds on first attempt', () => {
-    vi.mocked(execSync).mockReturnValue(Buffer.from(''));
-    const result = execWithRetry('clawhub sync --all', 3);
+    vi.mocked(execFileSync).mockReturnValue(Buffer.from(''));
+    const result = execWithRetry('clawhub', ['sync', '--all'], 3);
     expect(result.success).toBe(true);
-    expect(execSync).toHaveBeenCalledTimes(1);
+    expect(execFileSync).toHaveBeenCalledTimes(1);
   });
 
   it('retries on 429 rate limit and succeeds', () => {
-    const mockExec = vi.mocked(execSync);
+    const mockExec = vi.mocked(execFileSync);
     mockExec
       .mockImplementationOnce(() => { throw new Error('HTTP 429 Too Many Requests'); })
       .mockReturnValue(Buffer.from(''));
 
-    const result = execWithRetry('clawhub sync --all', 3);
+    const result = execWithRetry('clawhub', ['sync', '--all'], 3);
     expect(result.success).toBe(true);
     expect(mockExec).toHaveBeenCalledTimes(2);
   });
 
   it('fails after max retries on persistent 429', () => {
-    const mockExec = vi.mocked(execSync);
+    const mockExec = vi.mocked(execFileSync);
     mockExec.mockImplementation(() => { throw new Error('429 rate limit'); });
 
-    const result = execWithRetry('clawhub sync --all', 2);
+    const result = execWithRetry('clawhub', ['sync', '--all'], 2);
     expect(result.success).toBe(false);
     expect(result.error).toContain('429');
     // 1 initial + 2 retries = 3 calls
@@ -384,14 +384,14 @@ describe('execWithRetry', () => {
   });
 
   it('does not retry on non-429 errors', () => {
-    vi.mocked(execSync).mockImplementation(() => {
+    vi.mocked(execFileSync).mockImplementation(() => {
       throw new Error('Command not found');
     });
 
-    const result = execWithRetry('clawhub sync --all', 3);
+    const result = execWithRetry('clawhub', ['sync', '--all'], 3);
     expect(result.success).toBe(false);
     expect(result.error).toContain('Command not found');
-    expect(execSync).toHaveBeenCalledTimes(1);
+    expect(execFileSync).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -422,7 +422,7 @@ describe('publishAll', () => {
     expect(result.valid).toBe(1);
     expect(result.invalid).toBe(0);
     expect(result.published).toBe(1);
-    expect(execSync).not.toHaveBeenCalled();
+    expect(execFileSync).not.toHaveBeenCalled();
   });
 
   it('aborts publish when validation fails', () => {
@@ -441,7 +441,7 @@ describe('publishAll', () => {
 
     expect(result.invalid).toBe(1);
     expect(result.published).toBe(0);
-    expect(execSync).not.toHaveBeenCalled();
+    expect(execFileSync).not.toHaveBeenCalled();
   });
 
   it('returns zero totals for empty skills directory', () => {

@@ -378,7 +378,7 @@ const serverDetail = {
       const original = btn.textContent;
       btn.textContent = 'Copied!';
       setTimeout(() => { btn.textContent = original; }, 2000);
-    });
+    }).catch(() => showToast('Failed to copy to clipboard'));
   }
 };
 

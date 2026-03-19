@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import type { Context } from 'hono';
 import type { Env } from '../env.js';
 
 type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
@@ -6,7 +7,7 @@ type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 export const openclawConfigRoutes = new Hono<HonoEnv>();
 
 /** Validate that client query param is 'openclaw', return 400 if not. */
-function validateClientParam(c: any): boolean {
+function validateClientParam(c: Context<HonoEnv>): boolean {
   const client = c.req.query('client');
   return client === 'openclaw';
 }
@@ -43,11 +44,12 @@ openclawConfigRoutes.get('/my/config', async (c) => {
      WHERE comp.user_id = ? AND cs.enabled = 1`
   ).bind(user.id).all();
 
-  const mcpServers: Record<string, { url: string | null; headers: Record<string, string> }> = {};
-  for (const row of results as any[]) {
-    const entry = buildServerEntry(row.slug, row.endpoint_url);
-    Object.assign(mcpServers, entry);
-  }
+  const mcpServers = Object.fromEntries(
+    (results as { slug: string; endpoint_url: string | null }[]).map((row) => [
+      row.slug,
+      { url: row.endpoint_url, headers: { Authorization: 'Bearer <YOUR_API_KEY>' } },
+    ])
+  );
 
   return c.json({ success: true, data: { mcpServers }, error: null });
 });

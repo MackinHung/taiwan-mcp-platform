@@ -17,7 +17,7 @@
 - **10+ 個 MCP servers：必須使用平台 Composer 路由** → 平台獲得 usage data、可做 rate limit、analytics
 - 增值：usage dashboard、優先路由、SLA 保證、team 管理、企業版
 
-**Repo**: `MackinHung/taiwan-mcp-platform` (private), branch `master`
+**Repo**: `MackinHung/taiwan-mcp-platform`, branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
 **Current**: 3,235+ tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3)
 

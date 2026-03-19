@@ -6,12 +6,12 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "mcp-platform"
-database_id = "14d6f8bf-e51a-4085-9978-9d35c88d3865"
+database_id = "<YOUR_D1_DATABASE_ID>"
 
 [[kv_namespaces]]
 binding = "TOOL_REGISTRY"
-id = "a20d603b92c44884b803a62e6c867f32"
+id = "<YOUR_KV_TOOL_REGISTRY_ID>"
 
 [[kv_namespaces]]
 binding = "API_KEY_CACHE"
-id = "3dcd3af1db0f40f6a0ebc2d1ba93e82e"
+id = "<YOUR_KV_API_KEY_CACHE_ID>"

@@ -12,7 +12,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -256,12 +256,13 @@ export function discoverSkills(skillsDir: string): string[] {
 // ---------------------------------------------------------------------------
 
 export function execWithRetry(
-  cmd: string,
+  file: string,
+  args: readonly string[],
   maxRetries: number = 3,
 ): { success: boolean; error?: string } {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      execSync(cmd, { stdio: 'inherit' });
+      execFileSync(file, args as string[], { stdio: 'inherit' });
       return { success: true };
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err);
@@ -284,10 +285,7 @@ export function execWithRetry(
 }
 
 function sleepSync(ms: number): void {
-  const end = Date.now() + ms;
-  while (Date.now() < end) {
-    // busy wait for sync sleep
-  }
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 }
 
 // ---------------------------------------------------------------------------
@@ -336,10 +334,10 @@ export function publishAll(options: PublishOptions): PublishResult {
     return { total: skills.length, valid, invalid, published: valid, errors };
   }
 
-  const cmd = `clawhub sync --root ${skillsDir} --all --concurrency ${concurrency}`;
-  console.log(`Running: ${cmd}\n`);
+  const syncArgs = ['sync', '--root', skillsDir, '--all', '--concurrency', String(concurrency)];
+  console.log(`Running: clawhub ${syncArgs.join(' ')}\n`);
 
-  const result = execWithRetry(cmd, maxRetries);
+  const result = execWithRetry('clawhub', syncArgs, maxRetries);
   if (result.success) {
     published = valid;
   } else {
