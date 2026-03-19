@@ -109,7 +109,7 @@
 
 15. **P5.1: Streamable HTTP Transport** — 升級 `/mcp/u/:slug`、`/mcp/s/:slug` 支援 Streamable HTTP + SSE（`Accept` header negotiation），修改 `composer/src/index.ts` + `_worker.js`
 16. **P5.2: OpenClaw Config Generator** — UI 加「加入 OpenClaw」按鈕（`server-detail.js` + `my-mcp.js`），API `GET /api/servers/:slug/config?client=openclaw` 返回 `openclaw.json` snippet
-17. **P5.3: MCPorter Discovery API** — `GET /api/discover` 返回 MCPorter 相容格式（所有公開 server 列表 + MCP endpoint URL + trust_grade）
+17. **P5.3: MCP Well-Known Discovery** — `GET /.well-known/mcp` 返回 MCP 標準 discovery 格式（追蹤 SEP-1649/1960），含所有公開 server 列表 + MCP endpoint URL + trust_grade
 18. **P5.4: 批次 Config 匯出** — `GET /api/my/servers/config?client=openclaw` 一次匯出已訂閱的所有 server 完整 `openclaw.json`
 
 ---
@@ -118,9 +118,9 @@
 
 ### 雙 Worker 設計
 ```
-Pages (tw-mcp.pages.dev) — _worker.js (Advanced Mode)
-  ├── /api/*  → proxy → mcp-gateway.watermelom5404.workers.dev
-  ├── /mcp/*  → proxy → mcp-composer.watermelom5404.workers.dev
+Pages (<YOUR_PAGES_DOMAIN>) — _worker.js (Advanced Mode)
+  ├── /api/*  → proxy → mcp-gateway.<YOUR_SUBDOMAIN>.workers.dev
+  ├── /mcp/*  → proxy → mcp-composer.<YOUR_SUBDOMAIN>.workers.dev
   └── /*      → env.ASSETS.fetch(request) 靜態資源
 ```
 - **⚠️ 重要**: `_worker.js` 存在時 `functions/` 完全被忽略，所有路由必須寫在 `_worker.js`
@@ -140,7 +140,7 @@ cd servers/taiwan-electricity && npx wrangler deploy
 cd servers/taiwan-stock && npx wrangler deploy
 
 # 設定 D1 endpoint_url
-npx wrangler d1 execute mcp-platform --remote --command "UPDATE servers SET endpoint_url = 'https://{name}-mcp.watermelom5404.workers.dev/' WHERE slug = '{slug}';"
+npx wrangler d1 execute mcp-platform --remote --command "UPDATE servers SET endpoint_url = 'https://{name}-mcp.<YOUR_SUBDOMAIN>.workers.dev/' WHERE slug = '{slug}';"
 
 # UI
 cd packages/ui && npx wrangler pages deploy public --project-name=tw-mcp --branch=master --commit-dirty=true
