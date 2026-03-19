@@ -8,7 +8,6 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg" alt="AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/MCP%20Servers-39-brightgreen" alt="39 MCP Servers">
-  <img src="https://img.shields.io/badge/tests-3%2C235%2B-success" alt="3,235+ Tests">
   <img src="https://img.shields.io/badge/TypeScript-strict-blue" alt="TypeScript">
   <img src="https://img.shields.io/badge/Cloudflare%20Workers-orange" alt="Cloudflare Workers">
 </p>
@@ -35,8 +34,6 @@ Fully open-source (AGPL-3.0). Free to use, free to deploy.
 - **Composer** — combine multiple servers into a single endpoint with namespace routing
 - **Security Review Badges** — automated security scanning and grading
 - **SBOM / VirusTotal / OSV scanning** — supply chain transparency and vulnerability detection
-- **OAuth login** — GitHub + Google authentication
-- **3,235+ tests** — TDD development, full Vitest coverage
 
 ---
 

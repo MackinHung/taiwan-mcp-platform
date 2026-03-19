@@ -186,18 +186,18 @@
       <!-- 程式碼透明度 -->
       <div class="badge-education" style="margin-bottom:16px;">
         <div class="badge-education-header" onclick="this.querySelector('.toggle-icon').classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></span> 程式碼透明度 — 你能不能看到這個程式在做什麼</h3>
+          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></span> 程式碼透明度 — 程式碼是否可公開檢閱</h3>
           <span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
         </div>
         <div class="badge-education-body">
           <div class="badge-education-grid">
             <div class="badge-education-item">
               <h4><span class="badge badge-green" style="font-size:0.75rem;">開源已審計</span></h4>
-              <p>程式碼公開且通過平台自動安全掃描。你可以自己檢視原始碼，平台也已確認沒有危險行為。</p>
+              <p>程式碼公開且通過平台自動安全掃描。使用者可自行檢閱原始碼，平台亦已確認無危險行為。</p>
             </div>
             <div class="badge-education-item">
               <h4><span class="badge badge-blue" style="font-size:0.75rem;">開源</span></h4>
-              <p>程式碼公開，你可以自行檢視，但尚未通過平台的自動掃描流程。</p>
+              <p>程式碼公開可供檢閱，但尚未通過平台的自動掃描流程。</p>
             </div>
             <div class="badge-education-item">
               <h4><span class="badge badge-amber" style="font-size:0.75rem;">已聲明</span></h4>
@@ -209,7 +209,7 @@
             </div>
           </div>
           <p style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">
-            <strong>為什麼這很重要：</strong>程式碼透明度決定了你能否確認工具「真的在做它說的事」。開源且通過審計的工具最值得信賴。
+            <strong>重要性：</strong>程式碼透明度決定使用者能否獨立驗證工具的實際行為。開源且通過審計的工具信任度最高。
           </p>
         </div>
       </div>
@@ -217,7 +217,7 @@
       <!-- 資料敏感度 -->
       <div class="badge-education" style="margin-bottom:16px;">
         <div class="badge-education-header" onclick="this.querySelector('.toggle-icon').classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></span> 資料敏感度 — 它會碰到你的哪些資料</h3>
+          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></span> 資料敏感度 — 存取資料的敏感程度</h3>
           <span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
         </div>
         <div class="badge-education-body">
@@ -240,7 +240,7 @@
             </div>
           </div>
           <p style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">
-            <strong>為什麼這很重要：</strong>資料敏感度越高，一旦發生安全事件，你受到的影響就越大。優先選擇「公開資料」等級的工具。
+            <strong>重要性：</strong>資料敏感度越高，安全事件造成的影響越大。建議優先選擇「公開資料」等級的工具。
           </p>
         </div>
       </div>
@@ -248,7 +248,7 @@
       <!-- 權限範圍 -->
       <div class="badge-education" style="margin-bottom:16px;">
         <div class="badge-education-header" onclick="this.querySelector('.toggle-icon').classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg></span> 權限範圍 — 它能代你做什麼操作</h3>
+          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg></span> 權限範圍 — 可執行的操作範圍</h3>
           <span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
         </div>
         <div class="badge-education-body">
@@ -271,7 +271,7 @@
             </div>
           </div>
           <p style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">
-            <strong>為什麼這很重要：</strong>權限越大，工具能做的事越多。遵循最小權限原則 — 只給工具它需要的最低權限。
+            <strong>重要性：</strong>權限越高，潛在風險越大。建議遵循最小權限原則，僅授予必要權限。
           </p>
         </div>
       </div>
@@ -279,14 +279,14 @@
       <!-- 社群信任 -->
       <div class="badge-education" style="margin-bottom:16px;">
         <div class="badge-education-header" onclick="this.querySelector('.toggle-icon').classList.toggle('open');this.nextElementSibling.classList.toggle('open');">
-          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span> 社群信任 — 多少人用過、信賴度如何</h3>
+          <h3><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span> 社群信任 — 使用者數量與社群評價</h3>
           <span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
         </div>
         <div class="badge-education-body">
           <div class="badge-education-grid">
             <div class="badge-education-item">
               <h4><span class="badge badge-gray" style="font-size:0.75rem;">新上架</span></h4>
-              <p>剛上架的新伺服器，尚無足夠使用數據評估。不代表不安全，只是還需要時間累積口碑。</p>
+              <p>新上架的伺服器，尚無足夠使用數據可供評估。並非代表不安全，而是需要時間累積使用者回饋。</p>
             </div>
             <div class="badge-education-item">
               <h4><span class="badge badge-green" style="font-size:0.75rem;">成長中</span></h4>
@@ -302,7 +302,7 @@
             </div>
           </div>
           <p style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">
-            <strong>為什麼這很重要：</strong>社群信任度反映了實際使用者的經驗。使用量越高、收藏越多的工具，通常越穩定可靠。
+            <strong>重要性：</strong>社群信任度反映實際使用者的經驗。使用量與收藏數越高的工具，通常穩定性與可靠度越佳。
           </p>
         </div>
       </div>
@@ -325,7 +325,7 @@
             </div>
             <div class="badge-education-item">
               <h4><span class="badge badge-gray" style="font-size:0.75rem;">未驗證</span></h4>
-              <p>尚未進行第三方安全驗證。不代表不安全，但缺乏外部背書。</p>
+              <p>尚未進行第三方安全驗證。並非代表不安全，但缺乏獨立外部評估。</p>
             </div>
             <div class="badge-education-item">
               <h4><span class="badge badge-red" style="font-size:0.75rem;">驗證失敗</span></h4>
@@ -333,7 +333,7 @@
             </div>
           </div>
           <p style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);">
-            <strong>為什麼這很重要：</strong>第三方驗證提供獨立於平台的安全評估，就像食品的第三方檢驗報告一樣客觀。
+            <strong>重要性：</strong>第三方驗證提供獨立於平台的客觀安全評估，增強使用者的信心基礎。
           </p>
         </div>
       </div>

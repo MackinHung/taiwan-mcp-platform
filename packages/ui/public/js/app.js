@@ -435,10 +435,10 @@ function calculateTrustGrade(server) {
     (scoreMap.permission[server.badge_permission] || 1) +
     (scoreMap.community[server.badge_community] || 1);
 
-  if (score >= 14) return { grade: 'A', label: '放心用', class: 'trust-grade-a', tip: '信任 A — 放心用（' + score + '/16）' };
-  if (score >= 11) return { grade: 'B', label: '不錯', class: 'trust-grade-b', tip: '信任 B — 不錯（' + score + '/16）' };
-  if (score >= 8)  return { grade: 'C', label: '留意', class: 'trust-grade-c', tip: '信任 C — 看清楚再用（' + score + '/16）' };
-  return { grade: 'D', label: '小心', class: 'trust-grade-d', tip: '信任 D — 要特別小心（' + score + '/16）' };
+  if (score >= 14) return { grade: 'A', label: '高度信任', class: 'trust-grade-a', tip: '信任 A — 高度信任（' + score + '/16）' };
+  if (score >= 11) return { grade: 'B', label: '良好', class: 'trust-grade-b', tip: '信任 B — 良好（' + score + '/16）' };
+  if (score >= 8)  return { grade: 'C', label: '建議審閱', class: 'trust-grade-c', tip: '信任 C — 建議審閱（' + score + '/16）' };
+  return { grade: 'D', label: '風險較高', class: 'trust-grade-d', tip: '信任 D — 風險較高（' + score + '/16）' };
 }
 
 function toggleMobileMenu() {
