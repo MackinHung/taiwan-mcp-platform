@@ -18,7 +18,9 @@
     "test:news": "cd servers/taiwan-news && npm test",
     "test:hospital": "cd servers/taiwan-hospital && npm test",
     "test:company": "cd servers/taiwan-company && npm test",
-    "lint": "eslint packages/ servers/ --ext .ts"
+    "lint": "eslint packages/ servers/ --ext .ts",
+    "clawhub:publish": "npx tsx scripts/clawhub-publish.ts",
+    "clawhub:dry-run": "npx tsx scripts/clawhub-publish.ts --dry-run"
   },
   "devDependencies": {
     "typescript": "^5.7.0",

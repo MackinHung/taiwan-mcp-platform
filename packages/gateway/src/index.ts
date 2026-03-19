@@ -3,6 +3,7 @@ import { cors } from 'hono/cors';
 import type { Env } from './env.js';
 import { authRoutes } from './routes/auth.js';
 import { serverRoutes } from './routes/servers.js';
+import { openclawConfigRoutes } from './routes/openclaw-config.js';
 import { compositionRoutes } from './routes/compositions.js';
 import { uploadRoutes } from './routes/upload.js';
 import { adminRoutes } from './routes/admin.js';
@@ -65,6 +66,7 @@ app.use('/api/*', monitoringMiddleware());
 
 // Routes
 app.route('/api/auth', authRoutes);
+app.route('/api/servers', openclawConfigRoutes);  // OpenClaw config (must precede serverRoutes)
 app.route('/api/servers', serverRoutes);
 app.route('/api/compositions', compositionRoutes);
 app.route('/api/upload', uploadRoutes);

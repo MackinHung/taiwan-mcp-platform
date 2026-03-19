@@ -50,7 +50,41 @@
   <div class="container page-content">
     <div class="flex items-center justify-between mb-24">
       <h1 style="font-size:1.5rem;font-weight:700;">我的 MCP 組合</h1>
-      <button class="btn btn-primary" onclick="myMcp.openCreateModal()">+ 建立新組合</button>
+      <div class="flex gap-8">
+        <button class="btn btn-secondary" onclick="myMcp.openOpenclawExportModal()">Export OpenClaw Config</button>
+        <button class="btn btn-primary" onclick="myMcp.openCreateModal()">+ 建立新組合</button>
+      </div>
+    </div>
+
+    <!-- How-it-works stepper -->
+    <div class="onboard-steps mb-24">
+      <div class="onboard-step">
+        <div class="onboard-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <div class="onboard-label">1. 瀏覽市集</div>
+        <div class="onboard-desc">在<a href="/">首頁</a>找到需要的 MCP 伺服器</div>
+      </div>
+      <div class="onboard-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </div>
+      <div class="onboard-step">
+        <div class="onboard-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+        </div>
+        <div class="onboard-label">2. 建立組合</div>
+        <div class="onboard-desc">把多個伺服器合併為一個端點</div>
+      </div>
+      <div class="onboard-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </div>
+      <div class="onboard-step">
+        <div class="onboard-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        </div>
+        <div class="onboard-label">3. 貼入設定</div>
+        <div class="onboard-desc">複製 JSON 設定到 Claude Desktop</div>
+      </div>
     </div>
 
     <div id="compositions-list">
@@ -80,7 +114,7 @@
         <input type="text" id="comp-desc" placeholder="簡短說明這個組合的用途" />
       </div>
       <div class="form-group">
-        <label>端點代稱 (slug)</label>
+        <label>端點代稱 <span class="label-help" data-tooltip="這是你的組合專屬網址路徑，例如填 my-project 後，連線端點就是 /compose/my-project">?</span></label>
         <input type="text" id="comp-slug" placeholder="例：my-side-project" />
         <div class="hint">僅允許小寫英文、數字、連字號</div>
       </div>
@@ -119,6 +153,25 @@
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="myMcp.closeAddServerModal()">取消</button>
         <button class="btn btn-primary" id="add-server-confirm" onclick="myMcp.confirmAddServer()" disabled>加入</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OpenClaw Export Modal -->
+  <div class="modal-overlay hidden" id="openclaw-export-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Export OpenClaw Config</h2>
+        <button class="modal-close" onclick="myMcp.closeOpenclawExportModal()">&times;</button>
+      </div>
+      <p class="text-secondary text-sm mb-16">Your complete <code>openclaw.json</code> config with all subscribed servers.</p>
+      <div class="code-block">
+        <button class="copy-btn" id="openclaw-export-copy-btn" onclick="myMcp.copyOpenclawExport()">Copy</button>
+        <pre id="openclaw-export-json">Loading...</pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="openclaw-export-download-btn" onclick="myMcp.downloadOpenclawExport()">Download as openclaw.json</button>
+        <button class="btn btn-secondary" onclick="myMcp.closeOpenclawExportModal()">Close</button>
       </div>
     </div>
   </div>

@@ -85,6 +85,24 @@
     </div>
   </div>
 
+  <!-- OpenClaw Config Modal -->
+  <div class="modal-overlay hidden" id="openclaw-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>OpenClaw Config</h2>
+        <button class="modal-close" onclick="serverDetail.closeOpenclawModal()">&times;</button>
+      </div>
+      <p class="text-secondary text-sm mb-16">Copy this JSON snippet into your <code>openclaw.json</code> config file.</p>
+      <div class="code-block">
+        <button class="copy-btn" id="openclaw-copy-btn" onclick="serverDetail.copyOpenclawConfig()">Copy</button>
+        <pre id="openclaw-json">Loading...</pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="serverDetail.closeOpenclawModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-grid">

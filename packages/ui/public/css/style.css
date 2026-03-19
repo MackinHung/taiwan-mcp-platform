@@ -938,6 +938,71 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: #fff;
 }
 
+/* ── Onboard Steps ─────────────────────────────────────────── */
+.onboard-steps {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.onboard-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  max-width: 180px;
+}
+
+.onboard-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.onboard-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.onboard-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.onboard-desc a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.onboard-arrow {
+  color: var(--text-muted);
+  margin-top: 12px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .onboard-steps { flex-direction: column; align-items: center; gap: 4px; }
+  .onboard-step { max-width: 100%; flex-direction: row; gap: 12px; text-align: left; }
+  .onboard-icon { width: 36px; height: 36px; flex-shrink: 0; margin-bottom: 0; }
+  .onboard-icon svg { width: 18px; height: 18px; }
+  .onboard-arrow { transform: rotate(90deg); margin-top: 0; }
+}
+
 /* ── Forms ──────────────────────────────────────────────────── */
 .form-group {
   margin-bottom: 16px;
@@ -955,6 +1020,22 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: 2px;
+}
+
+.label-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  color: var(--bg);
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: help;
+  vertical-align: middle;
+  margin-left: 4px;
 }
 
 input[type="text"],
@@ -2019,6 +2100,14 @@ tr:hover td { background: var(--bg-surface-hover); }
   opacity: 0;
   transition: opacity var(--transition);
   z-index: 10;
+}
+
+.label-help[data-tooltip]::after {
+  white-space: normal;
+  width: 220px;
+  text-align: left;
+  left: 0;
+  transform: none;
 }
 
 [data-tooltip]:hover::after { opacity: 1; }

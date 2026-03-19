@@ -80,6 +80,7 @@ const serverDetail = {
             <span class="icon icon-sm">${this.starred ? icons.starFilled : icons.star}</span> ${this.starred ? '已收藏' : '收藏'} <span id="star-count">${s.total_stars}</span>
           </button>
           <button class="btn btn-primary" onclick="serverDetail.addToMcp()">加入我的 MCP</button>
+          <button class="btn btn-secondary" onclick="serverDetail.openOpenclawModal()">Add to OpenClaw</button>
           <button class="btn btn-ghost" onclick="serverDetail.openReportModal()">回報</button>
         </div>
       </div>
@@ -337,6 +338,47 @@ const serverDetail = {
     } catch (e) {
       showToast('回報送出失敗，請稍後再試');
     }
+  },
+
+  // ── OpenClaw Config ──
+  async openOpenclawModal() {
+    const modal = $('#openclaw-modal');
+    if (!modal) return;
+
+    const codeEl = $('#openclaw-json');
+    const copyBtn = $('#openclaw-copy-btn');
+    if (codeEl) codeEl.textContent = 'Loading...';
+    if (copyBtn) copyBtn.disabled = true;
+
+    modal.classList.remove('hidden');
+
+    try {
+      const res = await api.get(`/servers/${this.slug}/config?client=openclaw`);
+      const json = JSON.stringify(res.data, null, 2);
+      if (codeEl) codeEl.textContent = json;
+      if (copyBtn) copyBtn.disabled = false;
+    } catch (e) {
+      if (codeEl) codeEl.textContent = 'Failed to load config';
+      showToast('Failed to load OpenClaw config');
+    }
+  },
+
+  closeOpenclawModal() {
+    const modal = $('#openclaw-modal');
+    if (modal) modal.classList.add('hidden');
+  },
+
+  copyOpenclawConfig() {
+    const codeEl = $('#openclaw-json');
+    if (!codeEl) return;
+    const text = codeEl.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = $('#openclaw-copy-btn');
+      if (!btn) return;
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = original; }, 2000);
+    });
   }
 };
 
