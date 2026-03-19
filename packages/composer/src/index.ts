@@ -2,6 +2,8 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import type { Env, CompositionConfig, McpRequest } from './types.js';
 import { handleMcpRequest } from './mcp-handler.js';
+import { createStreamableHttpRoutes } from './streamable-http.js';
+import { SessionManager } from './session-manager.js';
 
 const app = new Hono<{ Bindings: Env }>();
 app.use('*', cors());
@@ -91,28 +93,36 @@ app.post('/mcp/u/:slug', async (c) => {
   return c.json(result);
 });
 
-// Single server MCP proxy endpoint
-app.post('/mcp/s/:slug', async (c) => {
-  const slug = c.req.param('slug');
-  const server = await c.env.DB.prepare(
-    'SELECT endpoint_url FROM servers WHERE slug = ? AND is_published = 1'
-  ).bind(slug).first<{ endpoint_url: string }>();
-
-  if (!server?.endpoint_url) {
-    return c.json({ error: 'Server not found' }, 404);
-  }
-
-  const body = await c.req.text();
-  const upstream = await fetch(server.endpoint_url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body,
-  });
-
-  return new Response(upstream.body, {
-    status: upstream.status,
-    headers: { 'Content-Type': 'application/json' },
-  });
+// Streamable HTTP transport for /mcp/s/:slug (POST + GET + DELETE)
+const streamableSessionManager = new SessionManager();
+const allowedOrigins = (typeof process !== 'undefined' && process.env?.ALLOWED_ORIGINS)
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : [];
+createStreamableHttpRoutes(app as any, {
+  sessionManager: streamableSessionManager,
+  allowedOrigins,
+  loadComposition: async (env: Env, slug: string) => {
+    const server = await env.DB.prepare(
+      'SELECT endpoint_url FROM servers WHERE slug = ? AND is_published = 1'
+    ).bind(slug).first<{ endpoint_url: string }>();
+    if (!server?.endpoint_url) return null;
+    // Wrap as a single-server composition
+    return {
+      id: `server-${slug}`,
+      user_id: 'proxy',
+      name: slug,
+      endpoint_slug: slug,
+      is_active: true,
+      servers: [{
+        server_id: `server-${slug}`,
+        server_slug: slug,
+        server_name: slug,
+        namespace_prefix: slug,
+        endpoint_url: server.endpoint_url,
+        enabled: true,
+      }],
+    };
+  },
 });
 
 // Session termination
@@ -168,6 +178,9 @@ export { handleMcpRequest } from './mcp-handler.js';
 export { parseNamespacedTool, findServer, routeToolCall } from './router.js';
 export { selectMode, loadAllTools, getMetaTools } from './lazy-loader.js';
 export { SessionStore } from './session.js';
+export { SessionManager } from './session-manager.js';
+export { createStreamableHttpRoutes } from './streamable-http.js';
+export { validateOrigin } from './origin-validator.js';
 export { proxyToServer } from './proxy.js';
 export type {
   Env,

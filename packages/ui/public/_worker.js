@@ -6,7 +6,7 @@ export default {
     const COMPOSER_URL = env.COMPOSER_WORKER_URL;
     const GATEWAY_URL = env.GATEWAY_WORKER_URL;
 
-    // Proxy /mcp/* to Composer Worker
+    // Proxy /mcp/* to Composer Worker (Streamable HTTP: POST + GET + DELETE)
     if (url.pathname.startsWith('/mcp/')) {
       if (!COMPOSER_URL) {
         return new Response('Service not configured: COMPOSER_WORKER_URL is missing', { status: 503 });
@@ -15,12 +15,27 @@ export default {
         url.pathname + url.search,
         COMPOSER_URL
       );
-      const headers = new Headers(request.headers);
-      headers.set('X-Forwarded-Host', url.host);
-      return fetch(composerUrl.toString(), {
+      const reqHeaders = new Headers(request.headers);
+      reqHeaders.set('X-Forwarded-Host', url.host);
+
+      const upstreamRes = await fetch(composerUrl.toString(), {
         method: request.method,
-        headers,
+        headers: reqHeaders,
         body: request.body,
+      });
+
+      // Build response headers, preserving SSE and session headers
+      const resHeaders = new Headers(upstreamRes.headers);
+      const SSE_HEADERS = ['Content-Type', 'Cache-Control', 'Connection', 'Mcp-Session-Id'];
+      for (const key of SSE_HEADERS) {
+        const val = upstreamRes.headers.get(key);
+        if (val) resHeaders.set(key, val);
+      }
+
+      // Stream body through without buffering
+      return new Response(upstreamRes.body, {
+        status: upstreamRes.status,
+        headers: resHeaders,
       });
     }
 
