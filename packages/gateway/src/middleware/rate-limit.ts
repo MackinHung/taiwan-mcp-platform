@@ -1,11 +1,15 @@
 import { createMiddleware } from 'hono/factory';
 import type { Env } from '../env.js';
 import { defer } from '../lib/defer.js';
-import { PLAN_LIMITS } from '@shared/constants.js';
 
 type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 
 const ANON_LIMIT = 30; // 30 req/min for anonymous users
+
+const PLAN_LIMITS: Record<string, { monthly_calls: number; calls_per_minute: number }> = {
+  free: { monthly_calls: 50_000, calls_per_minute: 100 },
+  rag_pro: { monthly_calls: 100_000, calls_per_minute: 200 },
+};
 
 export function rateLimitMiddleware() {
   return createMiddleware<HonoEnv>(async (c, next) => {
