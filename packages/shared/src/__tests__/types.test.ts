@@ -244,8 +244,8 @@ describe('types', () => {
   });
 
   it('Plan, Role, Scenario literal types cover all values', () => {
-    const plans: Plan[] = ['free', 'developer', 'team', 'enterprise'];
-    expect(plans).toHaveLength(4);
+    const plans: Plan[] = ['free', 'rag_pro'];
+    expect(plans).toHaveLength(2);
 
     const roles: Role[] = ['user', 'developer', 'admin'];
     expect(roles).toHaveLength(3);

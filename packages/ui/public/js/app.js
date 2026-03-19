@@ -193,7 +193,7 @@ const api = {
       throw { status: 429, retryAfter: Number(retryAfter), ...data };
     }
     if (res.status === 402) {
-      showToast('已達月度用量上限，請至個人資料頁升級方案');
+      showToast('已達月度用量上限，請稍後再試');
       throw { status: 402, ...data };
     }
 
@@ -551,9 +551,18 @@ const guide = {
       localStorage.setItem('guide-collapsed', !isOpen);
     });
 
-    // Card accordion
+    // Card accordion — click + keyboard
     document.querySelectorAll('.guide-card').forEach(card => {
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-expanded', 'false');
       card.addEventListener('click', () => this.toggleCard(card));
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.toggleCard(card);
+        }
+      });
     });
 
     // Hash jump
@@ -570,12 +579,16 @@ const guide = {
     const wasActive = card.classList.contains('active');
 
     // Close all
-    document.querySelectorAll('.guide-card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.guide-card').forEach(c => {
+      c.classList.remove('active');
+      c.setAttribute('aria-expanded', 'false');
+    });
     document.querySelectorAll('.guide-steps').forEach(s => s.classList.remove('open'));
 
     // Toggle if wasn't active
     if (!wasActive) {
       card.classList.add('active');
+      card.setAttribute('aria-expanded', 'true');
       steps.classList.add('open');
     }
   },

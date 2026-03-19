@@ -2,7 +2,7 @@
 
 -- Admin user
 INSERT OR IGNORE INTO users (id, github_id, google_id, username, display_name, role, plan, created_at, updated_at)
-VALUES ('admin001', 0, NULL, 'admin', 'Platform Admin', 'admin', 'enterprise',
+VALUES ('admin001', 0, NULL, 'admin', 'Platform Admin', 'admin', 'free',
         strftime('%Y-%m-%dT%H:%M:%SZ','now'), strftime('%Y-%m-%dT%H:%M:%SZ','now'));
 
 -- Sample servers

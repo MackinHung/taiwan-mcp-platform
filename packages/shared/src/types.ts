@@ -17,7 +17,7 @@ export interface User {
   updated_at: string;
 }
 
-export type Plan = 'free' | 'developer' | 'team' | 'enterprise';
+export type Plan = 'free' | 'rag_pro';
 export type Scenario = 'hobby' | 'business' | 'enterprise' | 'regulated';
 export type Role = 'user' | 'developer' | 'admin';
 

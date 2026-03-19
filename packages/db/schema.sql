@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT,
   avatar_url TEXT,
   role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'developer', 'admin')),
-  plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'developer', 'team', 'enterprise')),
+  plan TEXT NOT NULL DEFAULT 'free' CHECK (plan IN ('free', 'rag_pro')),
   scenario TEXT CHECK (scenario IN ('hobby', 'business', 'enterprise', 'regulated')),
   created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
   updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),

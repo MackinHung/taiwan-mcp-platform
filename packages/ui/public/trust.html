@@ -29,6 +29,7 @@
         <a href="/my-servers.html" class="hide-mobile">我的伺服器</a>
         <a href="/upload.html" class="hide-mobile">上架</a>
         <a href="/trust.html" class="active hide-mobile">信任與安全</a>
+        <a href="/pricing.html" class="hide-mobile">方案</a>
         <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()" title="切換主題"></button>
         <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
         <div id="user-menu" style="display:none;">
@@ -51,6 +52,7 @@
       <a href="/my-servers.html">我的伺服器</a>
       <a href="/upload.html">上架</a>
       <a href="/trust.html" class="active">信任與安全</a>
+      <a href="/pricing.html">方案與定價</a>
       <a href="/transparency.html">安全透明</a>
       <a href="/privacy.html">隱私政策</a>
     </div>
@@ -67,8 +69,9 @@
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">1.</span> <strong>OAuth 委派認證</strong> — 登入透過 GitHub 或 Google 處理，平台不經手密碼。</li>
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">2.</span> <strong>唯讀代理架構</strong> — 資料直接來自政府 API，平台僅轉送，不儲存或修改查詢內容。</li>
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">3.</span> <strong>安全審查標示</strong> — 每個工具皆附有多維度安全評分，可快速判斷風險等級。</li>
-        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">4.</span> <strong>自動掃描 + 人工審核</strong> — 所有工具經靜態分析、OSV / VirusTotal / SBOM 供應鏈掃描與人工審查後方可上架。</li>
-        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">5.</span> <strong>即時異常偵測</strong> — 系統 24 小時監控異常行為，自動攔截可疑活動。</li>
+        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">4.</span> <strong>四層安全審查</strong> — 所有工具須通過 8 項靜態掃描、行為分析、OSV / VirusTotal / SBOM 供應鏈驗證，及人工審核後方可上架。</li>
+        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">5.</span> <strong>即時異常偵測</strong> — 系統持續監控工具濫用、錯誤率突增、未宣告 URL 等異常模式，自動記錄並通知管理員。</li>
+        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">6.</span> <strong>權限邊界監控</strong> — 組合器即時檢查每個工具呼叫是否符合宣告權限，違規行為完整記錄供審閱。</li>
       </ul>
     </div>
 
@@ -149,7 +152,7 @@
         <h3>每個工具都有安全審查標示</h3>
         <p>
           每個 MCP 工具都有自己的<strong>安全審查報告</strong>，
-          包含四個維度：程式碼透明度、資料敏感度、權限範圍、社群信任。
+          包含四個維度：程式碼透明度、資料敏感度、權限範圍、社群信任。另有第三方驗證標章（OSV + OpenSSF Scorecard）。
           透過顏色標示即可快速判斷風險等級。
         </p>
         <div style="margin-top:12px;">
@@ -360,6 +363,7 @@
             <a href="/#guide">新手指南</a>
             <a href="/my-mcp.html">我的 MCP</a>
             <a href="/upload.html">上架伺服器</a>
+            <a href="/pricing.html">方案與定價</a>
           </div>
         </div>
         <div class="footer-col">

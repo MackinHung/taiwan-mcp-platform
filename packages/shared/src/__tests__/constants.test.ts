@@ -13,24 +13,16 @@ import {
 
 describe('constants', () => {
   describe('PLAN_LIMITS', () => {
-    it('has all four plans', () => {
-      expect(Object.keys(PLAN_LIMITS)).toEqual(['free', 'developer', 'team', 'enterprise']);
+    it('has free and rag_pro plans', () => {
+      expect(Object.keys(PLAN_LIMITS)).toEqual(['free', 'rag_pro']);
     });
 
-    it('free plan has 10,000 monthly calls and 50 rpm', () => {
-      expect(PLAN_LIMITS.free).toEqual({ monthly_calls: 10_000, calls_per_minute: 50 });
+    it('free plan has 50,000 monthly calls and 100 rpm', () => {
+      expect(PLAN_LIMITS.free).toEqual({ monthly_calls: 50_000, calls_per_minute: 100 });
     });
 
-    it('developer plan has 100,000 monthly calls and 200 rpm', () => {
-      expect(PLAN_LIMITS.developer).toEqual({ monthly_calls: 100_000, calls_per_minute: 200 });
-    });
-
-    it('team plan has 500,000 monthly calls and 500 rpm', () => {
-      expect(PLAN_LIMITS.team).toEqual({ monthly_calls: 500_000, calls_per_minute: 500 });
-    });
-
-    it('enterprise plan has unlimited (-1) monthly calls and 2000 rpm', () => {
-      expect(PLAN_LIMITS.enterprise).toEqual({ monthly_calls: -1, calls_per_minute: 2_000 });
+    it('rag_pro plan has 100,000 monthly calls and 200 rpm', () => {
+      expect(PLAN_LIMITS.rag_pro).toEqual({ monthly_calls: 100_000, calls_per_minute: 200 });
     });
 
     it('all plans have positive calls_per_minute', () => {

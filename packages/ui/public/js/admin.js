@@ -343,7 +343,7 @@ const admin = {
   },
 
   planLabel(plan) {
-    const labels = { free: 'Free', developer: 'Developer', pro: 'Pro', team: 'Team', enterprise: 'Enterprise', unlimited: 'Unlimited' };
+    const labels = { free: '免費', rag_pro: 'RAG 智慧' };
     return labels[plan] || plan;
   },
 
@@ -369,10 +369,8 @@ const admin = {
       <div class="form-group">
         <label>方案</label>
         <select id="edit-plan">
-          <option value="free" ${user.plan === 'free' ? 'selected' : ''}>Free</option>
-          <option value="developer" ${user.plan === 'developer' ? 'selected' : ''}>Developer</option>
-          <option value="team" ${user.plan === 'team' ? 'selected' : ''}>Team</option>
-          <option value="enterprise" ${user.plan === 'enterprise' ? 'selected' : ''}>Enterprise</option>
+          <option value="free" ${user.plan === 'free' ? 'selected' : ''}>免費</option>
+          <option value="rag_pro" ${user.plan === 'rag_pro' ? 'selected' : ''}>RAG 智慧</option>
         </select>
       </div>
     `;

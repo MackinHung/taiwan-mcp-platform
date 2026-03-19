@@ -36,10 +36,10 @@ describe('Rate Limit Middleware', () => {
 
     it('should block requests over per-minute limit for free plan', async () => {
       const user = createMockUser({ plan: 'free' });
-      // Simulate 50 existing requests
+      // Simulate 100 existing requests
       const kvStore: Record<string, string> = {};
       const currentMinute = Math.floor(Date.now() / 60000);
-      kvStore[`rl:user-123:${currentMinute}`] = '50';
+      kvStore[`rl:user-123:${currentMinute}`] = '100';
 
       const env = createMockEnv({ RATE_LIMITS: createMockKV(kvStore) });
       const app = await setupApp(env, user);
@@ -54,7 +54,7 @@ describe('Rate Limit Middleware', () => {
       const user = createMockUser({ plan: 'free' });
       const kvStore: Record<string, string> = {};
       const currentMinute = Math.floor(Date.now() / 60000);
-      kvStore[`rl:user-123:${currentMinute}`] = '49';
+      kvStore[`rl:user-123:${currentMinute}`] = '99';
 
       const env = createMockEnv({ RATE_LIMITS: createMockKV(kvStore) });
       const app = await setupApp(env, user);
@@ -63,8 +63,8 @@ describe('Rate Limit Middleware', () => {
       expect(res.status).toBe(200);
     });
 
-    it('should use developer plan limits (200/min)', async () => {
-      const user = createMockUser({ plan: 'developer' });
+    it('should allow rag_pro requests at limit - 1 (200/min)', async () => {
+      const user = createMockUser({ plan: 'rag_pro' });
       const kvStore: Record<string, string> = {};
       const currentMinute = Math.floor(Date.now() / 60000);
       kvStore[`rl:user-123:${currentMinute}`] = '199';
@@ -76,8 +76,8 @@ describe('Rate Limit Middleware', () => {
       expect(res.status).toBe(200);
     });
 
-    it('should block developer at limit (200/min)', async () => {
-      const user = createMockUser({ plan: 'developer' });
+    it('should block rag_pro at limit (200/min)', async () => {
+      const user = createMockUser({ plan: 'rag_pro' });
       const kvStore: Record<string, string> = {};
       const currentMinute = Math.floor(Date.now() / 60000);
       kvStore[`rl:user-123:${currentMinute}`] = '200';
@@ -87,32 +87,6 @@ describe('Rate Limit Middleware', () => {
 
       const res = await app.request('/test', {}, env);
       expect(res.status).toBe(429);
-    });
-
-    it('should use team plan limits (500/min)', async () => {
-      const user = createMockUser({ plan: 'team' });
-      const kvStore: Record<string, string> = {};
-      const currentMinute = Math.floor(Date.now() / 60000);
-      kvStore[`rl:user-123:${currentMinute}`] = '499';
-
-      const env = createMockEnv({ RATE_LIMITS: createMockKV(kvStore) });
-      const app = await setupApp(env, user);
-
-      const res = await app.request('/test', {}, env);
-      expect(res.status).toBe(200);
-    });
-
-    it('should use enterprise plan limits (2000/min)', async () => {
-      const user = createMockUser({ plan: 'enterprise' });
-      const kvStore: Record<string, string> = {};
-      const currentMinute = Math.floor(Date.now() / 60000);
-      kvStore[`rl:user-123:${currentMinute}`] = '1999';
-
-      const env = createMockEnv({ RATE_LIMITS: createMockKV(kvStore) });
-      const app = await setupApp(env, user);
-
-      const res = await app.request('/test', {}, env);
-      expect(res.status).toBe(200);
     });
   });
 
@@ -125,7 +99,7 @@ describe('Rate Limit Middleware', () => {
         DB: createMockDB({
           firstFn: (query) => {
             if (query.includes('SUM') || query.includes('sum')) {
-              return { total: 10001 };
+              return { total: 50001 };
             }
             return null;
           },
@@ -159,15 +133,37 @@ describe('Rate Limit Middleware', () => {
       expect(res.status).toBe(200);
     });
 
-    it('should allow enterprise unlimited monthly', async () => {
-      const user = createMockUser({ plan: 'enterprise' });
+    it('should block rag_pro when monthly usage exceeded (100,000)', async () => {
+      const user = createMockUser({ plan: 'rag_pro' });
       const kvStore: Record<string, string> = {};
       const env = createMockEnv({
         RATE_LIMITS: createMockKV(kvStore),
         DB: createMockDB({
           firstFn: (query) => {
             if (query.includes('SUM') || query.includes('sum')) {
-              return { total: 999999 };
+              return { total: 100001 };
+            }
+            return null;
+          },
+        }),
+      });
+      const app = await setupApp(env, user);
+
+      const res = await app.request('/test', {}, env);
+      expect(res.status).toBe(402);
+      const data = await res.json();
+      expect(data.success).toBe(false);
+    });
+
+    it('should allow rag_pro when monthly usage under limit', async () => {
+      const user = createMockUser({ plan: 'rag_pro' });
+      const kvStore: Record<string, string> = {};
+      const env = createMockEnv({
+        RATE_LIMITS: createMockKV(kvStore),
+        DB: createMockDB({
+          firstFn: (query) => {
+            if (query.includes('SUM') || query.includes('sum')) {
+              return { total: 50000 };
             }
             return null;
           },
@@ -196,7 +192,7 @@ describe('Rate Limit Middleware', () => {
       const user = createMockUser({ plan: 'free' });
       const kvStore: Record<string, string> = {};
       const currentMinute = Math.floor(Date.now() / 60000);
-      kvStore[`rl:user-123:${currentMinute}`] = '50';
+      kvStore[`rl:user-123:${currentMinute}`] = '100';
 
       const env = createMockEnv({ RATE_LIMITS: createMockKV(kvStore) });
       const app = await setupApp(env, user);

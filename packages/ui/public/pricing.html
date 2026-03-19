@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>方案與定價 — 台灣 MCP 市集</title>
+  <meta name="description" content="台灣 MCP 市集方案與定價 — 平台免費開放使用，RAG Intelligence 智慧路由即將推出" />
+  <link rel="canonical" href="https://tw-mcp.pages.dev/pricing.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="方案與定價 — 台灣 MCP 市集" />
+  <meta property="og:description" content="台灣 MCP 市集方案與定價 — 平台免費開放使用，RAG Intelligence 智慧路由即將推出" />
+  <meta property="og:url" content="https://tw-mcp.pages.dev/pricing.html" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:site_name" content="台灣 MCP 市集" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "方案與定價",
+    "description": "台灣 MCP 市集方案與定價",
+    "url": "https://tw-mcp.pages.dev/pricing.html"
+  }
+  </script>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+      <div class="nav-search">
+        <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." />
+      </div>
+      <div class="nav-links">
+        <a href="/">探索</a>
+        <a href="/#guide" class="hide-mobile">指南</a>
+        <a href="/my-mcp.html" class="hide-mobile">我的 MCP</a>
+        <a href="/my-servers.html" class="hide-mobile">我的伺服器</a>
+        <a href="/upload.html" class="hide-mobile">上架</a>
+        <a href="/trust.html" class="hide-mobile">信任與安全</a>
+        <a href="/pricing.html" class="active hide-mobile">方案</a>
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()" title="切換主題"></button>
+        <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
+        <div id="user-menu" style="display:none;">
+          <a href="/profile.html"><img id="user-avatar" src="" alt="avatar" /></a>
+          <span id="user-name"></span>
+        </div>
+        <button class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="選單"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-close"><button onclick="closeMobileMenu()" aria-label="關閉選單"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+    <div class="mobile-menu-links">
+      <a href="/">探索</a>
+      <a href="/#guide">指南</a>
+      <a href="/my-mcp.html">我的 MCP</a>
+      <a href="/my-servers.html">我的伺服器</a>
+      <a href="/upload.html">上架</a>
+      <a href="/trust.html">信任與安全</a>
+      <a href="/pricing.html" class="active">方案與定價</a>
+      <a href="/transparency.html">安全透明</a>
+      <a href="/privacy.html">隱私政策</a>
+    </div>
+  </div>
+
+  <div class="policy-page">
+    <h1>方案與定價</h1>
+    <p class="policy-updated">平台免費開放使用 — RAG Intelligence 智慧路由即將推出</p>
+
+    <!-- Pricing Grid -->
+    <div class="pricing-grid">
+      <!-- Free Plan -->
+      <div class="pricing-card">
+        <div class="pricing-header">
+          <h2>免費方案</h2>
+          <span class="badge badge-green">永久免費</span>
+        </div>
+        <div class="pricing-price">
+          <span class="price-amount">$0</span>
+          <span class="price-period">/ 永久</span>
+        </div>
+        <ul class="pricing-features">
+          <li>39+ 台灣在地化 MCP 伺服器</li>
+          <li>API 呼叫 100 次/分鐘</li>
+          <li>每月 50,000 次呼叫</li>
+          <li>Streamable HTTP 傳輸</li>
+          <li>OpenClaw 生態整合</li>
+          <li>安全審查標示</li>
+          <li>組合器 (Composer)</li>
+          <li>GitHub / Google OAuth 登入</li>
+        </ul>
+        <a href="/" class="btn btn-primary" style="width:100%;text-align:center;">開始使用</a>
+      </div>
+
+      <!-- RAG Intelligence -->
+      <div class="pricing-card featured">
+        <div class="pricing-header">
+          <h2>RAG Intelligence</h2>
+          <span class="coming-soon-badge">即將推出</span>
+        </div>
+        <div class="pricing-price">
+          <span class="price-amount" style="font-size:1.5rem;">敬請期待</span>
+        </div>
+        <ul class="pricing-features">
+          <li>所有免費方案功能</li>
+          <li>API 呼叫 200 次/分鐘</li>
+          <li>每月 100,000 次呼叫</li>
+          <li>語義搜索 (Semantic Search)</li>
+          <li>智慧 Skill 路由選擇</li>
+          <li>自然語言查詢路由</li>
+          <li>推薦引擎</li>
+          <li>優先技術支援</li>
+        </ul>
+        <button class="btn btn-secondary" style="width:100%;text-align:center;" disabled>即將推出</button>
+      </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="policy-section">
+      <h2>功能比較</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>功能</th>
+              <th>免費方案</th>
+              <th>RAG Intelligence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>MCP 伺服器存取</td><td>39+ 伺服器</td><td>39+ 伺服器</td></tr>
+            <tr><td>API 速率</td><td>100 次/分鐘</td><td>200 次/分鐘</td></tr>
+            <tr><td>月呼叫量</td><td>50,000 次</td><td>100,000 次</td></tr>
+            <tr><td>Streamable HTTP</td><td>&#10003;</td><td>&#10003;</td></tr>
+            <tr><td>組合器 (Composer)</td><td>&#10003;</td><td>&#10003;</td></tr>
+            <tr><td>安全審查標示</td><td>&#10003;</td><td>&#10003;</td></tr>
+            <tr><td>OpenClaw 整合</td><td>&#10003;</td><td>&#10003;</td></tr>
+            <tr><td>語義搜索</td><td>&#10007;</td><td>&#10003;</td></tr>
+            <tr><td>智慧 Skill 路由</td><td>&#10007;</td><td>&#10003;</td></tr>
+            <tr><td>自然語言查詢</td><td>&#10007;</td><td>&#10003;</td></tr>
+            <tr><td>推薦引擎</td><td>&#10007;</td><td>&#10003;</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="policy-section">
+      <h2>常見問題</h2>
+
+      <details style="margin-bottom:16px;">
+        <summary style="cursor:pointer;font-weight:600;padding:12px 0;">為什麼平台是免費的？</summary>
+        <p style="color:var(--text-secondary);padding:8px 0 16px 16px;border-left:2px solid var(--border-color);">
+          台灣 MCP 市集是開源專案（AGPL-3.0），致力於讓台灣的公開資料更容易被 AI 助手存取。
+          平台核心功能永久免費，未來的付費服務（RAG Intelligence）將專注於進階的智慧路由與語義搜索功能。
+        </p>
+      </details>
+
+      <details style="margin-bottom:16px;">
+        <summary style="cursor:pointer;font-weight:600;padding:12px 0;">RAG Intelligence 是什麼？</summary>
+        <p style="color:var(--text-secondary);padding:8px 0 16px 16px;border-left:2px solid var(--border-color);">
+          RAG Intelligence 是平台的進階智慧路由服務。透過語義搜索與向量嵌入技術，
+          讓 AI 助手能用自然語言找到最適合的 MCP 伺服器與工具，
+          並根據使用情境智慧推薦相關的資料來源。
+        </p>
+      </details>
+
+      <details style="margin-bottom:16px;">
+        <summary style="cursor:pointer;font-weight:600;padding:12px 0;">RAG Intelligence 何時推出？</summary>
+        <p style="color:var(--text-secondary);padding:8px 0 16px 16px;border-left:2px solid var(--border-color);">
+          RAG Intelligence 目前在開發規劃階段。我們將在準備就緒後公布具體推出時間與定價。
+          目前所有使用者都可以免費使用平台的完整功能。
+        </p>
+      </details>
+
+      <details style="margin-bottom:16px;">
+        <summary style="cursor:pointer;font-weight:600;padding:12px 0;">可以自架平台嗎？</summary>
+        <p style="color:var(--text-secondary);padding:8px 0 16px 16px;border-left:2px solid var(--border-color);">
+          可以！台灣 MCP 市集採用 AGPL-3.0 開源授權，你可以自由部署在自己的 Cloudflare 帳號上。
+          詳見 <a href="https://github.com/MackinHung/taiwan-mcp-platform" target="_blank" rel="noopener" style="color:var(--color-primary);">GitHub 專案頁面</a>。
+        </p>
+      </details>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>🇹🇼 台灣 MCP 市集</h4>
+          <p>探索、安裝、組合在地化 MCP 伺服器 — 讓 AI 助手使用台灣的資料與服務。39+ 在地化伺服器，涵蓋天氣、交通、金融、法律等領域。</p>
+        </div>
+        <div class="footer-col">
+          <h4>平台</h4>
+          <div class="footer-col-links">
+            <a href="/">探索市集</a>
+            <a href="/#guide">新手指南</a>
+            <a href="/my-mcp.html">我的 MCP</a>
+            <a href="/upload.html">上架伺服器</a>
+            <a href="/pricing.html">方案與定價</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>開發者</h4>
+          <div class="footer-col-links">
+            <a href="/trust.html">信任與安全</a>
+            <a href="/transparency.html">安全透明</a>
+            <a href="/privacy.html">隱私政策</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>資源</h4>
+          <div class="footer-col-links">
+            <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP 規格</a>
+            <a href="https://github.com/MackinHung/taiwan-mcp-platform" target="_blank" rel="noopener">GitHub</a>
+            <a href="/trust.html#report">回報問題</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-social">
+        <a href="https://github.com/MackinHung" target="_blank" rel="noopener" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+        <a href="mailto:mackinhung@gmail.com" title="Email"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2026 <a href="https://github.com/MackinHung" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">@MackinHung</a> — 台灣 MCP 市集</div>
+        <div class="footer-disclosure">Powered by Cloudflare — 資料受 APEC CBPR 跨境規範保障</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
