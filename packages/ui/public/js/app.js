@@ -484,6 +484,7 @@ function renderNav(activePage) {
       </div>
       <div class="nav-links">
         <a href="/" class="${activePage === 'home' ? 'active' : ''}">探索</a>
+        <a href="/#guide" class="hide-mobile">指南</a>
         <a href="/my-mcp.html" class="${activePage === 'my-mcp' ? 'active' : ''} hide-mobile">我的 MCP</a>
         <a href="/my-servers.html" class="${activePage === 'my-servers' ? 'active' : ''} hide-mobile">我的伺服器</a>
         <a href="/upload.html" class="${activePage === 'upload' ? 'active' : ''} hide-mobile">上架</a>
@@ -529,9 +530,74 @@ function reviewStatusClass(status) {
   return 'badge-amber';
 }
 
+// ── Beginner Guide ───────────────────────────────────────────
+const guide = {
+  init() {
+    const header = document.querySelector('.beginner-guide-header');
+    if (!header) return;
+
+    const body = header.nextElementSibling;
+    const icon = header.querySelector('.toggle-icon');
+    const collapsed = localStorage.getItem('guide-collapsed') === 'true';
+
+    if (!collapsed) {
+      body.classList.add('open');
+      if (icon) icon.classList.add('open');
+    }
+
+    header.addEventListener('click', () => {
+      const isOpen = body.classList.toggle('open');
+      if (icon) icon.classList.toggle('open', isOpen);
+      localStorage.setItem('guide-collapsed', !isOpen);
+    });
+
+    // Card accordion
+    document.querySelectorAll('.guide-card').forEach(card => {
+      card.addEventListener('click', () => this.toggleCard(card));
+    });
+
+    // Hash jump
+    if (window.location.hash === '#guide') {
+      this.scrollToGuide();
+    }
+  },
+
+  toggleCard(card) {
+    const targetId = card.getAttribute('data-guide');
+    const steps = document.getElementById(targetId);
+    if (!steps) return;
+
+    const wasActive = card.classList.contains('active');
+
+    // Close all
+    document.querySelectorAll('.guide-card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.guide-steps').forEach(s => s.classList.remove('open'));
+
+    // Toggle if wasn't active
+    if (!wasActive) {
+      card.classList.add('active');
+      steps.classList.add('open');
+    }
+  },
+
+  scrollToGuide() {
+    const el = document.getElementById('beginner-guide');
+    if (!el) return;
+    const body = el.querySelector('.beginner-guide-body');
+    const icon = el.querySelector('.toggle-icon');
+    if (body && !body.classList.contains('open')) {
+      body.classList.add('open');
+      if (icon) icon.classList.add('open');
+      localStorage.setItem('guide-collapsed', 'false');
+    }
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+};
+
 // Init
 document.addEventListener('DOMContentLoaded', () => {
   theme.init();
   auth.init();
+  guide.init();
   initScrollToTop();
 });

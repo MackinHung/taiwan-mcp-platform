@@ -46,6 +46,7 @@
       </div>
       <div class="nav-links">
         <a href="/" class="active">探索</a>
+        <a href="/#guide" class="hide-mobile" onclick="guide.scrollToGuide()">指南</a>
         <a href="/my-mcp.html" class="hide-mobile">我的 MCP</a>
         <a href="/my-servers.html" class="hide-mobile">我的伺服器</a>
         <a href="/upload.html" class="hide-mobile">上架</a>
@@ -67,6 +68,7 @@
     <div class="mobile-menu-close"><button onclick="closeMobileMenu()" aria-label="關閉選單"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
     <div class="mobile-menu-links">
       <a href="/" class="active">探索</a>
+      <a href="/#guide">指南</a>
       <a href="/my-mcp.html">我的 MCP</a>
       <a href="/my-servers.html">我的伺服器</a>
       <a href="/upload.html">上架</a>
@@ -95,6 +97,180 @@
       </div>
     </div>
   </section>
+
+  <!-- Beginner Guide -->
+  <div class="container" style="padding-top:24px;">
+    <div class="beginner-guide" id="beginner-guide">
+      <div class="beginner-guide-header">
+        <h3><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 18 6-6-6-6"/></svg> 新手導航 — 選擇你的情境開始</h3>
+        <span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+      </div>
+      <div class="beginner-guide-body">
+        <div class="guide-cards">
+          <!-- Card A: 技術小白 -->
+          <div class="guide-card guide-blue" data-guide="guide-steps-a">
+            <div class="guide-card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+            <div class="guide-card-title">讓 AI 查台灣資料</div>
+            <div class="guide-card-desc">第一次使用？從這裡開始</div>
+          </div>
+          <!-- Card B: AI 工具用戶 -->
+          <div class="guide-card guide-green" data-guide="guide-steps-b">
+            <div class="guide-card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div>
+            <div class="guide-card-title">設定 Claude / Cursor</div>
+            <div class="guide-card-desc">已有 AI 工具，快速接上</div>
+          </div>
+          <!-- Card C: OpenClaw -->
+          <div class="guide-card guide-orange" data-guide="guide-steps-c">
+            <div class="guide-card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22.54 12.43-1.42-.65-8.28 3.78a2 2 0 0 1-1.66 0l-8.29-3.78-1.42.65a1 1 0 0 0 0 1.84l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.85Z"/></svg></div>
+            <div class="guide-card-title">OpenClaw 設定</div>
+            <div class="guide-card-desc">使用 OpenClaw 生態整合</div>
+          </div>
+          <!-- Card D: 開發者 -->
+          <div class="guide-card guide-purple" data-guide="guide-steps-d">
+            <div class="guide-card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+            <div class="guide-card-title">開發者 API 整合</div>
+            <div class="guide-card-desc">REST API / Streamable HTTP</div>
+          </div>
+        </div>
+
+        <!-- Steps A: 讓 AI 查台灣資料 -->
+        <div class="guide-steps" id="guide-steps-a">
+          <div class="guide-steps-inner">
+            <div class="guide-step">
+              <span class="guide-step-num">1</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">什麼是 MCP？</div>
+                <div class="guide-step-text">MCP 讓 AI 助手直接查詢台灣即時資料（天氣、股價、法規...），不用你手動查完再貼給 AI。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">2</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">你需要一個 AI 工具</div>
+                <div class="guide-step-text">推薦 <a href="https://claude.ai/download" target="_blank" rel="noopener">Claude Desktop</a>（免費）或 <a href="https://www.cursor.com" target="_blank" rel="noopener">Cursor</a>，安裝後即可使用 MCP。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">3</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">選一個快速模板</div>
+                <div class="guide-step-text">到 <a href="/my-mcp.html">我的 MCP</a> 頁面，使用預設模板快速建立你的第一個 MCP 組合。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">4</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">複製設定貼到 AI 工具</div>
+                <div class="guide-step-text">複製 JSON 設定 → 打開 Claude Desktop → 設定 → 開發者 → 編輯設定 → 貼上儲存即完成。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Steps B: 設定 Claude / Cursor -->
+        <div class="guide-steps" id="guide-steps-b">
+          <div class="guide-steps-inner">
+            <div class="guide-step">
+              <span class="guide-step-num">1</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">瀏覽市集選擇伺服器</div>
+                <div class="guide-step-text">在下方市集瀏覽你需要的 MCP 伺服器，點擊查看詳情與工具列表。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">2</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">加入組合</div>
+                <div class="guide-step-text">點擊「加入組合」將伺服器加到你的 <a href="/my-mcp.html">MCP 組合</a>，可一次加多個。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">3</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">複製 JSON 設定</div>
+                <div class="guide-step-text">到 <a href="/my-mcp.html">我的 MCP</a> 頁面，點擊「複製設定」取得完整的 JSON 配置。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">4</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">貼到 Claude Desktop</div>
+                <div class="guide-step-text">打開 Claude Desktop → 設定 → 開發者 → 編輯設定 → 貼上 JSON → 儲存並重啟。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Steps C: OpenClaw 設定 -->
+        <div class="guide-steps" id="guide-steps-c">
+          <div class="guide-steps-inner">
+            <div class="guide-step">
+              <span class="guide-step-num">1</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">瀏覽市集選擇伺服器</div>
+                <div class="guide-step-text">在下方市集選擇你需要的 MCP 伺服器，每個都有安全信任等級標示。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">2</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">建立 MCP 組合</div>
+                <div class="guide-step-text">到 <a href="/my-mcp.html">我的 MCP</a> 頁面建立組合，將選好的伺服器合併。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">3</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">Export OpenClaw Config</div>
+                <div class="guide-step-text">點擊「Export OpenClaw Config」按鈕，下載 <code>openclaw.json</code> 設定檔。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">4</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">放入 OpenClaw 專案</div>
+                <div class="guide-step-text">將 <code>openclaw.json</code> 放到你的 OpenClaw 專案根目錄，啟動即自動載入。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Steps D: 開發者 API 整合 -->
+        <div class="guide-steps" id="guide-steps-d">
+          <div class="guide-steps-inner">
+            <div class="guide-step">
+              <span class="guide-step-num">1</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">登入取得 API Key</div>
+                <div class="guide-step-text">使用 GitHub 或 Google 登入，到 <a href="/profile.html">個人資料</a> 頁面取得 API Key。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">2</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">選擇連接方式</div>
+                <div class="guide-step-text">支援 REST API 或 Streamable HTTP，根據需求選擇合適的端點。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">3</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">端點格式</div>
+                <div class="guide-step-text">Streamable HTTP: <code>https://tw-mcp.pages.dev/mcp/{組合名稱}</code>，支援 MCP 標準協議。</div>
+              </div>
+            </div>
+            <div class="guide-step">
+              <span class="guide-step-num">4</span>
+              <div class="guide-step-content">
+                <div class="guide-step-title">查看完整文件</div>
+                <div class="guide-step-text">詳細 API 文件請參考 <a href="https://github.com/MackinHung/taiwan-mcp-platform" target="_blank" rel="noopener">GitHub README</a>，含範例程式碼。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Badge Education — Compact Grade Bar -->
   <div class="container" style="padding-top:24px;">
@@ -229,6 +405,7 @@
           <h4>平台</h4>
           <div class="footer-col-links">
             <a href="/">探索市集</a>
+            <a href="/#guide">新手指南</a>
             <a href="/my-mcp.html">我的 MCP</a>
             <a href="/upload.html">上架伺服器</a>
           </div>
