@@ -3,14 +3,11 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    const COMPOSER_URL = env.COMPOSER_WORKER_URL;
-    const GATEWAY_URL = env.GATEWAY_WORKER_URL;
+    const COMPOSER_URL = env.COMPOSER_WORKER_URL || 'https://mcp-composer.watermelom5404.workers.dev';
+    const GATEWAY_URL = env.GATEWAY_WORKER_URL || 'https://mcp-gateway.watermelom5404.workers.dev';
 
     // Proxy /mcp/* to Composer Worker (Streamable HTTP: POST + GET + DELETE)
     if (url.pathname.startsWith('/mcp/')) {
-      if (!COMPOSER_URL) {
-        return new Response('Service not configured: COMPOSER_WORKER_URL is missing', { status: 503 });
-      }
       const composerUrl = new URL(
         url.pathname + url.search,
         COMPOSER_URL
@@ -40,9 +37,6 @@ export default {
     }
 
     if (url.pathname.startsWith('/api/')) {
-      if (!GATEWAY_URL) {
-        return new Response('Service not configured: GATEWAY_WORKER_URL is missing', { status: 503 });
-      }
       const gatewayUrl = new URL(
         url.pathname + url.search,
         GATEWAY_URL
