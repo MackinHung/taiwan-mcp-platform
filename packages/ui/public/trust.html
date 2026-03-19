@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>信任與安全 — 台灣 MCP 市集</title>
-  <meta name="description" content="了解台灣 MCP 市集如何保護你的資料 — 用最簡單的方式說明我們的安全設計、營養標示系統、信任等級" />
+  <meta name="description" content="了解台灣 MCP 市集如何保護你的資料 — 用最簡單的方式說明我們的安全設計、安全審查標示、信任等級" />
   <link rel="canonical" href="https://tw-mcp.pages.dev/trust.html" />
   <meta property="og:type" content="article" />
   <meta property="og:title" content="信任與安全 — 台灣 MCP 市集" />
@@ -64,7 +64,7 @@
       <ul style="list-style:none;padding:0;margin:0;display:grid;gap:12px;">
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">1.</span> 我們<strong>不存你的密碼</strong> — 登入是透過 GitHub 或 Google 處理的，平台完全不經手。</li>
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">2.</span> 平台是<strong>純轉接站</strong> — 你查的資料直接來自政府 API，我們只是幫你轉送，不會偷看或修改。</li>
-        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">3.</span> 每個工具都有<strong>營養標示</strong> — 就像食品包裝一樣，讓你一眼看出安全等級。</li>
+        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">3.</span> 每個工具都有<strong>安全審查標示</strong> — 讓你一眼看出安全等級。</li>
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">4.</span> 上架前<strong>先掃描再審核</strong> — 所有工具都經過自動安全掃描 + 人工審查，才能出現在市集裡。</li>
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">5.</span> 有人搗蛋<strong>我們會擋</strong> — 系統 24 小時監控異常行為，自動阻擋可疑活動。</li>
       </ul>
@@ -115,7 +115,7 @@
         <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
         <h3>金鑰不存明碼</h3>
         <p>
-          你的 API 金鑰經過<strong>單向加密</strong>後才儲存 — 就像把文件碎掉再存，
+          你的 API 金鑰經過<strong>單向加密</strong>後才儲存 — 就像把檔案碎掉再存，
           即使有人偷看資料庫，也無法還原你的金鑰。另外，我們限制每分鐘的使用次數，
           防止有人大量濫用。
         </p>
@@ -144,9 +144,9 @@
 
       <div class="trust-card">
         <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>
-        <h3>每個工具都有營養標示</h3>
+        <h3>每個工具都有安全審查標示</h3>
         <p>
-          就像食品包裝上有營養成分表，每個 MCP 工具也有自己的<strong>安全成分表</strong>，
+          每個 MCP 工具都有自己的<strong>安全審查報告</strong>，
           包含四個維度：程式碼是否公開、會碰到什麼資料、有多少權限、多少人在用。
           你不需要懂技術，看顏色就能判斷。
         </p>
@@ -182,7 +182,7 @@
         <p>
           我們遵守<strong>台灣個資法</strong>，你的資料受法律保障。
           如果不幸發生資料外洩（雖然可能性極低），我們承諾 72 小時內通報，
-          而且有完整的緊急處理程序。
+          而且有完整的緊急處理流程。
         </p>
         <details style="margin-top:8px;">
           <summary style="cursor:pointer;color:var(--text-muted);font-size:0.8rem;">技術細節</summary>

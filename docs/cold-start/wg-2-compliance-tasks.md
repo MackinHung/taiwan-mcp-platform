@@ -383,7 +383,7 @@ interface AnomalyEvent {
 - DDoS 防護（Cloudflare 自帶）
 - ISO 27001 / SOC 2 Type II 認證基礎設施
 
-### 營養標示
+### 安全審查標示
 每個 MCP Server 都有透明的安全評分：
 - 原始碼公開度
 - 資料敏感度等級
@@ -408,7 +408,7 @@ interface AnomalyEvent {
 
 - 使用圖示 + 簡短文字，視覺化呈現安全架構
 - 加入「唯讀架構」的流程圖，讓用戶一眼理解為什麼安全
-- 營養標示區塊連結到 Marketplace，讓用戶實際體驗
+- 安全審查標示區塊連結到 Marketplace，讓用戶實際體驗
 - 政府資料來源用官方 logo 增加公信力
 - 從首頁 header 和 footer 都能連結到此頁面
 
