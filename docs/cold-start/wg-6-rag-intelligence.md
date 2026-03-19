@@ -198,7 +198,7 @@ uv run pytest                # 測試
 
 ### 生產部署
 
-**推薦: Docker on Mac Mini** (與現有 OceanRAG 共用):
+**推薦: Docker on Mac Mini**:
 
 ```bash
 docker compose up -d         # 啟動 RAG service
@@ -226,26 +226,7 @@ SYNC_INTERVAL_MINUTES=30
 
 ---
 
-## Section E — 與 OceanRAG 的關係
-
-> **注意**: 本專案的 RAG service 與 OceanRAG (v0.5.6) 是**獨立系統**，但可共享經驗。
-
-| 面向 | OceanRAG | MCP Platform RAG |
-|------|----------|-------------------|
-| 用途 | 企業文件問答 | MCP server 發現 + 推薦 |
-| 資料量 | 大量文件 (PDF, DOCX) | 39 servers, 190+ tools (結構化 metadata) |
-| Embedding | 文件 chunk embedding | Server/tool description embedding |
-| Reranker | adjacent expansion ±2 | trust grade 加權 |
-| 部署 | Mac Mini standalone | Mac Mini (共用) 或 Cloud Run |
-
-**可復用的 OceanRAG 經驗**:
-- `asyncio.to_thread` + LanceDB Windows 死鎖 → startup 預建 index
-- Reranker title-only 問題 → adjacent expansion
-- Two-node confidence model 概念可套用到 server 推薦信心度
-
----
-
-## Section F — 團隊模板
+## Section E — 團隊模板
 
 ```
 TeamCreate: rag-intelligence-{n}
@@ -269,5 +250,5 @@ QA: 每個階段結束跑完整測試 + 搜索品質 benchmark
 1. **先完成 TypeScript 側**: WG-2 P4 (進階功能) + WG-5 P4 (npm 套件化) 應優先完成，RAG 是加值層。
 2. **索引資料量小**: 39 servers + 190 tools，向量 DB 壓力極低，LanceDB 嵌入式足夠。
 3. **中文是關鍵**: 繁體中文語義理解是核心差異化，模型選擇必須驗證繁體中文效果。
-4. **OceanRAG 死鎖經驗**: Windows + LanceDB + asyncio 有已知問題，參考 OceanRAG 解法。
+4. **LanceDB + asyncio 注意**: Windows + LanceDB + `asyncio.to_thread` 有已知檔案鎖問題，startup 時預建 index 可避免。
 5. **API 邊界要乾淨**: Gateway 只負責 proxy 到 RAG service，不做任何 ML 邏輯。
