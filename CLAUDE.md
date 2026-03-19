@@ -19,7 +19,7 @@
 
 **Repo**: `MackinHung/taiwan-mcp-platform`, branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
-**Current**: 3,235+ tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3), dead code cleaned (`b8d7910`)
+**Current**: 3,580+ tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3), dead code cleaned (`b8d7910`)
 
 ---
 
@@ -76,9 +76,18 @@ servers/
   taiwan-education/    → 5 school directory tools (95 tests)
   taiwan-election/     → 5 election results tools (67 tests)
 docs/
-  cold-start/ → WG 詳細規格（本文件下方有索引，含 WG-5 OpenClaw 生態）
+  cold-start/ → WG 詳細規格（本文件下方有索引，含 WG-5 OpenClaw、WG-6 RAG）
   research/   → WG-3 研究產出
   security/   → WG-4 安全研究產出
+services/                    # 下階段：非 TypeScript 微服務
+  rag/       → WG-6: Python RAG 微服務（語義搜索 + 推薦，規劃中）
+```
+
+**下階段架構 (WG-6)**:
+```
+Cloudflare Edge (現有 TypeScript) ──REST API──▶ Python RAG 微服務 (services/rag/)
+  Gateway / Composer / UI / 39 servers          FastAPI + BGE-M3 + LanceDB
+  D1 + KV + R2                                  語義搜索 + Reranking + 推薦
 ```
 
 **Dependencies**: `shared` (zero deps) ← `gateway`, `review`, `composer` ← `ui` (calls API), `composer` (proxies to servers)
@@ -125,9 +134,9 @@ cd packages/db && npm run migrate:local && npm run seed:local  # DB
 
 ---
 
-## 五大工作群 — 索引
+## 六大工作群 — 索引
 
-本專案劃分為五個獨立工作群。用戶指定要啟動哪個（例如「啟動 WG-1」），再載入對應文件。
+本專案劃分為六個工作群。WG-1~5 為現行開發，WG-6 為下階段規劃。用戶指定要啟動哪個（例如「啟動 WG-1」），再載入對應文件。
 
 ### 判斷用戶意圖 → 對應工作群
 
@@ -138,6 +147,7 @@ cd packages/db && npm run migrate:local && npm run seed:local  # DB
 | 「研究 MCP」「競品分析」「搬運策略」「商業模式」 | WG-3 研究 | [`docs/cold-start/wg-3-research.md`](docs/cold-start/wg-3-research.md) |
 | 「安全規則」「標章改進」「沙箱設計」「掃描規則」 | WG-4 安全 | [`docs/cold-start/wg-4-security.md`](docs/cold-start/wg-4-security.md) |
 | 「OpenClaw」「ClawHub」「MCPorter」「Streamable HTTP」「SSE transport」「openclaw.json」 | WG-5 OpenClaw 生態 | [`docs/cold-start/wg-5-openclaw-ecosystem.md`](docs/cold-start/wg-5-openclaw-ecosystem.md) |
+| 「RAG」「語義搜索」「推薦」「embedding」「向量搜索」「自然語言搜 server」 | WG-6 RAG Intelligence | [`docs/cold-start/wg-6-rag-intelligence.md`](docs/cold-start/wg-6-rag-intelligence.md) |
 
 **API 路由 & 型別參考**: [`docs/cold-start/api-reference.md`](docs/cold-start/api-reference.md)
 
