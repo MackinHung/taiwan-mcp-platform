@@ -18,7 +18,9 @@
 - UI: **10 頁面** (6 原有 + privacy + trust + transparency + admin), 全部有 footer + 一致 nav + SEO meta + OpenClaw modals
 - DB: Schema 完成 (**16 tables**, 含 privacy_requests)，D1 已上線 + seed 資料
 - **MCP Servers**: 39 servers (Batch 1: 17, Batch 2: 14, Batch 3: 8) — 詳見 WG-1
-- **Total workspace tests**: 3,619+ passed (platform ~660 + 39 servers ~2,685 + scripts 27)
+- **Total workspace tests**: 3,998 passed (platform ~660 + 39 servers ~3,065 + scripts 27)
+- **Brand**: `Formosa MCP 市集`, npm scope `@formosa-mcp`
+- **npm Packaging**: 39 servers 全部 npm-ready (cli.ts + server.json + tsconfig.build.json)
 
 ---
 
@@ -119,6 +121,41 @@
 - `typescript` / `wrangler` depcheck 誤報 — 實際為開發工具
 
 **注意**: 此輪 refactor-clean **僅覆蓋平台代碼與 MCP servers**。PowerReader Next 的 Knowledge Browser（1,121 entries、23 batch files）**尚未進行 dead code 清理**，相關 `vi.hoisted()` pattern + fs mock、build-time static JSON 等程式碼未經 knip/depcheck 分析。
+
+### P3.7 — Formosa MCP npm 套件化 + 卡片強化 + 分發 ✅ (2026-03-21, commit `996ae4f`)
+
+**Phase A: npm Packaging** (全自動腳本):
+- `tsconfig.build.json` (root + 39 servers) — ESNext/NodeNext builds
+- `scripts/generate-cli.mjs` → 39 `cli.ts` with `StdioServerTransport`
+- `scripts/update-package-json.mjs` → 39 package.json: `@formosa-mcp/*` scope, bin, exports, files
+- `scripts/generate-server-json.mjs` → 39 `server.json` for Official MCP Registry
+- `scripts/generate-cli-tests.mjs` → 39 `cli.test.ts`
+- `scripts/npm-publish.mjs` — 批次 build + publish (dry-run 支援)
+
+**Phase B: Card UI Enhancement**:
+- DB migration `0004_card_enhancement.sql`: 5 新欄位 (data_source_agency, api_key_required, data_update_frequency, compatible_clients, github_url)
+- `seed.sql` 擴展至 39 servers (原 4 → 39, 含完整 metadata)
+- `marketplace.js`: 卡片新增資料來源行 + API Key badge + 底部授權/頻率/GitHub
+- `server-detail.js`: 資料來源區塊 + 安裝 tabs (Claude/Cursor/VSCode/OpenClaw/npx) + 開源資訊
+- `style.css`: card-source, api-key-badge, card-bottom, install-tabs, freq-badge 等新樣式
+
+**Phase C: Distribution Scripts** (ready, 待手動執行):
+- `scripts/registry-publish.mjs` — Official MCP Registry 批次上架
+- `scripts/smithery-publish.mjs` — Smithery 批次上架 (rate limit 2s/server)
+- `scripts/pulsemcp-entry.mjs` — PulseMCP 目錄 JSON 產生
+
+**Brand Rename**:
+- `台灣 MCP 市集` → `Formosa MCP 市集` (11 HTML files, 55 occurrences)
+- `@mcp-platform/*` → `@formosa-mcp/*` (6 packages + 39 servers)
+- TypeScript imports 更新 (review package: badge/pipeline/report/rescan)
+
+**待手動操作** (需帳號憑證，全部免費):
+1. `npm login --scope=@formosa-mcp` — 到 npmjs.com 建立 `formosa-mcp` org (free plan)
+2. `node scripts/npm-publish.mjs` — 發布 39 npm packages
+3. `node scripts/registry-publish.mjs` — 上架 Official MCP Registry
+4. `node scripts/smithery-publish.mjs` — 上架 Smithery
+5. `node scripts/pulsemcp-entry.mjs` → fork `pulsemcp/mcp-servers` → PR
+6. Production D1: 跑 migration `0004_card_enhancement.sql` + 更新 seed
 
 ### P4 — 進階功能
 
