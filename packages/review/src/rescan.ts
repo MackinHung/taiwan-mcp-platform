@@ -5,7 +5,7 @@
 import { scanOsv, determineOverallStatus } from './external-scan.js';
 import type { OsvResult, DepsDevResult, ExternalScanResult } from './external-scan.js';
 import { calculateExternalBadge } from './badge.js';
-import type { BadgeExternal } from '@mcp-platform/shared';
+import type { BadgeExternal } from '@formosa-mcp/shared';
 
 export interface RescanTarget {
   serverId: string;

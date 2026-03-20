@@ -1,4 +1,4 @@
-import type { ReviewReport } from '@mcp-platform/shared';
+import type { ReviewReport } from '@formosa-mcp/shared';
 
 export interface CreateReportInput {
   serverId: string;

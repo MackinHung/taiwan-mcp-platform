@@ -2,6 +2,8 @@
 // marketplace.js — Homepage server listing (real API)
 // ============================================================
 
+const freqLabels = { 'real-time': '即時', 'hourly': '每小時', 'daily': '每日', 'monthly': '每月', 'static': '靜態' };
+
 const marketplace = {
   filtered: [],
   currentCategory: 'all',
@@ -158,6 +160,10 @@ const marketplace = {
           </div>
           <span class="trust-grade ${tg.class}">${tg.grade}<span class="grade-tip">${tg.tip}</span></span>
         </div>
+        ${server.data_source_agency ? `<div class="card-source">
+          <span class="source-agency">${escapeHtml(server.data_source_agency)}</span>
+          ${server.api_key_required ? '<span class="api-key-badge needs-key">需API Key</span>' : '<span class="api-key-badge free">免費使用</span>'}
+        </div>` : ''}
         <div class="card-desc">${escapeHtml(server.description)}</div>
         ${badges.renderCardSummary(server)}
         <div class="card-tags">
@@ -168,6 +174,11 @@ const marketplace = {
           <span title="星數"><span class="icon icon-sm">${icons.star}</span> ${server.total_stars}</span>
           <span title="工具數"><span class="icon icon-sm">${icons.wrench}</span> ${server.tools_count || 0}</span>
           <span>${escapeHtml(server.owner.display_name)}</span>
+        </div>
+        <div class="card-bottom">
+          ${server.license ? `<span title="授權條款">${escapeHtml(server.license)}</span>` : ''}
+          ${server.data_update_frequency ? `<span title="更新頻率">${freqLabels[server.data_update_frequency] || escapeHtml(server.data_update_frequency)}</span>` : ''}
+          ${server.github_url ? `<a href="${escapeHtml(server.github_url)}" target="_blank" rel="noopener" title="GitHub 原始碼">GitHub</a>` : ''}
         </div>
       </div>
     `;}).join('');

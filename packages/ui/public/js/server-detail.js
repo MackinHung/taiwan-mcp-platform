@@ -2,6 +2,8 @@
 // server-detail.js — Server detail page (real API)
 // ============================================================
 
+const freqLabels = { 'real-time': '即時更新', 'hourly': '每小時', 'daily': '每日', 'monthly': '每月', 'static': '靜態資料' };
+
 const serverDetail = {
   server: null,
   slug: null,
@@ -29,7 +31,7 @@ const serverDetail = {
           display_name: d.owner_display_name || d.owner_username || '未知',
         },
       };
-      document.title = `${this.server.name} — 台灣 MCP 市集`;
+      document.title = `${this.server.name} — Formosa MCP 市集`;
       this.render();
       this.loadVersionHistory();
     } catch (e) {
@@ -128,6 +130,17 @@ const serverDetail = {
         </div>
       </div>
 
+      <!-- Data Source Info -->
+      <div class="detail-section">
+        <h2>資料來源</h2>
+        <div class="source-info-grid">
+          ${s.data_source_agency ? `<div class="source-item"><span class="source-label">資料機關</span><span class="source-value">${escapeHtml(s.data_source_agency)}</span></div>` : ''}
+          ${s.data_source_license ? `<div class="source-item"><span class="source-label">資料授權</span><span class="source-value">${escapeHtml(s.data_source_license)}</span></div>` : ''}
+          ${s.data_update_frequency ? `<div class="source-item"><span class="source-label">更新頻率</span><span class="source-value">${freqLabels[s.data_update_frequency] || s.data_update_frequency}</span></div>` : ''}
+          <div class="source-item"><span class="source-label">API Key</span><span class="source-value">${s.api_key_required ? '需要 API Key' : '不需要（免費使用）'}</span></div>
+        </div>
+      </div>
+
       <!-- Tools -->
       <div class="detail-section">
         <h2>工具 (${tools.length})</h2>
@@ -177,6 +190,19 @@ const serverDetail = {
         </div>
       </div>
 
+      ${s.is_open_source ? `
+      <!-- Open Source Info -->
+      <div class="detail-section">
+        <h2>開源資訊</h2>
+        <div class="source-info-grid">
+          <div class="source-item"><span class="source-label">授權條款</span><span class="source-value">${escapeHtml(s.license || 'N/A')}</span></div>
+          <div class="source-item"><span class="source-label">開源狀態</span><span class="source-value badge badge-success">開源</span></div>
+          ${s.github_url ? `<div class="source-item"><span class="source-label">GitHub</span><span class="source-value"><a href="${escapeHtml(s.github_url)}" target="_blank" rel="noopener">${escapeHtml(s.github_url)}</a></span></div>` : ''}
+          ${s.repo_url ? `<div class="source-item"><span class="source-label">Repository</span><span class="source-value"><a href="${escapeHtml(s.repo_url)}" target="_blank" rel="noopener">MackinHung/taiwan-mcp-platform</a></span></div>` : ''}
+        </div>
+      </div>
+      ` : ''}
+
       <!-- Version History -->
       <div class="detail-section">
         <h2>版本歷史</h2>
@@ -185,26 +211,45 @@ const serverDetail = {
         </div>
       </div>
 
-      <!-- How to Use -->
+      <!-- How to Install -->
       <div class="detail-section">
-        <h2>如何使用</h2>
-        <p class="text-secondary mb-16">將以下設定加入 Claude Desktop 的 MCP 設定檔：</p>
-        <div class="code-block" id="config-code">
-          <button class="copy-btn" onclick="copyToClipboard(document.getElementById('config-json').textContent)">複製</button>
-<pre id="config-json">{
-  "mcpServers": {
-    "${escapeHtml(s.slug)}": {
-      "url": "${gatewayBase}/mcp/s/${escapeHtml(s.slug)}",
-      "headers": {
-        "Authorization": "Bearer YOUR_API_KEY"
-      }
-    }
-  }
-}</pre>
+        <h2>如何安裝</h2>
+        <div class="install-tabs">
+          <button class="install-tab active" onclick="serverDetail.switchInstallTab('claude')">Claude Desktop</button>
+          <button class="install-tab" onclick="serverDetail.switchInstallTab('cursor')">Cursor</button>
+          <button class="install-tab" onclick="serverDetail.switchInstallTab('vscode')">VS Code</button>
+          <button class="install-tab" onclick="serverDetail.switchInstallTab('openclaw')">OpenClaw</button>
+          <button class="install-tab" onclick="serverDetail.switchInstallTab('npx')">npx</button>
+        </div>
+        <div class="code-block" id="install-code">
+          <button class="copy-btn" onclick="copyToClipboard(document.getElementById('install-json').textContent)">複製</button>
+          <pre id="install-json"></pre>
         </div>
         <p class="text-xs text-muted mt-8">或透過「我的 MCP」頁面將此伺服器加入組合，取得單一端點。</p>
       </div>
     `;
+    // Initialize install tab with default
+    this.switchInstallTab('claude');
+  },
+
+  switchInstallTab(tab) {
+    $$('.install-tab').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase().includes(tab)));
+    const s = this.server;
+    if (!s) return;
+    const gatewayBase = window.location.origin;
+    const slug = escapeHtml(s.slug);
+    const npmName = `@formosa-mcp/${slug}`;
+
+    const configs = {
+      claude: JSON.stringify({ mcpServers: { [s.slug]: { url: `${gatewayBase}/mcp/s/${slug}`, headers: { Authorization: "Bearer YOUR_API_KEY" } } } }, null, 2),
+      cursor: JSON.stringify({ mcpServers: { [s.slug]: { url: `${gatewayBase}/mcp/s/${slug}`, headers: { Authorization: "Bearer YOUR_API_KEY" } } } }, null, 2),
+      vscode: JSON.stringify({ "mcp.servers": { [s.slug]: { url: `${gatewayBase}/mcp/s/${slug}`, headers: { Authorization: "Bearer YOUR_API_KEY" } } } }, null, 2),
+      openclaw: `# 使用 OpenClaw CLI\nopenclaw add ${slug}\n\n# 或手動加入 openclaw.json\n${JSON.stringify({ skills: [{ name: slug, url: `${gatewayBase}/mcp/s/${slug}` }] }, null, 2)}`,
+      npx: `# 使用 npx 直接執行 (需先安裝)\nnpx ${npmName}\n\n# Claude Desktop MCP config (local stdio)\n${JSON.stringify({ mcpServers: { [s.slug]: { command: "npx", args: [npmName] } } }, null, 2)}`,
+    };
+
+    const el = document.getElementById('install-json');
+    if (el) el.textContent = configs[tab] || configs.claude;
   },
 
   generateSafetySummary(server) {

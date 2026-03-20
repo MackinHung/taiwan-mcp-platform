@@ -2802,3 +2802,124 @@ tr:hover td { background: var(--bg-surface-hover); }
   color: var(--text-secondary);
 }
 
+/* ── Card Enhancement (Phase B) ─────────────────────────── */
+.card-source {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 8px;
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+.source-agency {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.api-key-badge {
+  font-size: var(--text-xs);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+.api-key-badge.needs-key {
+  background: rgba(217, 119, 6, 0.15);
+  color: var(--color-warning);
+}
+.api-key-badge.free {
+  background: rgba(22, 163, 74, 0.15);
+  color: var(--color-success);
+}
+.card-bottom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color, var(--border));
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+.card-bottom a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.card-bottom a:hover {
+  text-decoration: underline;
+}
+
+/* Source Info Grid (detail page) */
+.source-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+.source-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.source-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.source-value {
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+}
+.source-value a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.source-value a:hover {
+  text-decoration: underline;
+}
+
+/* Install Tabs */
+.install-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0;
+}
+.install-tab {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+.install-tab:hover {
+  color: var(--text-primary);
+}
+.install-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+/* Frequency Badge */
+.freq-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(8, 145, 178, 0.1);
+  color: var(--color-info);
+}
+
+/* Badge success for open source */
+.badge-success {
+  background: rgba(22, 163, 74, 0.15);
+  color: var(--color-success);
+}
+

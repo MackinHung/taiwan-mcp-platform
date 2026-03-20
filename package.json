@@ -1,5 +1,5 @@
 {
-  "name": "taiwan-mcp-platform",
+  "name": "formosa-mcp-platform",
   "private": true,
   "workspaces": [
     "packages/*",
@@ -20,12 +20,23 @@
     "test:company": "cd servers/taiwan-company && npm test",
     "lint": "eslint packages/ servers/ --ext .ts",
     "clawhub:publish": "npx tsx scripts/clawhub-publish.ts",
-    "clawhub:dry-run": "npx tsx scripts/clawhub-publish.ts --dry-run"
+    "clawhub:dry-run": "npx tsx scripts/clawhub-publish.ts --dry-run",
+    "generate:cli": "node scripts/generate-cli.mjs",
+    "generate:server-json": "node scripts/generate-server-json.mjs",
+    "build:servers": "npm run build --workspaces --if-present",
+    "publish:npm": "node scripts/npm-publish.mjs",
+    "publish:npm:dry-run": "node scripts/npm-publish.mjs --dry-run",
+    "publish:registry": "node scripts/registry-publish.mjs",
+    "publish:registry:dry-run": "node scripts/registry-publish.mjs --dry-run",
+    "publish:smithery": "node scripts/smithery-publish.mjs",
+    "publish:smithery:dry-run": "node scripts/smithery-publish.mjs --dry-run",
+    "publish:pulsemcp": "node scripts/pulsemcp-entry.mjs"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250312.0",
+    "tsup": "^8.5.1",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0",
-    "@cloudflare/workers-types": "^4.20250312.0",
     "wrangler": "^4.0.0"
   }
 }

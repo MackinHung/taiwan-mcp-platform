@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.mackinhung/taiwan-reservoir",
+  "description": "5 tools for WRA reservoir water level data",
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@formosa-mcp/taiwan-reservoir",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "repository": "https://github.com/MackinHung/taiwan-mcp-platform",
+  "websiteUrl": "https://tw-mcp.pages.dev/server.html?slug=taiwan-reservoir",
+  "license": "AGPL-3.0"
+}

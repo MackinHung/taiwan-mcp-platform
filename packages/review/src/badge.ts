@@ -6,8 +6,8 @@ import type {
   BadgeExternal,
   DataSensitivity,
   DeclaredPermission,
-} from '@mcp-platform/shared';
-import { COMMUNITY_THRESHOLDS } from '@mcp-platform/shared';
+} from '@formosa-mcp/shared';
+import { COMMUNITY_THRESHOLDS } from '@formosa-mcp/shared';
 import type { ExternalScanResult } from './external-scan.js';
 
 // Badge level ordering (higher index = higher risk)

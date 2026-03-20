@@ -1,5 +1,5 @@
 {
-  "name": "@mcp-platform/gateway",
+  "name": "@formosa-mcp/gateway",
   "version": "1.0.0",
   "type": "module",
   "main": "src/index.ts",

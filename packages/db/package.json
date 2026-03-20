@@ -1,5 +1,5 @@
 {
-  "name": "@mcp-platform/db",
+  "name": "@formosa-mcp/db",
   "version": "1.0.0",
   "private": true,
   "scripts": {

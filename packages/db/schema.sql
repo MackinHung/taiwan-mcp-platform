@@ -63,6 +63,11 @@ CREATE TABLE IF NOT EXISTS servers (
   declared_external_urls TEXT NOT NULL DEFAULT '[]',  -- JSON array
   is_open_source INTEGER NOT NULL DEFAULT 0,
   data_source_license TEXT,
+  data_source_agency TEXT,
+  api_key_required INTEGER NOT NULL DEFAULT 0,
+  data_update_frequency TEXT,
+  compatible_clients TEXT NOT NULL DEFAULT '["claude_desktop","cursor","vscode","windsurf","openclaw"]',
+  github_url TEXT,
   -- Verification results
   verified_data_sensitivity TEXT CHECK (verified_data_sensitivity IN ('public', 'account', 'personal', 'sensitive')),
   verified_permissions TEXT CHECK (verified_permissions IN ('readonly', 'limited_write', 'full_write', 'system')),

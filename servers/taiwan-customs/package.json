@@ -1,11 +1,13 @@
 {
-  "name": "@mcp-platform/taiwan-customs",
+  "name": "@formosa-mcp/taiwan-customs",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build": "tsup src/cli.ts src/index.ts src/mcp-server.ts --format esm --outDir dist --dts",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
@@ -18,5 +20,40 @@
     "typescript": "^5.7.0",
     "vitest": "^3.0.0",
     "wrangler": "^4.0.0"
+  },
+  "description": "Taiwan MCP server: taiwan-customs",
+  "bin": {
+    "taiwan-customs-mcp": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./mcp": {
+      "import": "./dist/mcp-server.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "mcp",
+    "taiwan",
+    "formosa",
+    "customs"
+  ],
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MackinHung/taiwan-mcp-platform",
+    "directory": "servers/taiwan-customs"
+  },
+  "homepage": "https://tw-mcp.pages.dev/server.html?slug=taiwan-customs",
+  "author": "MackinHung",
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

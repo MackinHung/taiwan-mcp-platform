@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.mackinhung/taiwan-food-safety",
+  "description": "5 tools for FDA food safety data (violations, inspections)",
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@formosa-mcp/taiwan-food-safety",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "repository": "https://github.com/MackinHung/taiwan-mcp-platform",
+  "websiteUrl": "https://tw-mcp.pages.dev/server.html?slug=taiwan-food-safety",
+  "license": "AGPL-3.0"
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.mackinhung/taiwan-stock",
+  "description": "5 tools for TWSE stock market data (price, index, movers)",
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@formosa-mcp/taiwan-stock",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "repository": "https://github.com/MackinHung/taiwan-mcp-platform",
+  "websiteUrl": "https://tw-mcp.pages.dev/server.html?slug=taiwan-stock",
+  "license": "AGPL-3.0"
+}

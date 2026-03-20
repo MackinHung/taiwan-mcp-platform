@@ -1,0 +1,19 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.mackinhung/taiwan-judgment",
+  "description": "5 tools for judicial court rulings search",
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@formosa-mcp/taiwan-judgment",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "repository": "https://github.com/MackinHung/taiwan-mcp-platform",
+  "websiteUrl": "https://tw-mcp.pages.dev/server.html?slug=taiwan-judgment",
+  "license": "AGPL-3.0"
+}

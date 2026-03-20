@@ -1,5 +1,5 @@
 {
-  "name": "@mcp-platform/review",
+  "name": "@formosa-mcp/review",
   "version": "1.0.0",
   "type": "module",
   "main": "src/index.ts",
@@ -9,7 +9,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@mcp-platform/shared": "*",
+    "@formosa-mcp/shared": "*",
     "hono": "^4.7.0"
   },
   "devDependencies": {

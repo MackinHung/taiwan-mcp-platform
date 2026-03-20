@@ -1,4 +1,4 @@
-import type { ReviewReport, DataSensitivity, DeclaredPermission } from '@mcp-platform/shared';
+import type { ReviewReport, DataSensitivity, DeclaredPermission } from '@formosa-mcp/shared';
 import { runScanner } from './scanner.js';
 import type { ScanOutput } from './scanner.js';
 import { calculateAllBadges } from './badge.js';
