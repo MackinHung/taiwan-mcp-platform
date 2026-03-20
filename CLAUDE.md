@@ -1,4 +1,4 @@
-# Taiwan MCP Platform — CLAUDE.md
+# Formosa MCP Platform — CLAUDE.md
 
 > 冷啟動指南：本文件讓任何新 session 快速理解專案全貌。
 > 工作群詳細規格在 `docs/cold-start/` — 用戶指定 WG 後再載入對應文件。
@@ -17,7 +17,8 @@
 
 **Repo**: `MackinHung/taiwan-mcp-platform`, branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
-**Current**: 3,619+ tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3), OpenClaw 生態整合完成 (`a60d5a2`)
+**Brand**: `@formosa-mcp` (npm scope), Formosa MCP 市集
+**Current**: 3,998 tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3), npm packaging + distribution ready (`3669f5b`)
 
 ---
 
