@@ -1,6 +1,6 @@
 import type { Env, ToolResult, TaxBracket } from '../types.js';
 
-export const INCOME_BRACKETS: TaxBracket[] = [
+const INCOME_BRACKETS: TaxBracket[] = [
   { min: 0, max: 590000, rate: 0.05, deduction: 0 },
   { min: 590001, max: 1330000, rate: 0.12, deduction: 41300 },
   { min: 1330001, max: 2660000, rate: 0.20, deduction: 147700 },
@@ -8,8 +8,8 @@ export const INCOME_BRACKETS: TaxBracket[] = [
   { min: 4980001, max: null, rate: 0.40, deduction: 911700 },
 ];
 
-export const BUSINESS_TAX_THRESHOLD = 120000;
-export const BUSINESS_TAX_RATE = 0.20;
+const BUSINESS_TAX_THRESHOLD = 120000;
+const BUSINESS_TAX_RATE = 0.20;
 
 function formatBracketRange(bracket: TaxBracket): string {
   const minStr = bracket.min.toLocaleString();

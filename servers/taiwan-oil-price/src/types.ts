@@ -33,13 +33,3 @@ export interface PriceHistoryRecord {
   price: number;
   effectiveDate: string;
 }
-
-export interface CpcApiResponse {
-  UpdateTime: string;
-  PriceUpdate: Array<{
-    ProdCode: string;
-    ProdName: string;
-    Price: string;
-    EffectiveDate: string;
-  }>;
-}

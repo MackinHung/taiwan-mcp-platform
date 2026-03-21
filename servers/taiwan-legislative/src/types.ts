@@ -27,15 +27,6 @@ export interface BillRecord {
   docUrl?: string;
 }
 
-export interface LegislatorRecord {
-  name?: string;
-  party?: string;
-  areaName?: string;
-  committee?: string;
-  term?: string;
-  onboardDate?: string;
-}
-
 export interface MeetingRecord {
   meetingNo?: string;
   meetingName?: string;

@@ -8,14 +8,6 @@ export interface ToolResult {
   isError?: boolean;
 }
 
-export interface HolidayRecord {
-  date: string;
-  name: string;
-  isHoliday: string;
-  holidayCategory: string;
-  description: string;
-}
-
 export interface OpenDataResponse {
   success: boolean;
   result: {
@@ -26,15 +18,4 @@ export interface OpenDataResponse {
     limit: number;
     offset: number;
   };
-}
-
-export interface LunarDate {
-  lunarYear: number;
-  lunarMonth: number;
-  lunarDay: number;
-  isLeapMonth: boolean;
-  zodiac: string;
-  heavenlyStem: string;
-  earthlyBranch: string;
-  ganzhiYear: string;
 }

@@ -2,7 +2,7 @@ import type { Env, ToolResult } from '../types.js';
 import { fetchOpenData } from '../client.js';
 
 // data.gov.tw tax revenue statistics resource ID
-export const TAX_STATS_RESOURCE_ID = '86984bc9-02e7-4b03-8e0c-8d2e61420db1';
+const TAX_STATS_RESOURCE_ID = '86984bc9-02e7-4b03-8e0c-8d2e61420db1';
 
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;

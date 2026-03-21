@@ -21,10 +21,6 @@ export interface ReservoirRecord {
   [key: string]: string | undefined;
 }
 
-export interface WraApiResponse {
-  [key: string]: unknown;
-}
-
 export const REGION_MAPPING: Record<string, string[]> = {
   '北': ['翡翠水庫', '石門水庫', '寶山第二水庫', '寶二水庫', '新山水庫'],
   '中': ['德基水庫', '鯉魚潭水庫', '日月潭水庫', '霧社水庫'],

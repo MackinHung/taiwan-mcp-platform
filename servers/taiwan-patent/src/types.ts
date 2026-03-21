@@ -30,10 +30,3 @@ export interface TrademarkRecord {
   註冊日?: string;
   商品服務?: string;
 }
-
-export interface IpStatRecord {
-  year?: string;
-  category?: string;
-  applications?: string;
-  grants?: string;
-}

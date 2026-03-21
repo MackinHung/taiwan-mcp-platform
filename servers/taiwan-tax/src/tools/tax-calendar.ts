@@ -5,7 +5,7 @@ interface TaxDeadline {
   items: string[];
 }
 
-export const TAX_CALENDAR: TaxDeadline[] = [
+const TAX_CALENDAR: TaxDeadline[] = [
   { month: 1, items: ['使用牌照稅（自用車輛）繳納'] },
   { month: 3, items: ['營業稅申報（1-2月）'] },
   { month: 5, items: [

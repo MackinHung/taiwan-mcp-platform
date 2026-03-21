@@ -8,39 +8,6 @@ export interface ToolResult {
   isError?: boolean;
 }
 
-export interface AttractionRecord {
-  name: string;
-  address: string;
-  phone: string;
-  openTime: string;
-  ticketInfo: string;
-  description: string;
-  lat: string;
-  lng: string;
-  city: string;
-  category: string;
-  photoUrl: string;
-}
-
-export interface EventRecord {
-  name: string;
-  startDate: string;
-  endDate: string;
-  location: string;
-  description: string;
-  city: string;
-  category: string;
-}
-
-export interface AccommodationRecord {
-  name: string;
-  address: string;
-  phone: string;
-  grade: string;
-  city: string;
-  priceRange: string;
-}
-
 export interface OpenDataResponse {
   success: boolean;
   result: {

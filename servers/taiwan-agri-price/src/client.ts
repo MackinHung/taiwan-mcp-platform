@@ -42,8 +42,8 @@ export async function fetchProducts(
 }
 
 // Filter types for vegetable vs fruit
-export const VEGETABLE_TYPES = ['蔬菜', 'LA', 'LB', 'LC', 'LD', 'LE', 'LF', 'LG', 'LH'];
-export const FRUIT_TYPES = ['水果', 'FA', 'FB', 'FC', 'FD', 'FE', 'FF', 'FG'];
+const VEGETABLE_TYPES = ['蔬菜', 'LA', 'LB', 'LC', 'LD', 'LE', 'LF', 'LG', 'LH'];
+const FRUIT_TYPES = ['水果', 'FA', 'FB', 'FC', 'FD', 'FE', 'FF', 'FG'];
 
 export function isVegetable(product: AgriProduct): boolean {
   const typeName = product['種類名稱'] ?? '';

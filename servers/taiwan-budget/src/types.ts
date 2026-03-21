@@ -19,33 +19,3 @@ export interface OpenDataResponse {
     offset: number;
   };
 }
-
-export interface BudgetRecord {
-  機關名稱?: string;
-  歲出科目名稱?: string;
-  歲入科目名稱?: string;
-  預算數?: string;
-  決算數?: string;
-  年度?: string;
-  款?: string;
-  項?: string;
-  目?: string;
-  節?: string;
-}
-
-export interface RevenueRecord {
-  年度?: string;
-  科目名稱?: string;
-  預算數?: string;
-  決算數?: string;
-  比較增減?: string;
-}
-
-export interface ExpenditureRecord {
-  年度?: string;
-  機關名稱?: string;
-  科目名稱?: string;
-  預算數?: string;
-  決算數?: string;
-  執行率?: string;
-}

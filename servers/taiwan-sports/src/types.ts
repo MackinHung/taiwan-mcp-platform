@@ -23,11 +23,3 @@ export interface FacilityRecord {
   lng: number;
   facilities: string;
 }
-
-export interface IPlayApiResponse {
-  success: boolean;
-  result: {
-    records: Record<string, string>[];
-    total: number;
-  };
-}

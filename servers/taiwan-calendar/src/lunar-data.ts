@@ -11,7 +11,7 @@
  *   MMMM = month lengths for months 1-12 (bits 4-15)
  *   D = leap month number (bits 0-3)
  */
-export const LUNAR_DATA: number[] = [
+const LUNAR_DATA: number[] = [
   0x04bd8, // 1900
   0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, // 1901-1905
   0x16554, 0x056a0, 0x09ad0, 0x055d2, 0x04ae0, // 1906-1910
@@ -56,8 +56,8 @@ export const LUNAR_DATA: number[] = [
 ];
 
 /** Base date: January 31, 1900 is lunar New Year 1900 */
-export const LUNAR_BASE_YEAR = 1900;
-export const LUNAR_BASE_DATE = new Date(1900, 0, 31); // Jan 31, 1900
+const LUNAR_BASE_YEAR = 1900;
+const LUNAR_BASE_DATE = new Date(1900, 0, 31); // Jan 31, 1900
 
 const HEAVENLY_STEMS = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
 const EARTHLY_BRANCHES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
@@ -95,7 +95,7 @@ export function getLunarMonthDays(year: number, month: number): number {
 /**
  * Get the total number of days in a lunar year.
  */
-export function getLunarYearDays(year: number): number {
+function getLunarYearDays(year: number): number {
   let total = 0;
   for (let m = 1; m <= 12; m++) {
     total += getLunarMonthDays(year, m);
@@ -232,4 +232,3 @@ export function lunarToSolar(
   };
 }
 
-export { LUNAR_MONTH_NAMES, LUNAR_DAY_NAMES, HEAVENLY_STEMS, EARTHLY_BRANCHES, ZODIAC_ANIMALS };
