@@ -18,7 +18,7 @@
 **Repo**: `MackinHung/taiwan-mcp-platform`, branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
 **Brand**: `@formosa-mcp` (npm scope), Formosa MCP 市集
-**Current**: 3,998 tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3), npm packaging + distribution ready (`3669f5b`)
+**Current**: 3,711 tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3), npm packaging + distribution ready, tsc --noEmit clean (`f38d197`)
 
 ---
 
@@ -115,6 +115,11 @@ cd servers/taiwan-weather && npx vitest run    # Test weather
 cd packages/gateway && npm run dev             # API :8787
 cd packages/ui && npm run dev                  # UI :3000
 cd packages/db && npm run migrate:local && npm run seed:local  # DB
+npx tsc --noEmit -p packages/shared            # Type-check shared
+npx tsc --noEmit -p packages/gateway           # Type-check gateway
+npx tsc --noEmit -p packages/review            # Type-check review
+npx tsc --noEmit -p packages/composer          # Type-check composer
+cd packages/shared && npx vitest run --coverage # Coverage report
 ```
 
 ---
