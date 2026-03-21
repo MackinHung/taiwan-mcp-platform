@@ -81,7 +81,7 @@ export function authMiddleware() {
     let user = null;
 
     // Try session cookie first
-    const cookies = parseCookies(c.req.header('Cookie'));
+    const cookies = parseCookies(c.req.header('Cookie') ?? null);
     const sessionToken = cookies['session'];
 
     if (sessionToken) {

@@ -120,6 +120,7 @@ createStreamableHttpRoutes(app as any, {
         namespace_prefix: slug,
         endpoint_url: server.endpoint_url,
         enabled: true,
+        pinned_version: null,
       }],
     };
   },

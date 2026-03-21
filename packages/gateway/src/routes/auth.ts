@@ -208,7 +208,7 @@ authRoutes.get('/google/callback', async (c) => {
 // POST /logout -> clear session
 authRoutes.post('/logout', async (c) => {
   const env = c.env;
-  const cookies = parseCookies(c.req.header('Cookie'));
+  const cookies = parseCookies(c.req.header('Cookie') ?? null);
   const sessionToken = cookies['session'];
 
   if (sessionToken) {
@@ -218,7 +218,7 @@ authRoutes.post('/logout', async (c) => {
 
   return c.json({ success: true, data: null, error: null }, 200, {
     'Set-Cookie': 'session=; Path=/; HttpOnly; Secure; Max-Age=0',
-  } as any);
+  });
 });
 
 // GET /me -> return current user
