@@ -23,7 +23,7 @@
 ## Quick Start
 
 ### Prerequisites
-- None (optional: MOENV API key for higher rate limits)
+- None (optional: [MOENV API key](https://data.moenv.gov.tw/paradigm) for higher rate limits)
 
 ### Development
 ```bash
