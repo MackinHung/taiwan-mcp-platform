@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">Formosa MCP Platform</h1>
   <p align="center">
-    Taiwan's first MCP marketplace — Composer + Security Review Badges + 47 Government Open Data MCP Servers
+    Taiwan's first MCP integrated service platform — secure, transparent interfaces for businesses and citizens
   </p>
 </p>
 

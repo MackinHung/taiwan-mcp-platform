@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">Formosa MCP Platform</h1>
   <p align="center">
-    台灣第一個 MCP 市集平台 — 組合器 + 安全審查標示 + 47 個政府開放資料 MCP Servers
+    台灣首個 MCP 集成服務供應整合平台，建立安全透明化的接口，便利於企業和公民
   </p>
 </p>
 
