@@ -236,7 +236,7 @@ async function toolName(env: Env, args: Record<string, unknown>): Promise<ToolRe
 
 ## 流水線工廠（獨立專案）
 
-**Location**: `C:\Users\water\Desktop\mcp-factory\`
+**Location**: `C:\Users\water\Desktop\工作專案\活躍\mcp-factory\`
 - 獨立資料夾，可冷啟動
 - `CLAUDE.md` + `PIPELINE.md`：完整 7 Stage 流水線規格
 - `scripts/security-scan.ts`：10 條安全掃描規則（自包含）
