@@ -1,0 +1,93 @@
+name: Publish remaining npm packages
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish remaining packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          PACKAGES=(
+            taiwan-insurance-calc
+            taiwan-invoice
+            taiwan-judgment
+            taiwan-labor
+            taiwan-law
+            taiwan-legislative
+            taiwan-local-announce
+            taiwan-movie
+            taiwan-museum
+            taiwan-news
+            taiwan-oil-price
+            taiwan-parking
+            taiwan-patent
+            taiwan-procurement
+            taiwan-radiation
+            taiwan-reservoir
+            taiwan-sports
+            taiwan-stock
+            taiwan-tax
+            taiwan-tourism
+            taiwan-traffic-accident
+            taiwan-transit
+            taiwan-validator
+            taiwan-water-quality
+            taiwan-weather-alert
+            taiwan-youbike
+          )
+
+          SUCCESS=0
+          FAILED=0
+          SKIPPED=0
+
+          for pkg in "${PACKAGES[@]}"; do
+            echo "=== $pkg ==="
+            DIR="servers/$pkg"
+
+            # Check if already published
+            CURRENT=$(npm view "@formosa-mcp/$pkg" version 2>/dev/null || echo "")
+            if [ "$CURRENT" = "1.0.1" ]; then
+              echo "SKIP: already at 1.0.1"
+              SKIPPED=$((SKIPPED + 1))
+              continue
+            fi
+
+            # Build and publish
+            cd "$DIR"
+            npm run build 2>&1
+            if npm publish --access public 2>&1; then
+              echo "OK: $pkg published"
+              SUCCESS=$((SUCCESS + 1))
+            else
+              echo "FAIL: $pkg"
+              FAILED=$((FAILED + 1))
+            fi
+            cd ../..
+
+            # Rate limit protection: 15s between publishes
+            sleep 15
+          done
+
+          echo ""
+          echo "=== SUMMARY ==="
+          echo "Published: $SUCCESS"
+          echo "Failed: $FAILED"
+          echo "Skipped: $SKIPPED"
+
+          if [ "$FAILED" -gt 0 ]; then
+            exit 1
+          fi
