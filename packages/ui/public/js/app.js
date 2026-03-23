@@ -519,6 +519,7 @@ const reviewStatusLabels = {
   scan_passed: '掃描通過',
   scan_failed: '掃描失敗',
   pending_review: '等待審核',
+  human_review: '人工審查中',
   approved: '已核准',
   rejected: '已拒絕',
 };

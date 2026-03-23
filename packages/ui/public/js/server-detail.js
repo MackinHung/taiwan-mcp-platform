@@ -398,7 +398,7 @@ const serverDetail = {
     const remaining = Math.max(0, end - now);
     const daysLeft = Math.ceil(remaining / 86400000);
     const hoursLeft = Math.ceil(remaining / 3600000);
-    const countdownText = remaining <= 0 ? '即將上架' : daysLeft > 0 ? `${daysLeft} 天後自動上架` : `${hoursLeft} 小時後自動上架`;
+    const countdownText = remaining <= 0 ? '即將上架' : remaining > 86400000 ? `${daysLeft} 天後自動上架` : `${hoursLeft} 小時後自動上架`;
 
     return `
       <div class="alert mb-16" style="background:var(--card-bg);border:2px solid var(--primary);border-radius:12px;padding:1.25rem;">

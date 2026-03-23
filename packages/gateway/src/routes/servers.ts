@@ -157,7 +157,10 @@ serverRoutes.get('/:slug', async (c) => {
   const server = await env.DB.prepare(
     `SELECT s.*,
        u.username as owner_username,
-       u.display_name as owner_display_name
+       u.display_name as owner_display_name,
+       (SELECT COUNT(*) FROM community_votes WHERE server_id = s.id AND vote = 'trust') as trust_votes,
+       (SELECT COUNT(*) FROM community_votes WHERE server_id = s.id AND vote = 'distrust') as distrust_votes,
+       (SELECT COUNT(*) FROM reports WHERE server_id = s.id AND type = 'security' AND status IN ('open','investigating')) as open_reports
      FROM servers s
      LEFT JOIN users u ON s.owner_id = u.id
      WHERE s.slug = ?`

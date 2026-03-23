@@ -42,7 +42,7 @@
 
     const countdownText = remaining <= 0
       ? '即將上架'
-      : daysLeft > 0
+      : remaining > 86400000
         ? `${daysLeft} 天後自動上架`
         : `${hoursLeft} 小時後自動上架`;
 
@@ -101,7 +101,7 @@
       const hoursLeft = Math.ceil(remaining / 3600000);
       el.textContent = remaining <= 0
         ? '即將上架'
-        : daysLeft > 0
+        : remaining > 86400000
           ? daysLeft + ' 天後自動上架'
           : hoursLeft + ' 小時後自動上架';
     });
