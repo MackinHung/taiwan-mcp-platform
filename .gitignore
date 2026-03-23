@@ -7,9 +7,3 @@ dist/
 *.log
 .DS_Store
 coverage/
-
-# Private servers (non-open-data sources, pending review)
-servers/taiwan-announce/
-servers/taiwan-gazette/
-servers/taiwan-foreign-trade/
-servers/taiwan-local-announce/
