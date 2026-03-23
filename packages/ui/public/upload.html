@@ -27,7 +27,7 @@
         <a href="/#guide" class="hide-mobile">指南</a>
         <a href="/my-mcp.html" class="hide-mobile">我的 MCP</a>
         <a href="/my-servers.html" class="hide-mobile">我的伺服器</a>
-        <a href="/upload.html" class="active hide-mobile">上架</a>
+        <span class="hide-mobile" style="color:var(--text-muted);cursor:not-allowed;opacity:0.5;">上架</span>
         <a href="/disclosed.html" class="hide-mobile">公示期</a>
         <a href="/trust.html" class="hide-mobile">信任與安全</a>
         <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()" title="切換主題"></button>
@@ -50,7 +50,7 @@
       <a href="/#guide">指南</a>
       <a href="/my-mcp.html">我的 MCP</a>
       <a href="/my-servers.html">我的伺服器</a>
-      <a href="/upload.html" class="active">上架</a>
+      <span style="color:var(--text-muted);cursor:not-allowed;opacity:0.5;">上架</span>
       <a href="/disclosed.html">公示期</a>
       <a href="/trust.html">信任與安全</a>
       <a href="/transparency.html">安全透明</a>
@@ -59,133 +59,17 @@
   </div>
 
   <div class="container page-content" style="max-width:720px;">
-    <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:8px;">上架 MCP 伺服器</h1>
-    <p class="text-secondary text-sm mb-24">填寫以下資訊，提交後系統將自動掃描並進行審核。</p>
-
-    <!-- Wizard Steps -->
-    <div class="wizard-steps" id="wizard-steps"></div>
-    <div class="wizard-progress" id="wizard-progress">步驟 1/5 — 20%</div>
-    <div class="wizard-progress-bar"><div class="wizard-progress-fill" id="wizard-progress-fill" style="width:20%"></div></div>
-
-    <!-- Step 1: Basic Info -->
-    <div class="wizard-panel active" id="step-1">
-      <h2 style="font-size:1.1rem;margin-bottom:16px;">基本資訊</h2>
-      <div class="form-group">
-        <label>伺服器名稱 *</label>
-        <input type="text" id="w-name" placeholder="例：台灣氣象" />
+    <div class="empty-state" style="padding:4rem 2rem;text-align:center;">
+      <div style="font-size:3rem;margin-bottom:1rem;">&#x1F6A7;</div>
+      <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:12px;">上架功能暫時關閉</h1>
+      <p class="text-secondary" style="max-width:480px;margin:0 auto 1.5rem;">
+        社群上架功能正在進行安全流程升級，目前暫不開放。<br/>
+        如需上架 MCP 伺服器，請透過 GitHub 聯繫管理員。
+      </p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="/" class="btn btn-primary">回到市集</a>
+        <a href="https://github.com/MackinHung/taiwan-mcp-platform/issues" target="_blank" rel="noopener" class="btn btn-secondary">聯繫我們</a>
       </div>
-      <div class="form-group">
-        <label>代稱 (slug) *</label>
-        <input type="text" id="w-slug" placeholder="例：taiwan-weather" />
-        <div class="hint">僅允許小寫英文、數字、連字號，用於 URL 識別</div>
-      </div>
-      <div class="form-group">
-        <label>分類 *</label>
-        <select id="w-category">
-          <option value="">請選擇</option>
-          <option value="government">政府</option>
-          <option value="finance">金融</option>
-          <option value="utility">公用事業</option>
-          <option value="social">社群</option>
-          <option value="education">教育</option>
-          <option value="health">醫療</option>
-          <option value="other">其他</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>版本 *</label>
-        <input type="text" id="w-version" placeholder="1.0.0" value="0.1.0" />
-      </div>
-      <div class="form-group">
-        <label>說明 *</label>
-        <textarea id="w-description" rows="3" placeholder="描述這個 MCP 伺服器的功能..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>標籤</label>
-        <input type="text" id="w-tags" placeholder="以逗號分隔，例：天氣, 氣象, forecast" />
-      </div>
-    </div>
-
-    <!-- Step 2: Technical -->
-    <div class="wizard-panel" id="step-2">
-      <h2 style="font-size:1.1rem;margin-bottom:16px;">技術資訊</h2>
-      <div class="form-group">
-        <label>MCP 端點 URL *</label>
-        <input type="url" id="w-endpoint" placeholder="https://your-server.com/mcp" />
-        <div class="hint">您的 MCP 伺服器端點，需支援 SSE 傳輸</div>
-      </div>
-      <div class="form-group">
-        <label>原始碼倉庫</label>
-        <input type="url" id="w-repo" placeholder="https://github.com/username/repo" />
-      </div>
-      <div class="form-group">
-        <label>授權條款</label>
-        <select id="w-license">
-          <option value="">未指定</option>
-          <option value="MIT">MIT</option>
-          <option value="Apache-2.0">Apache 2.0</option>
-          <option value="GPL-3.0">GPL 3.0</option>
-          <option value="AGPL-3.0">AGPL 3.0</option>
-          <option value="BSD-3-Clause">BSD 3-Clause</option>
-          <option value="proprietary">私有</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Step 3: Security -->
-    <div class="wizard-panel" id="step-3">
-      <h2 style="font-size:1.1rem;margin-bottom:16px;">安全聲明</h2>
-      <div class="alert alert-info mb-16">系統會根據您的聲明自動指派安全徽章，不實聲明可能導致下架。</div>
-      <div class="form-group">
-        <label>資料敏感度 *</label>
-        <select id="w-data">
-          <option value="public">🟢 公開資料 — 僅存取公開資訊</option>
-          <option value="account">🟡 帳號資料 — 需要帳號存取</option>
-          <option value="personal">🟠 個人資料 — 存取個人資訊</option>
-          <option value="sensitive">🔴 敏感資料 — 存取金融/醫療等敏感資訊</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>權限範圍 *</label>
-        <select id="w-permission">
-          <option value="readonly">👁️ 唯讀 — 僅讀取資料</option>
-          <option value="limited_write">✏️ 有限寫入 — 限定寫入操作</option>
-          <option value="full_write">📝 完整寫入 — 完整寫入權限</option>
-          <option value="system">⚙️ 系統權限 — 系統層級操作</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>外部連線 URL</label>
-        <textarea id="w-external-urls" rows="2" placeholder="列出此伺服器會連線的外部 URL（每行一個）"></textarea>
-        <div class="hint">例如：https://opendata.cwa.gov.tw</div>
-      </div>
-      <div class="form-group">
-        <label>
-          <input type="checkbox" id="w-opensource" />
-          程式碼為開源
-        </label>
-      </div>
-    </div>
-
-    <!-- Step 4: Tools -->
-    <div class="wizard-panel" id="step-4">
-      <h2 style="font-size:1.1rem;margin-bottom:16px;">工具清單</h2>
-      <p class="text-secondary text-sm mb-16">手動新增此伺服器提供的工具，審核時會與實際端點比對。</p>
-      <div id="tools-list"></div>
-      <button class="btn btn-secondary btn-sm mt-8" onclick="upload.addTool()">+ 新增工具</button>
-    </div>
-
-    <!-- Step 5: Review -->
-    <div class="wizard-panel" id="step-5">
-      <h2 style="font-size:1.1rem;margin-bottom:16px;">確認送出</h2>
-      <div id="review-summary"></div>
-    </div>
-
-    <!-- Navigation -->
-    <div class="flex justify-between mt-24">
-      <button class="btn btn-secondary" id="wizard-prev" onclick="upload.prevStep()" style="display:none;">上一步</button>
-      <div></div>
-      <button class="btn btn-primary" id="wizard-next" onclick="upload.nextStep()">下一步</button>
     </div>
   </div>
 
