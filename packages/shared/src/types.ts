@@ -238,3 +238,11 @@ export interface McpToolDefinition {
   description: string;
   inputSchema: object;
 }
+
+/** MCP Tool Annotations (2025-11-25 spec) */
+export interface ToolAnnotations {
+  readOnlyHint?: boolean;
+  destructiveHint?: boolean;
+  idempotentHint?: boolean;
+  openWorldHint?: boolean;
+}

@@ -82,3 +82,7 @@ export const expediteSchema = z.object({
 export const extendSchema = z.object({
   days: z.number().int().min(1).max(30),
 });
+
+export const officialToggleSchema = z.object({
+  is_official: z.boolean(),
+});

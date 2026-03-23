@@ -1,0 +1,37 @@
+{
+  "name": "taiwan-museum",
+  "displayName": "Taiwan Museum & Exhibition",
+  "description": "Taiwan museum and exhibition data from MOC (Ministry of Culture) open data platform",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "search_museums",
+      "description": "搜尋博物館/美術館"
+    },
+    {
+      "name": "get_museum_details",
+      "description": "取得博物館詳細資訊"
+    },
+    {
+      "name": "search_exhibitions",
+      "description": "搜尋展覽活動"
+    },
+    {
+      "name": "get_exhibition_details",
+      "description": "取得展覽完整資訊"
+    },
+    {
+      "name": "get_upcoming_exhibitions",
+      "description": "取得即將開展的展覽"
+    }
+  ],
+  "dataSources": [
+    {
+      "name": "MOC Culture Open Data",
+      "url": "https://cloud.culture.tw/frontsite/trans/emapOpenDataAction.do?method=exportEmapJson&typeId=3",
+      "description": "Ministry of Culture exhibition/museum open data"
+    }
+  ],
+  "category": "culture",
+  "tags": ["museum", "exhibition", "culture", "art"]
+}
