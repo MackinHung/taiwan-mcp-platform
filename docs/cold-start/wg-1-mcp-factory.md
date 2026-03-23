@@ -322,16 +322,29 @@ QA: 每批完成後跑 `servers/` 下所有測試
 
 #### 候選資料源
 
-| Server | 資料來源 | 現況 | 法律風險 |
+##### API 型（可直接用工廠流水線）
+
+| Server | 資料來源 | API | 備註 |
+|--------|---------|-----|------|
+| **taiwan-announce** | [全國政府機關電子公布欄](https://data.gov.tw/dataset/30924) | `good.nat.gov.tw/odbbs/opendata/v1/json` (JSON/XML/CSV) | 結構化 7 欄位 (DocDate/SendUnitName/SendNo/Subject 等)，無需爬蟲 |
+| **taiwan-gazette** | [行政院公報](https://gazette.nat.gov.tw/) | 有開放資料專區 + API 說明，2,016 筆 | 需研究 API 規格 |
+| **taiwan-foreign-trade** | 國貿署 ECA/FTA + 貿易統計 | 國貿署自有 API（非 data.gov.tw），[tariffinfo.taiwantrade.com.tw](https://fta.trade.gov.tw/) 關稅查詢 | 需研究 API 規格 |
+
+##### 爬蟲型（需 Extraction Layer）
+
+| Server | 資料來源 | 難度 | 法律風險 |
 |--------|---------|------|---------|
-| **taiwan-gazette** | [行政院公報](https://gazette.nat.gov.tw/) | 有開放資料專區 + API 說明，2,016 筆 | ✅ 無 — 政府公文 |
-| **taiwan-local-announce** | 各縣市政府公告欄 | 無 API，純 HTML，22 縣市各自格式 | ✅ 無 — 政府公告 |
-| **taiwan-urban-plan** | 各縣市都計/地政公告 | 無 API，HTML + PDF | ✅ 無 — 政府公告 |
-| **taiwan-env-impact** | 環保署環評書件 | 無 API，HTML 查詢 + PDF | ✅ 無 — 政府公告 |
-| **taiwan-ncc** | NCC 通訊監理裁罰/頻譜 | 無 API，PDF 公告 | ✅ 無 — 政府公告 |
-| **taiwan-standards** | 標準檢驗局 CNS/ISO | 無 API，查詢網頁 | ✅ 無 — 公文 |
-| **taiwan-foreign-trade** | 國貿署 RCEP/FTA 公告 | 無 API，公告頁 | ✅ 無 — 政府公告 |
-| **taiwan-subsidy** (升級) | 各部會補助公告彙整 | 散落各部會 HTML | ✅ 無 — 政府公告 |
+| **taiwan-standards** | 標準檢驗局 CNS/ISO ([cnsonline.com.tw](http://www.cnsonline.com.tw)) | 🔴高 — 無 API，僅網頁查詢，反爬蟲機制 | ✅ 無 — 公文 |
+| **taiwan-local-announce** | 各縣市政府公告欄 | 🟡中 — 22 縣市各自 HTML 格式 | ✅ 無 — 政府公告 |
+| **taiwan-urban-plan** | 各縣市都計/地政公告 | 🟡中 — HTML + PDF | ✅ 無 — 政府公告 |
+| **taiwan-subsidy** (升級) | 各部會補助公告彙整 | 🟡中 — 散落各部會 HTML | ✅ 無 — 政府公告 |
+
+##### 延後（PDF 下載 + 清理成本高）
+
+| Server | 資料來源 | 延後原因 |
+|--------|---------|---------|
+| **taiwan-env-impact** | 環保署環評書件 | 需下載 PDF + 清理非結構化文件 |
+| **taiwan-ncc** | NCC 通訊監理裁罰/頻譜 | 同上，PDF 公告為主 |
 
 #### 法律分析（2026-03-23）
 
