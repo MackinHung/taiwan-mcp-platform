@@ -1,19 +1,24 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.mackinhung/taiwan-animal-shelter",
+  "name": "io.github.MackinHung/taiwan-animal-shelter",
   "description": "5 tools for MOA animal shelter/adoption data",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@formosa-mcp/taiwan-animal-shelter",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "transport": {
         "type": "stdio"
       }
     }
   ],
-  "repository": "https://github.com/MackinHung/taiwan-mcp-platform",
+  "repository": {
+    "url": "https://github.com/MackinHung/taiwan-mcp-platform",
+    "source": "github",
+    "id": "MackinHung/taiwan-mcp-platform",
+    "subfolder": "servers/taiwan-animal-shelter"
+  },
   "websiteUrl": "https://formosa-mcp-platform.pages.dev/server.html?slug=taiwan-animal-shelter",
   "license": "AGPL-3.0"
 }

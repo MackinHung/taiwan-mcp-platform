@@ -1,6 +1,6 @@
 {
   "name": "@formosa-mcp/taiwan-water-quality",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "./dist/index.js",
   "scripts": {
@@ -27,11 +27,25 @@
     "taiwan-water-quality-mcp": "./dist/cli.js"
   },
   "exports": {
-    ".": { "import": "./dist/index.js" },
-    "./mcp": { "import": "./dist/mcp-server.js" }
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./mcp": {
+      "import": "./dist/mcp-server.js"
+    }
   },
-  "files": ["dist/", "README.md", "LICENSE"],
-  "keywords": ["mcp", "taiwan", "formosa", "water", "quality"],
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "mcp",
+    "taiwan",
+    "formosa",
+    "water",
+    "quality"
+  ],
   "license": "AGPL-3.0",
   "repository": {
     "type": "git",
@@ -40,5 +54,8 @@
   },
   "homepage": "https://formosa-mcp-platform.pages.dev/server.html?slug=taiwan-water-quality",
   "author": "MackinHung",
-  "engines": { "node": ">=18.0.0" }
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "mcpName": "io.github.MackinHung/taiwan-water-quality"
 }

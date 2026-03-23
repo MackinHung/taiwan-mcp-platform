@@ -1,0 +1,24 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.MackinHung/taiwan-local-announce",
+  "description": "5 tools for Taiwan municipal government announcements (六都地方政府公告)",
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@formosa-mcp/taiwan-local-announce",
+      "version": "1.0.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/MackinHung/taiwan-mcp-platform",
+    "source": "github",
+    "id": "MackinHung/taiwan-mcp-platform",
+    "subfolder": "servers/taiwan-local-announce"
+  },
+  "websiteUrl": "https://formosa-mcp-platform.pages.dev/server.html?slug=taiwan-local-announce",
+  "license": "AGPL-3.0"
+}

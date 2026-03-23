@@ -1,0 +1,24 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.MackinHung/taiwan-gazette",
+  "description": "5 tools for Taiwan Executive Yuan Gazette data",
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@formosa-mcp/taiwan-gazette",
+      "version": "1.0.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/MackinHung/taiwan-mcp-platform",
+    "source": "github",
+    "id": "MackinHung/taiwan-mcp-platform",
+    "subfolder": "servers/taiwan-gazette"
+  },
+  "websiteUrl": "https://formosa-mcp-platform.pages.dev/server.html?slug=taiwan-gazette",
+  "license": "AGPL-3.0"
+}

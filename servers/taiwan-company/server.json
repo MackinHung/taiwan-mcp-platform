@@ -1,19 +1,24 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.mackinhung/taiwan-company",
+  "name": "io.github.MackinHung/taiwan-company",
   "description": "5 tools for GCIS company registry search",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@formosa-mcp/taiwan-company",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "transport": {
         "type": "stdio"
       }
     }
   ],
-  "repository": "https://github.com/MackinHung/taiwan-mcp-platform",
+  "repository": {
+    "url": "https://github.com/MackinHung/taiwan-mcp-platform",
+    "source": "github",
+    "id": "MackinHung/taiwan-mcp-platform",
+    "subfolder": "servers/taiwan-company"
+  },
   "websiteUrl": "https://formosa-mcp-platform.pages.dev/server.html?slug=taiwan-company",
   "license": "AGPL-3.0"
 }

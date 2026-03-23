@@ -1,19 +1,24 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.mackinhung/taiwan-weather",
+  "name": "io.github.MackinHung/taiwan-weather",
   "description": "8 tools for Taiwan CWA weather data (forecast, earthquake, typhoon, UV)",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@formosa-mcp/taiwan-weather",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "transport": {
         "type": "stdio"
       }
     }
   ],
-  "repository": "https://github.com/MackinHung/taiwan-mcp-platform",
+  "repository": {
+    "url": "https://github.com/MackinHung/taiwan-mcp-platform",
+    "source": "github",
+    "id": "MackinHung/taiwan-mcp-platform",
+    "subfolder": "servers/taiwan-weather"
+  },
   "websiteUrl": "https://formosa-mcp-platform.pages.dev/server.html?slug=taiwan-weather",
   "license": "AGPL-3.0"
 }

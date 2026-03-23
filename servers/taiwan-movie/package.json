@@ -1,6 +1,6 @@
 {
   "name": "@formosa-mcp/taiwan-movie",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "./dist/index.js",
   "scripts": {
@@ -23,13 +23,39 @@
     "wrangler": "^4.0.0"
   },
   "description": "Taiwan MCP server: movie and cinema data",
-  "bin": { "taiwan-movie-mcp": "./dist/cli.js" },
-  "exports": { ".": { "import": "./dist/index.js" }, "./mcp": { "import": "./dist/mcp-server.js" } },
-  "files": ["dist/", "README.md", "LICENSE"],
-  "keywords": ["mcp", "taiwan", "formosa", "movie", "cinema"],
+  "bin": {
+    "taiwan-movie-mcp": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./mcp": {
+      "import": "./dist/mcp-server.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "mcp",
+    "taiwan",
+    "formosa",
+    "movie",
+    "cinema"
+  ],
   "license": "AGPL-3.0",
-  "repository": { "type": "git", "url": "https://github.com/MackinHung/taiwan-mcp-platform", "directory": "servers/taiwan-movie" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MackinHung/taiwan-mcp-platform",
+    "directory": "servers/taiwan-movie"
+  },
   "homepage": "https://formosa-mcp-platform.pages.dev/server.html?slug=taiwan-movie",
   "author": "MackinHung",
-  "engines": { "node": ">=18.0.0" }
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "mcpName": "io.github.MackinHung/taiwan-movie"
 }

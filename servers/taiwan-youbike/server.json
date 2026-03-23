@@ -1,19 +1,24 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.mackinhung/taiwan-youbike",
+  "name": "io.github.MackinHung/taiwan-youbike",
   "description": "5 tools for YouBike 2.0 station data",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@formosa-mcp/taiwan-youbike",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "transport": {
         "type": "stdio"
       }
     }
   ],
-  "repository": "https://github.com/MackinHung/taiwan-mcp-platform",
+  "repository": {
+    "url": "https://github.com/MackinHung/taiwan-mcp-platform",
+    "source": "github",
+    "id": "MackinHung/taiwan-mcp-platform",
+    "subfolder": "servers/taiwan-youbike"
+  },
   "websiteUrl": "https://formosa-mcp-platform.pages.dev/server.html?slug=taiwan-youbike",
   "license": "AGPL-3.0"
 }

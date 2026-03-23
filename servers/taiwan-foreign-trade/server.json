@@ -1,0 +1,24 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.MackinHung/taiwan-foreign-trade",
+  "description": "5 tools for Taiwan foreign trade data (trade policy, global business, import regulations, FTA/ECA)",
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@formosa-mcp/taiwan-foreign-trade",
+      "version": "1.0.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/MackinHung/taiwan-mcp-platform",
+    "source": "github",
+    "id": "MackinHung/taiwan-mcp-platform",
+    "subfolder": "servers/taiwan-foreign-trade"
+  },
+  "websiteUrl": "https://formosa-mcp-platform.pages.dev/server.html?slug=taiwan-foreign-trade",
+  "license": "AGPL-3.0"
+}

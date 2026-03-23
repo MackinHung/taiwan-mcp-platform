@@ -2,7 +2,7 @@
   "name": "taiwan-museum",
   "displayName": "Taiwan Museum & Exhibition",
   "description": "Taiwan museum and exhibition data from MOC (Ministry of Culture) open data platform",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "tools": [
     {
       "name": "search_museums",
@@ -33,5 +33,10 @@
     }
   ],
   "category": "culture",
-  "tags": ["museum", "exhibition", "culture", "art"]
+  "tags": [
+    "museum",
+    "exhibition",
+    "culture",
+    "art"
+  ]
 }

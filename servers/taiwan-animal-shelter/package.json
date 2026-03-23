@@ -1,6 +1,6 @@
 {
   "name": "@formosa-mcp/taiwan-animal-shelter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "./dist/index.js",
   "scripts": {
@@ -57,5 +57,6 @@
   "author": "MackinHung",
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "mcpName": "io.github.MackinHung/taiwan-animal-shelter"
 }
