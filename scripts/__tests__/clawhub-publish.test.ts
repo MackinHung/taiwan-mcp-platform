@@ -24,10 +24,10 @@ metadata:
   openclaw:
     requires:
       env:
-        - TW_MCP_API_KEY
+        - FORMOSA_MCP_API_KEY
       bins:
         - node
-    primaryEnv: TW_MCP_API_KEY
+    primaryEnv: FORMOSA_MCP_API_KEY
     homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
@@ -58,7 +58,7 @@ describe('parseSkillFrontmatter', () => {
     expect(result!.name).toBe('taiwan-weather');
     expect(result!.description).toBe('8 tools for Taiwan CWA weather data');
     expect(result!.version).toBe('1.0.0');
-    expect(result!.metadata?.openclaw?.primaryEnv).toBe('TW_MCP_API_KEY');
+    expect(result!.metadata?.openclaw?.primaryEnv).toBe('FORMOSA_MCP_API_KEY');
     expect(result!.metadata?.openclaw?.os).toEqual(['macos', 'linux', 'windows']);
   });
 
@@ -106,10 +106,10 @@ metadata:
   openclaw:
     requires:
       env:
-        - TW_MCP_API_KEY
+        - FORMOSA_MCP_API_KEY
       bins:
         - node
-    primaryEnv: TW_MCP_API_KEY
+    primaryEnv: FORMOSA_MCP_API_KEY
     homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
@@ -135,10 +135,10 @@ metadata:
   openclaw:
     requires:
       env:
-        - TW_MCP_API_KEY
+        - FORMOSA_MCP_API_KEY
       bins:
         - node
-    primaryEnv: TW_MCP_API_KEY
+    primaryEnv: FORMOSA_MCP_API_KEY
     homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
@@ -158,10 +158,10 @@ metadata:
   openclaw:
     requires:
       env:
-        - TW_MCP_API_KEY
+        - FORMOSA_MCP_API_KEY
       bins:
         - node
-    primaryEnv: TW_MCP_API_KEY
+    primaryEnv: FORMOSA_MCP_API_KEY
     homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
@@ -196,7 +196,7 @@ metadata:
   openclaw:
     requires:
       env:
-        - TW_MCP_API_KEY
+        - FORMOSA_MCP_API_KEY
       bins:
         - node
     homepage: https://formosa-mcp-platform.pages.dev
@@ -225,10 +225,10 @@ metadata:
   openclaw:
     requires:
       env:
-        - TW_MCP_API_KEY
+        - FORMOSA_MCP_API_KEY
       bins:
         - node
-    primaryEnv: TW_MCP_API_KEY
+    primaryEnv: FORMOSA_MCP_API_KEY
     homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
@@ -254,10 +254,10 @@ metadata:
   openclaw:
     requires:
       env:
-        - TW_MCP_API_KEY
+        - FORMOSA_MCP_API_KEY
       bins:
         - node
-    primaryEnv: TW_MCP_API_KEY
+    primaryEnv: FORMOSA_MCP_API_KEY
     homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---

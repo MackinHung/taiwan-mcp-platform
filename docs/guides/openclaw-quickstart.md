@@ -51,7 +51,7 @@ ClawHub 是 OpenClaw 官方技能市集，擁有 13,700+ 技能。
 
 ```bash
 # In OpenClaw settings or environment config
-TW_MCP_API_KEY=your-api-key-here
+FORMOSA_MCP_API_KEY=your-api-key-here
 ```
 
 5. The skill is now available — ask OpenClaw to use it!
@@ -65,7 +65,7 @@ TW_MCP_API_KEY=your-api-key-here
 
 ```bash
 # 在 OpenClaw 設定或環境變數中
-TW_MCP_API_KEY=your-api-key-here
+FORMOSA_MCP_API_KEY=your-api-key-here
 ```
 
 5. 技能已就緒 — 直接向 OpenClaw 提問即可！

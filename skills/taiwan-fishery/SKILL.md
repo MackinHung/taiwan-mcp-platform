@@ -6,10 +6,10 @@ metadata:
   openclaw:
     requires:
       env:
-        - TW_MCP_API_KEY
+        - FORMOSA_MCP_API_KEY
       bins:
         - node
-    primaryEnv: TW_MCP_API_KEY
+    primaryEnv: FORMOSA_MCP_API_KEY
     homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
