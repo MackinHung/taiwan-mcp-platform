@@ -2,6 +2,9 @@ name: Publish remaining npm packages
 
 on:
   workflow_dispatch:
+  schedule:
+    # Run daily at 14:00 UTC (22:00 Taiwan) until all are published
+    - cron: '0 14 * * *'
 
 jobs:
   publish:
@@ -22,6 +25,9 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           PACKAGES=(
+            taiwan-announce
+            taiwan-foreign-trade
+            taiwan-gazette
             taiwan-insurance-calc
             taiwan-invoice
             taiwan-judgment
@@ -53,33 +59,67 @@ jobs:
           SUCCESS=0
           FAILED=0
           SKIPPED=0
+          RATE_LIMITED=0
 
           for pkg in "${PACKAGES[@]}"; do
             echo "=== $pkg ==="
             DIR="servers/$pkg"
 
-            # Check if already published
-            CURRENT=$(npm view "@formosa-mcp/$pkg" version 2>/dev/null || echo "")
-            if [ "$CURRENT" = "1.0.1" ]; then
-              echo "SKIP: already at 1.0.1"
+            if [ ! -d "$DIR" ]; then
+              echo "SKIP: directory not found"
               SKIPPED=$((SKIPPED + 1))
               continue
             fi
 
-            # Build and publish
+            # Check if already published at target version
+            PKG_VERSION=$(node -p "require('./$DIR/package.json').version")
+            CURRENT=$(npm view "@formosa-mcp/$pkg" version 2>/dev/null || echo "")
+            if [ "$CURRENT" = "$PKG_VERSION" ]; then
+              echo "SKIP: already at $PKG_VERSION"
+              SKIPPED=$((SKIPPED + 1))
+              continue
+            fi
+
+            # Build
             cd "$DIR"
-            npm run build 2>&1
-            if npm publish --access public 2>&1; then
-              echo "OK: $pkg published"
-              SUCCESS=$((SUCCESS + 1))
-            else
-              echo "FAIL: $pkg"
+            if ! npm run build 2>&1; then
+              echo "FAIL: build error for $pkg"
+              FAILED=$((FAILED + 1))
+              cd ../..
+              continue
+            fi
+
+            # Publish with retry on rate limit
+            PUBLISHED=false
+            for attempt in 1 2 3; do
+              OUTPUT=$(npm publish --access public 2>&1)
+              EXIT_CODE=$?
+              if [ $EXIT_CODE -eq 0 ]; then
+                echo "OK: $pkg published (attempt $attempt)"
+                SUCCESS=$((SUCCESS + 1))
+                PUBLISHED=true
+                break
+              fi
+              if echo "$OUTPUT" | grep -q "E429"; then
+                echo "RATE LIMITED (attempt $attempt), waiting 60s..."
+                RATE_LIMITED=$((RATE_LIMITED + 1))
+                sleep 60
+              else
+                echo "FAIL: $pkg - $OUTPUT"
+                FAILED=$((FAILED + 1))
+                break
+              fi
+            done
+
+            if [ "$PUBLISHED" = false ] && [ $RATE_LIMITED -gt 0 ]; then
+              echo "FAIL: $pkg (rate limited after retries)"
               FAILED=$((FAILED + 1))
             fi
+
             cd ../..
 
-            # Rate limit protection: 15s between publishes
-            sleep 15
+            # Spacing between publishes
+            sleep 20
           done
 
           echo ""
@@ -87,7 +127,13 @@ jobs:
           echo "Published: $SUCCESS"
           echo "Failed: $FAILED"
           echo "Skipped: $SKIPPED"
+          echo "Rate limited attempts: $RATE_LIMITED"
 
-          if [ "$FAILED" -gt 0 ]; then
-            exit 1
+          # Don't fail the workflow for rate limits - it will auto-retry via cron
+          if [ "$SUCCESS" -gt 0 ] || [ "$SKIPPED" -eq ${#PACKAGES[@]} ]; then
+            echo "Progress made or all done."
+            exit 0
           fi
+
+          # All failed with no progress
+          exit 1
