@@ -5,4 +5,4 @@ Disallow: /profile.html
 Disallow: /my-mcp.html
 Disallow: /my-servers.html
 
-Sitemap: https://tw-mcp.pages.dev/sitemap.xml
+Sitemap: https://formosa-mcp-platform.pages.dev/sitemap.xml

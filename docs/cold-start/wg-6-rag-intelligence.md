@@ -14,7 +14,7 @@
 
 ## Section 0 — 戰略脈絡
 
-> 詳見 `~/.claude/projects/C--Users-water-Desktop/memory/tw-mcp-strategy.md`
+> 詳見 `~/.claude/projects/C--Users-water-Desktop/memory/formosa-mcp-strategy.md`
 
 ### 為什麼做 RAG — 競爭差異化
 
@@ -22,7 +22,7 @@
 |------|-------------|---------|---------|
 | Smithery (3,305+) | 關鍵字+分類 | ❌ 無審核 | ❌ |
 | Glama (19,500+) | 關鍵字+30天熱門 | ❌ 無審核 | ❌ |
-| **TW-MCP (200+目標)** | **RAG 語義搜尋** | **✅ 3層審查** | **✅ RAG→Composer** |
+| **Formosa MCP (200+目標)** | **RAG 語義搜尋** | **✅ 3層審查** | **✅ RAG→Composer** |
 
 **核心價值**: 使用者自然語言描述需求 → RAG 推薦最適合的工具組合 → 帶安全認證的 Skill endpoint。
 競爭者都是「目錄+手動搜尋」，我們要做「智能管家+自動組合」。
@@ -306,7 +306,7 @@ RAG_PORT=8000
 EMBEDDING_MODEL=BAAI/bge-m3
 RERANKER_MODEL=BAAI/bge-reranker-v2-m3
 LANCEDB_PATH=./data/lancedb
-GATEWAY_API_URL=https://tw-mcp.pages.dev/api
+GATEWAY_API_URL=https://formosa-mcp-platform.pages.dev/api
 GATEWAY_API_KEY=<internal-service-key>
 SYNC_INTERVAL_MINUTES=30
 ```
@@ -348,4 +348,4 @@ QA: 每個階段結束跑完整測試 + 搜索品質 benchmark
 9. **Smithery Skill 趨勢**: Smithery 從目錄轉向 Skill 平台。我們的 Composer 是 proto-Skill，但不急著跟。先做好垂直領域 Skill（有安全認證），Phase 2 再擴展。
 10. **垂直領域 = 付費轉換點**: 泛用目錄免費，「通過安全審查的盡職調查助手 Skill」值得付費。法律科技和財務合規付費意願最高。
 11. **擴充路線三管齊下**: 自建 (MCP Factory) + 本地化外部 MCP (繁中介面+台灣 API) + 社群審核上架。
-12. **安全審查是上架吸引力**: 「在 TW-MCP 上架 = 有安全認證」，這是 Smithery/Glama 做不到的開發者價值。
+12. **安全審查是上架吸引力**: 「在 Formosa MCP 上架 = 有安全認證」，這是 Smithery/Glama 做不到的開發者價值。

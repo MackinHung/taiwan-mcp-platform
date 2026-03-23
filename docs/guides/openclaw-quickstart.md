@@ -22,14 +22,14 @@
 
 ## Getting an API Key / 取得 API Key
 
-1. Visit [https://tw-mcp.pages.dev](https://tw-mcp.pages.dev)
+1. Visit [https://formosa-mcp-platform.pages.dev](https://formosa-mcp-platform.pages.dev)
 2. Sign in with GitHub or Google
 3. Go to **Profile → API Keys → Create New Key**
 4. Copy the key — you will need it in the next steps
 
 ---
 
-1. 前往 [https://tw-mcp.pages.dev](https://tw-mcp.pages.dev)
+1. 前往 [https://formosa-mcp-platform.pages.dev](https://formosa-mcp-platform.pages.dev)
 2. 使用 GitHub 或 Google 登入
 3. 進入 **個人檔案 → API Keys → 建立新金鑰**
 4. 複製金鑰 — 後續步驟會用到
@@ -99,7 +99,7 @@ You can manually add Taiwan MCP servers to your OpenClaw configuration.
 {
   "mcpServers": {
     "taiwan-weather": {
-      "url": "https://tw-mcp.pages.dev/mcp/s/taiwan-weather",
+      "url": "https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather",
       "headers": {
         "Authorization": "Bearer YOUR_API_KEY"
       }
@@ -132,7 +132,7 @@ You can manually add Taiwan MCP servers to your OpenClaw configuration.
 {
   "mcpServers": {
     "taiwan-weather": {
-      "url": "https://tw-mcp.pages.dev/mcp/s/taiwan-weather",
+      "url": "https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather",
       "headers": {
         "Authorization": "Bearer 你的_API_KEY"
       }
@@ -159,7 +159,7 @@ You can manually add Taiwan MCP servers to your OpenClaw configuration.
 npm install -g mcporter
 
 # Connect to a Taiwan MCP server
-mcporter call --http-url https://tw-mcp.pages.dev/mcp/s/taiwan-weather --persist
+mcporter call --http-url https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather --persist
 
 # Set authentication (if required)
 mcporter auth set taiwan-weather --header "Authorization: Bearer YOUR_API_KEY"
@@ -172,7 +172,7 @@ mcporter auth set taiwan-weather --header "Authorization: Bearer YOUR_API_KEY"
 npm install -g mcporter
 
 # 連接台灣 MCP server
-mcporter call --http-url https://tw-mcp.pages.dev/mcp/s/taiwan-weather --persist
+mcporter call --http-url https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather --persist
 
 # 設定認證（如需要）
 mcporter auth set taiwan-weather --header "Authorization: Bearer 你的_API_KEY"
@@ -380,14 +380,14 @@ The Taiwan MCP Platform provides **39 government open data servers** across mult
 
 ## What's Next / 下一步
 
-- Browse all servers on the [platform](https://tw-mcp.pages.dev)
+- Browse all servers on the [platform](https://formosa-mcp-platform.pages.dev)
 - Check server trust grades and badge details before use
 - Read the [Troubleshooting Guide](./openclaw-troubleshooting.md) if you run into issues
 - Join the community discussion on [GitHub](https://github.com/MackinHung/taiwan-mcp-platform)
 
 ---
 
-- 在[平台](https://tw-mcp.pages.dev)上瀏覽所有 server
+- 在[平台](https://formosa-mcp-platform.pages.dev)上瀏覽所有 server
 - 使用前查看 server 的信任等級和標章詳情
 - 遇到問題時參考[故障排除指南](./openclaw-troubleshooting.md)
 - 加入 [GitHub](https://github.com/MackinHung/taiwan-mcp-platform) 社群討論

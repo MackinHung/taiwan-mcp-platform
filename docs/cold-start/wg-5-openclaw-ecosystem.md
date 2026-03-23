@@ -34,7 +34,7 @@ OpenClaw（前身 Clawdbot/Moltbot，由 Peter Steinberger 創建）是 2026 年
 > 讓 OpenClaw 用戶一行指令就能接入台灣 39 個政府開放資料 MCP server。
 
 三條接入路徑：
-- **路徑 A（推薦）**: `openclaw plugins install @tw-mcp/taiwan-weather` — npm 套件直裝
+- **路徑 A（推薦）**: `openclaw plugins install @formosa-mcp/taiwan-weather` — npm 套件直裝
 - **路徑 B**: 從 ClawHub 瀏覽並添加 — GUI 操作
 - **路徑 C**: 複製 `openclaw.json` snippet — 手動配置
 
@@ -50,7 +50,7 @@ OpenClaw（前身 Clawdbot/Moltbot，由 Peter Steinberger 創建）是 2026 年
 | Config 匯出 | 手動複製 Claude Desktop JSON snippet | 無 OpenClaw config snippet、無一鍵下載 | WG-2 | MCPorter 讀 `openclaw.json`，格式已知 |
 | Discovery | `GET /api/servers` 返回平台格式 | 無標準 discovery | WG-2 | MCPorter 無 discovery protocol；改追 MCP SEP-1649（`/.well-known/mcp`） |
 | ClawHub 上架 | 無 | 39 servers 未發布 | WG-1 + WG-2 | ✅ 可用 `clawhub sync --concurrency 4` 批次上架 |
-| npm 套件 | 無 | 無法 `openclaw plugins install @tw-mcp/*` | WG-1 | ClawHub 走自己的 skill 系統而非 npm |
+| npm 套件 | 無 | 無法 `openclaw plugins install @formosa-mcp/*` | WG-1 | ClawHub 走自己的 skill 系統而非 npm |
 | Auth 適配 | API key via header | 需 OpenClaw env 指引 | WG-5 文件 | MCP OAuth 2.1 optional；API key 雙軌可行 |
 | 使用者文件 | 無 OpenClaw 相關文件 | 需中英文指南 | WG-5 文件 | — |
 
@@ -122,12 +122,12 @@ GET /api/my/servers/config?client=openclaw
 GET /.well-known/mcp
 → 200 {
     "provider": "Taiwan MCP Platform",
-    "homepage": "https://tw-mcp.pages.dev",
+    "homepage": "https://formosa-mcp-platform.pages.dev",
     "servers": [
       {
         "name": "taiwan-weather",
         "description": "台灣中央氣象署天氣資料",
-        "url": "https://tw-mcp.pages.dev/mcp/s/taiwan-weather",
+        "url": "https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather",
         "transport": "streamable-http",
         "tools_count": 8,
         "trust_grade": "A",
@@ -168,7 +168,7 @@ metadata:
         - node
     primaryEnv: TW_MCP_API_KEY
     emoji: "weather"
-    homepage: https://tw-mcp.pages.dev
+    homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
 # Taiwan Weather MCP Server
@@ -194,18 +194,18 @@ metadata:
 #### P4 — npm 套件化（Owner: WG-1）
 
 > **研究修正**: OpenClaw 的 `plugins install` 走 ClawHub skill 系統，不是 npm registry。
-> npm 套件化仍有獨立價值 — 讓非 OpenClaw 用戶也能 `npx @tw-mcp/taiwan-weather` 獨立執行。
+> npm 套件化仍有獨立價值 — 讓非 OpenClaw 用戶也能 `npx @formosa-mcp/taiwan-weather` 獨立執行。
 
 讓每個 server 可獨立執行為 MCP server（stdio transport）。
 
 **任務**:
-- 每個 server 發布為 `@tw-mcp/taiwan-{name}` npm 套件
+- 每個 server 發布為 `@formosa-mcp/taiwan-{name}` npm 套件
 - 套件包含：MCP server 可執行檔（bin entry）+ stdio transport
 - CI 流程：server 更新 → 自動發布新版本至 npm
-- MCPorter 整合：`mcporter call --http-url https://tw-mcp.pages.dev/mcp/s/taiwan-weather`
+- MCPorter 整合：`mcporter call --http-url https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather`
 
 **驗收標準**:
-- [ ] `npx @tw-mcp/taiwan-weather` 可獨立執行（stdio transport）
+- [ ] `npx @formosa-mcp/taiwan-weather` 可獨立執行（stdio transport）
 - [ ] `mcporter call --http-url <url>` 可遠端呼叫
 - [ ] npm 版本號與平台同步
 

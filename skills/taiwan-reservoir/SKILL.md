@@ -10,7 +10,7 @@ metadata:
       bins:
         - node
     primaryEnv: TW_MCP_API_KEY
-    homepage: https://tw-mcp.pages.dev
+    homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
 
@@ -35,7 +35,7 @@ Access real-time reservoir water level data from Taiwan's Water Resources Agency
 {
   "mcpServers": {
     "taiwan-reservoir": {
-      "url": "https://tw-mcp.pages.dev/mcp/s/taiwan-reservoir",
+      "url": "https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-reservoir",
       "headers": {
         "Authorization": "Bearer <YOUR_API_KEY>"
       }
@@ -45,7 +45,7 @@ Access real-time reservoir water level data from Taiwan's Water Resources Agency
 ```
 
 ### Get an API Key
-1. Visit https://tw-mcp.pages.dev
+1. Visit https://formosa-mcp-platform.pages.dev
 2. Sign in with GitHub or Google
 3. Go to Profile > API Keys > Create New Key
 

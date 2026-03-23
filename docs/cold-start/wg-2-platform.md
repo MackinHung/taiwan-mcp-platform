@@ -30,7 +30,7 @@
 
 1. ✅ Cloudflare D1/KV/R2 資源建立 + wrangler secrets (JWT, GitHub, Google)
 2. ✅ GitHub OAuth App 註冊 + Google OAuth 設定
-3. ✅ 部署 gateway worker + UI Pages → `https://tw-mcp.pages.dev`
+3. ✅ 部署 gateway worker + UI Pages → `https://formosa-mcp-platform.pages.dev`
 
 ### P1 — 合規 + 前後端整合 ✅ (2026-03-18)
 
@@ -204,7 +204,7 @@ cd servers/taiwan-stock && npx wrangler deploy
 npx wrangler d1 execute mcp-platform --remote --command "UPDATE servers SET endpoint_url = 'https://{name}-mcp.<YOUR_SUBDOMAIN>.workers.dev/' WHERE slug = '{slug}';"
 
 # UI
-cd packages/ui && npx wrangler pages deploy public --project-name=tw-mcp --branch=master --commit-dirty=true
+cd packages/ui && npx wrangler pages deploy public --project-name=formosa-mcp-platform --branch=master --commit-dirty=true
 ```
 
 ---

@@ -85,7 +85,7 @@ function main() {
         transport: { type: 'stdio' },
       }],
       repository: 'https://github.com/MackinHung/taiwan-mcp-platform',
-      websiteUrl: `https://tw-mcp.pages.dev/server.html?slug=${name}`,
+      websiteUrl: `https://formosa-mcp-platform.pages.dev/server.html?slug=${name}`,
       license: 'AGPL-3.0',
     };
 

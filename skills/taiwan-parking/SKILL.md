@@ -10,7 +10,7 @@ metadata:
       bins:
         - node
     primaryEnv: TW_MCP_API_KEY
-    homepage: https://tw-mcp.pages.dev
+    homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
 
@@ -35,7 +35,7 @@ Access Taiwan parking lot data via TDX (Transport Data eXchange), including park
 {
   "mcpServers": {
     "taiwan-parking": {
-      "url": "https://tw-mcp.pages.dev/mcp/s/taiwan-parking",
+      "url": "https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-parking",
       "headers": {
         "Authorization": "Bearer <YOUR_API_KEY>"
       }
@@ -45,7 +45,7 @@ Access Taiwan parking lot data via TDX (Transport Data eXchange), including park
 ```
 
 ### Get an API Key
-1. Visit https://tw-mcp.pages.dev
+1. Visit https://formosa-mcp-platform.pages.dev
 2. Sign in with GitHub or Google
 3. Go to Profile > API Keys > Create New Key
 

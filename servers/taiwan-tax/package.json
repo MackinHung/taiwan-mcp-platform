@@ -51,7 +51,7 @@
     "url": "https://github.com/MackinHung/taiwan-mcp-platform",
     "directory": "servers/taiwan-tax"
   },
-  "homepage": "https://tw-mcp.pages.dev/server.html?slug=taiwan-tax",
+  "homepage": "https://formosa-mcp-platform.pages.dev/server.html?slug=taiwan-tax",
   "author": "MackinHung",
   "engines": {
     "node": ">=18.0.0"

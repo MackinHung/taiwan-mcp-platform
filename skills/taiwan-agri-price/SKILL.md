@@ -10,7 +10,7 @@ metadata:
       bins:
         - node
     primaryEnv: TW_MCP_API_KEY
-    homepage: https://tw-mcp.pages.dev
+    homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
 
@@ -35,7 +35,7 @@ Access Taiwan wholesale agricultural product prices from the Ministry of Agricul
 {
   "mcpServers": {
     "taiwan-agri-price": {
-      "url": "https://tw-mcp.pages.dev/mcp/s/taiwan-agri-price",
+      "url": "https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-agri-price",
       "headers": {
         "Authorization": "Bearer <YOUR_API_KEY>"
       }
@@ -45,7 +45,7 @@ Access Taiwan wholesale agricultural product prices from the Ministry of Agricul
 ```
 
 ### Get an API Key
-1. Visit https://tw-mcp.pages.dev
+1. Visit https://formosa-mcp-platform.pages.dev
 2. Sign in with GitHub or Google
 3. Go to Profile > API Keys > Create New Key
 

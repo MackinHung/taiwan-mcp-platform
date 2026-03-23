@@ -23,7 +23,7 @@ describe('OpenClaw Config Routes', () => {
       const server = createMockServer({
         slug: 'taiwan-weather',
         name: 'Taiwan Weather',
-        endpoint_url: 'https://tw-mcp.pages.dev/mcp/s/taiwan-weather',
+        endpoint_url: 'https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather',
       });
 
       const env = createMockEnv({
@@ -44,7 +44,7 @@ describe('OpenClaw Config Routes', () => {
       expect(data.data.mcpServers).toBeTruthy();
       expect(data.data.mcpServers['taiwan-weather']).toBeTruthy();
       expect(data.data.mcpServers['taiwan-weather'].url).toBe(
-        'https://tw-mcp.pages.dev/mcp/s/taiwan-weather',
+        'https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather',
       );
       expect(data.data.mcpServers['taiwan-weather'].headers).toEqual({
         Authorization: 'Bearer <YOUR_API_KEY>',
@@ -152,12 +152,12 @@ describe('OpenClaw Config Routes', () => {
                   {
                     slug: 'taiwan-weather',
                     name: 'Taiwan Weather',
-                    endpoint_url: 'https://tw-mcp.pages.dev/mcp/s/taiwan-weather',
+                    endpoint_url: 'https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather',
                   },
                   {
                     slug: 'taiwan-air-quality',
                     name: 'Taiwan Air Quality',
-                    endpoint_url: 'https://tw-mcp.pages.dev/mcp/s/taiwan-air-quality',
+                    endpoint_url: 'https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-air-quality',
                   },
                 ],
               };
@@ -176,11 +176,11 @@ describe('OpenClaw Config Routes', () => {
       expect(Object.keys(data.data.mcpServers)).toHaveLength(2);
       expect(data.data.mcpServers['taiwan-weather']).toBeTruthy();
       expect(data.data.mcpServers['taiwan-weather'].url).toBe(
-        'https://tw-mcp.pages.dev/mcp/s/taiwan-weather',
+        'https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather',
       );
       expect(data.data.mcpServers['taiwan-air-quality']).toBeTruthy();
       expect(data.data.mcpServers['taiwan-air-quality'].url).toBe(
-        'https://tw-mcp.pages.dev/mcp/s/taiwan-air-quality',
+        'https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-air-quality',
       );
     });
 
@@ -207,7 +207,7 @@ describe('OpenClaw Config Routes', () => {
                   {
                     slug: 'taiwan-weather',
                     name: 'Taiwan Weather',
-                    endpoint_url: 'https://tw-mcp.pages.dev/mcp/s/taiwan-weather',
+                    endpoint_url: 'https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather',
                   },
                 ],
               };

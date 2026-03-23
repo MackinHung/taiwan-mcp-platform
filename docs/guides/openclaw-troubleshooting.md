@@ -31,9 +31,9 @@
    Authorization: sk-xxxxxxxxxxxx
    ```
 
-2. Generate a new API key at [tw-mcp.pages.dev](https://tw-mcp.pages.dev) → Profile → API Keys
+2. Generate a new API key at [formosa-mcp-platform.pages.dev](https://formosa-mcp-platform.pages.dev) → Profile → API Keys
 
-   在 [tw-mcp.pages.dev](https://tw-mcp.pages.dev) → 個人檔案 → API Keys 重新生成金鑰
+   在 [formosa-mcp-platform.pages.dev](https://formosa-mcp-platform.pages.dev) → 個人檔案 → API Keys 重新生成金鑰
 
 3. Update your OpenClaw config or environment variable with the new key
 
@@ -100,7 +100,7 @@ OpenClaw 沒有原生 MCP client（[#29053](https://github.com/openclaw/openclaw
 
 **Solution / 解決方法:**
 
-- Verify you can reach the platform: `curl https://tw-mcp.pages.dev/api/servers`
+- Verify you can reach the platform: `curl https://formosa-mcp-platform.pages.dev/api/servers`
 - Check your firewall or proxy settings / 檢查防火牆或代理設定
 - Some corporate networks block WebSocket/SSE connections / 部分企業網路會封鎖 WebSocket/SSE 連線
 
@@ -131,7 +131,7 @@ OpenClaw 沒有原生 MCP client（[#29053](https://github.com/openclaw/openclaw
    {
      "mcpServers": {
        "taiwan-weather": {
-         "url": "https://tw-mcp.pages.dev/mcp/s/taiwan-weather",
+         "url": "https://formosa-mcp-platform.pages.dev/mcp/s/taiwan-weather",
          "headers": {
            "Authorization": "Bearer YOUR_API_KEY"
          }
@@ -226,8 +226,8 @@ OpenClaw 沒有原生 MCP client（[#29053](https://github.com/openclaw/openclaw
 
 **A:**
 - [GitHub Issues](https://github.com/MackinHung/taiwan-mcp-platform/issues) — for bug reports and feature requests
-- [Platform](https://tw-mcp.pages.dev) — for account and API key management
+- [Platform](https://formosa-mcp-platform.pages.dev) — for account and API key management
 
 **A:**
 - [GitHub Issues](https://github.com/MackinHung/taiwan-mcp-platform/issues) — 回報 bug 或功能建議
-- [平台](https://tw-mcp.pages.dev) — 帳號與 API key 管理
+- [平台](https://formosa-mcp-platform.pages.dev) — 帳號與 API key 管理

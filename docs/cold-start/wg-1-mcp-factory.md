@@ -294,3 +294,47 @@ QA: 每批完成後跑 `servers/` 下所有測試
 | **taiwan-convenience-store** | 7-11/全家 私人 API，無公開資料 |
 | **taiwan-telecom** | 中華/遠傳/台哥 無公開 API |
 | **taiwan-maps** | Google Maps MCP 已存在，重複建設無護城河 |
+
+---
+
+### Batch 4 方向：爬蟲型 MCP Servers（規劃中）
+
+> Batch 1-3 覆蓋了 ~95% 的政府**結構化 REST API**。
+> 剩下 5% 是「有資料但沒有 API」的公告型/文件型資料源，需要爬蟲 + 結構化。
+> 這些資料源屬「政府公文/公告」，依著作權法第 9 條不受著作權保護，爬取合法。
+
+#### 架構差異
+
+| | Batch 1-3 (API 型) | Batch 4 (爬蟲型) |
+|--|---------------------|------------------|
+| 資料來源 | REST API (JSON/CSV/XML) | HTML 頁面 / PDF 公告 |
+| client.ts | `fetch(API_URL)` → parse JSON | 讀 R2/KV cache（預先爬好） |
+| 資料更新 | 即時 (每次請求 fetch) | 排程 (Cron Trigger / GitHub Actions) |
+| 新增層 | 無 | Extraction Layer（爬蟲 + 結構化 + cache） |
+
+#### Extraction Layer 工具
+
+| 工具 | 用途 | 成本 |
+|------|------|------|
+| **[markdown.new](https://markdown.new/)** | URL → clean Markdown (80% token 省)，三層 fallback (Accept header → CF Workers AI → Headless browser)，0.1-0.6s，500 req/day/IP 免費 | 免費 |
+| **cheerio** | 解析固定結構 HTML table | 免費 |
+| **LLM 結構化萃取** | 非固定格式公告 → JSON schema | API 費用 |
+
+#### 候選資料源
+
+| Server | 資料來源 | 現況 | 法律風險 |
+|--------|---------|------|---------|
+| **taiwan-gazette** | [行政院公報](https://gazette.nat.gov.tw/) | 有開放資料專區 + API 說明，2,016 筆 | ✅ 無 — 政府公文 |
+| **taiwan-local-announce** | 各縣市政府公告欄 | 無 API，純 HTML，22 縣市各自格式 | ✅ 無 — 政府公告 |
+| **taiwan-urban-plan** | 各縣市都計/地政公告 | 無 API，HTML + PDF | ✅ 無 — 政府公告 |
+| **taiwan-env-impact** | 環保署環評書件 | 無 API，HTML 查詢 + PDF | ✅ 無 — 政府公告 |
+| **taiwan-ncc** | NCC 通訊監理裁罰/頻譜 | 無 API，PDF 公告 | ✅ 無 — 政府公告 |
+| **taiwan-standards** | 標準檢驗局 CNS/ISO | 無 API，查詢網頁 | ✅ 無 — 公文 |
+| **taiwan-foreign-trade** | 國貿署 RCEP/FTA 公告 | 無 API，公告頁 | ✅ 無 — 政府公告 |
+| **taiwan-subsidy** (升級) | 各部會補助公告彙整 | 散落各部會 HTML | ✅ 無 — 政府公告 |
+
+#### 法律分析（2026-03-23）
+
+- **著作權法第 9 條**: 憲法、法律、命令、公文不得為著作權之標的 → 政府公告/公報/行政處分全部免著作權
+- **七法案教訓**: 爬「政府原始網站」合法；爬「第三方整理的編輯資料庫」有侵權風險
+- **合規要點**: (1) 爬政府原站 (2) 禮貌爬取 + rate limit (3) 遵守 robots.txt (4) 含個資需去識別化

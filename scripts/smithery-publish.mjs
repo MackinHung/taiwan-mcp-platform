@@ -20,7 +20,7 @@ const DELAY_MS = (() => {
   return idx >= 0 ? parseInt(process.argv[idx + 1], 10) || 2000 : 2000;
 })();
 
-const GATEWAY_BASE = 'https://tw-mcp.pages.dev';
+const GATEWAY_BASE = 'https://formosa-mcp-platform.pages.dev';
 
 function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));

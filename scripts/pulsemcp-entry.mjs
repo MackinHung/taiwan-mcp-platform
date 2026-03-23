@@ -73,7 +73,7 @@ function main() {
       slug: name,
       description: meta.desc,
       category: meta.category,
-      url: `https://tw-mcp.pages.dev/server.html?slug=${name}`,
+      url: `https://formosa-mcp-platform.pages.dev/server.html?slug=${name}`,
       npm: `@formosa-mcp/${name}`,
       github: 'https://github.com/MackinHung/taiwan-mcp-platform',
       license: 'AGPL-3.0',

@@ -28,7 +28,7 @@ metadata:
       bins:
         - node
     primaryEnv: TW_MCP_API_KEY
-    homepage: https://tw-mcp.pages.dev
+    homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
 
@@ -110,7 +110,7 @@ metadata:
       bins:
         - node
     primaryEnv: TW_MCP_API_KEY
-    homepage: https://tw-mcp.pages.dev
+    homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
 
@@ -139,7 +139,7 @@ metadata:
       bins:
         - node
     primaryEnv: TW_MCP_API_KEY
-    homepage: https://tw-mcp.pages.dev
+    homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
 
@@ -162,7 +162,7 @@ metadata:
       bins:
         - node
     primaryEnv: TW_MCP_API_KEY
-    homepage: https://tw-mcp.pages.dev
+    homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
 
@@ -199,7 +199,7 @@ metadata:
         - TW_MCP_API_KEY
       bins:
         - node
-    homepage: https://tw-mcp.pages.dev
+    homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
 
@@ -229,7 +229,7 @@ metadata:
       bins:
         - node
     primaryEnv: TW_MCP_API_KEY
-    homepage: https://tw-mcp.pages.dev
+    homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
 
@@ -258,7 +258,7 @@ metadata:
       bins:
         - node
     primaryEnv: TW_MCP_API_KEY
-    homepage: https://tw-mcp.pages.dev
+    homepage: https://formosa-mcp-platform.pages.dev
     os: [macos, linux, windows]
 ---
 

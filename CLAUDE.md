@@ -18,7 +18,7 @@
 **Repo**: `MackinHung/taiwan-mcp-platform`, branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
 **Brand**: `@formosa-mcp` (npm scope), Formosa MCP 市集
-**Current**: 3,738 tests, 39 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3), npm packaging + distribution ready, tsc --noEmit clean (`9fbd52f`)
+**Current**: 4,411 tests, 47 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3 + 8 Batch 4), npm packaging + distribution ready, tsc --noEmit clean
 
 ---
 
@@ -74,8 +74,17 @@ servers/
   taiwan-sports/       → 5 sports facility tools (98 tests)
   taiwan-education/    → 5 school directory tools (97 tests)
   taiwan-election/     → 5 election results tools (69 tests)
+  # Batch 4 (8 servers) — 完成於 2026-03-23
+  taiwan-food-nutrition/ → 5 FDA food nutrition tools (83 tests)
+  taiwan-radiation/    → 5 AEC radiation monitoring tools (88 tests)
+  taiwan-movie/        → 5 MOC movie/cinema tools (76 tests)
+  taiwan-fire-incident/ → 5 fire incident statistics tools (85 tests)
+  taiwan-water-quality/ → 5 MOENV water quality tools (84 tests)
+  taiwan-museum/       → 5 MOC museum/exhibition tools (75 tests)
+  taiwan-animal-shelter/ → 5 MOA animal shelter tools (98 tests)
+  taiwan-fishery/      → 5 MOA fishery tools (84 tests)
 skills/
-  taiwan-*/SKILL.md    → 39 ClawHub skill definitions (YAML frontmatter + usage)
+  taiwan-*/SKILL.md    → 47 ClawHub skill definitions (YAML frontmatter + usage)
 scripts/
   clawhub-publish.ts   → ClawHub 批次上架腳本 (27 tests)
 docs/
@@ -90,7 +99,7 @@ services/                    # 下階段：非 TypeScript 微服務
 **下階段架構 (WG-6)**:
 ```
 Cloudflare Edge (現有 TypeScript) ──REST API──▶ Python RAG 微服務 (services/rag/)
-  Gateway / Composer / UI / 39 servers          FastAPI + BGE-M3 + LanceDB
+  Gateway / Composer / UI / 47 servers          FastAPI + BGE-M3 + LanceDB
   D1 + KV + R2                                  語義搜索 + Reranking + 推薦
 ```
 

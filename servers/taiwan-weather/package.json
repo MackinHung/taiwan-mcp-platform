@@ -51,7 +51,7 @@
     "url": "https://github.com/MackinHung/taiwan-mcp-platform",
     "directory": "servers/taiwan-weather"
   },
-  "homepage": "https://tw-mcp.pages.dev/server.html?slug=taiwan-weather",
+  "homepage": "https://formosa-mcp-platform.pages.dev/server.html?slug=taiwan-weather",
   "author": "MackinHung",
   "engines": {
     "node": ">=18.0.0"
