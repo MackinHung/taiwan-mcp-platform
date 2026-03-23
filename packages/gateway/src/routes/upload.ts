@@ -203,10 +203,11 @@ uploadRoutes.post('/', async (c) => {
   if (data.tools && data.tools.length > 0) {
     for (const tool of data.tools) {
       const toolId = crypto.randomUUID();
+      const annotations = (tool as any).annotations ? JSON.stringify((tool as any).annotations) : null;
       await c.env.DB.prepare(
-        `INSERT INTO tools (id, server_id, name, display_name, description, input_schema, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`
-      ).bind(toolId, id, tool.name, tool.display_name || null, tool.description, tool.input_schema, now).run();
+        `INSERT INTO tools (id, server_id, name, display_name, description, input_schema, annotations, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+      ).bind(toolId, id, tool.name, tool.display_name || null, tool.description, tool.input_schema, annotations, now).run();
     }
   }
 

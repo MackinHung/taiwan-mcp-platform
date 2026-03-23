@@ -2,8 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": ".",
-    "types": ["@cloudflare/workers-types", "node"]
+    "rootDir": "..",
+    "types": ["@cloudflare/workers-types", "node"],
+    "paths": {
+      "@formosa-mcp/shared": ["../shared/src/index.ts"]
+    }
   },
   "include": ["src", "rules"]
 }

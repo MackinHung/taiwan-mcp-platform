@@ -3,11 +3,19 @@ import { z } from 'zod';
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const semverPattern = /^\d+\.\d+\.\d+(?:-[\w.]+)?$/;
 
+export const toolAnnotationsSchema = z.object({
+  readOnlyHint: z.boolean().optional(),
+  destructiveHint: z.boolean().optional(),
+  idempotentHint: z.boolean().optional(),
+  openWorldHint: z.boolean().optional(),
+}).optional();
+
 export const toolCreateSchema = z.object({
   name: z.string().min(1).max(64).regex(/^[a-z0-9_]+$/, 'Tool name must be lowercase alphanumeric with underscores'),
   display_name: z.string().max(64).optional(),
   description: z.string().max(500).default(''),
   input_schema: z.string().max(10000).default('{}'),
+  annotations: toolAnnotationsSchema,
 });
 
 export const serverCreateSchema = z.object({

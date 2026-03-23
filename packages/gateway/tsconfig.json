@@ -4,7 +4,8 @@
     "outDir": "dist",
     "paths": {
       "@shared/*": ["../shared/src/*"],
-      "@review/*": ["../review/src/*"]
+      "@review/*": ["../review/src/*"],
+      "@formosa-mcp/shared": ["../shared/src/index.ts"]
     }
   },
   "include": ["src"]
