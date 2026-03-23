@@ -1,13 +1,13 @@
 <p align="center">
-  <h1 align="center">Taiwan MCP Platform</h1>
+  <h1 align="center">Formosa MCP Platform</h1>
   <p align="center">
-    台灣第一個 MCP 市集平台 — 組合器 + 安全審查標示 + 39 個政府開放資料 MCP Servers
+    台灣第一個 MCP 市集平台 — 組合器 + 安全審查標示 + 47 個政府開放資料 MCP Servers
   </p>
 </p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg" alt="AGPL-3.0"></a>
-  <img src="https://img.shields.io/badge/MCP%20Servers-39-brightgreen" alt="39 MCP Servers">
+  <img src="https://img.shields.io/badge/MCP%20Servers-47-brightgreen" alt="39 MCP Servers">
   <img src="https://img.shields.io/badge/TypeScript-strict-blue" alt="TypeScript">
   <img src="https://img.shields.io/badge/Cloudflare%20Workers-orange" alt="Cloudflare Workers">
 </p>
@@ -30,28 +30,32 @@
 
 ## 特色
 
-- **39 個 MCP Servers** — 涵蓋台灣政府各部會開放資料
+- **47 個 MCP Servers** — 涵蓋台灣政府各部會開放資料
 - **組合器 (Composer)** — 多個 servers 組合為單一端點，namespace routing
 - **安全審查標章** — 自動化安全掃描與分級
-- **SBOM / VirusTotal / OSV 掃描** — 供應鏈透明度與漏洞偵測
+- **SBOM / OSV 掃描** — 供應鏈透明度與漏洞偵測
 
 ---
 
-## 39 個 MCP Servers
+## 47 個 MCP Servers
 
-**氣象環境** — `weather` `air-quality` `weather-alert` `reservoir` `disaster`
+**氣象環境** — `weather` `air-quality` `weather-alert` `reservoir` `disaster` `radiation` `water-quality`
 
 **交通運輸** — `transit` `parking` `youbike` `traffic-accident` `garbage`
 
 **財經金融** — `stock` `exchange-rate` `invoice` `budget` `tax` `customs`
 
-**醫療健康** — `hospital` `drug` `cdc` `food-safety` `insurance-calc`
+**醫療健康** — `hospital` `drug` `cdc` `food-safety` `insurance-calc` `food-nutrition`
 
 **法律政治** — `law` `judgment` `legislative` `procurement` `election`
 
 **民生資訊** — `company` `labor` `patent` `calendar` `demographics` `tourism` `sports` `education`
 
-**新聞** — `news` &nbsp;&nbsp; **工具** — `validator`
+**文化娛樂** — `movie` `museum`
+
+**農漁業** — `agri-price` `fishery` `animal-shelter`
+
+**新聞** — `news` &nbsp;&nbsp; **消防** — `fire-incident` &nbsp;&nbsp; **工具** — `validator`
 
 > 每個 server 名稱前綴為 `taiwan-`，例如 `taiwan-weather`、`taiwan-stock`。
 
@@ -68,7 +72,7 @@ packages/
   composer/   MCP Proxy、Namespace Routing
   ui/         前端頁面 (vanilla HTML/JS/CSS)
 servers/
-  taiwan-*/   39 個 MCP Servers
+  taiwan-*/   47 個 MCP Servers
 ```
 
 技術棧：Cloudflare Workers + D1 + KV + R2 + Pages、TypeScript、Hono、Vitest

@@ -1,13 +1,13 @@
 <p align="center">
-  <h1 align="center">Taiwan MCP Platform</h1>
+  <h1 align="center">Formosa MCP Platform</h1>
   <p align="center">
-    Taiwan's first MCP marketplace — Composer + Security Review Badges + 39 Government Open Data MCP Servers
+    Taiwan's first MCP marketplace — Composer + Security Review Badges + 47 Government Open Data MCP Servers
   </p>
 </p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg" alt="AGPL-3.0"></a>
-  <img src="https://img.shields.io/badge/MCP%20Servers-39-brightgreen" alt="39 MCP Servers">
+  <img src="https://img.shields.io/badge/MCP%20Servers-47-brightgreen" alt="39 MCP Servers">
   <img src="https://img.shields.io/badge/TypeScript-strict-blue" alt="TypeScript">
   <img src="https://img.shields.io/badge/Cloudflare%20Workers-orange" alt="Cloudflare Workers">
 </p>
@@ -30,28 +30,32 @@ Fully open-source (AGPL-3.0). Free to use, free to deploy.
 
 ## Features
 
-- **39 MCP Servers** — covering Taiwan government open data across all major agencies
+- **47 MCP Servers** — covering Taiwan government open data across all major agencies
 - **Composer** — combine multiple servers into a single endpoint with namespace routing
 - **Security Review Badges** — automated security scanning and grading
-- **SBOM / VirusTotal / OSV scanning** — supply chain transparency and vulnerability detection
+- **SBOM / OSV scanning** — supply chain transparency and vulnerability detection
 
 ---
 
-## 39 MCP Servers
+## 47 MCP Servers
 
-**Weather & Environment** — `weather` `air-quality` `weather-alert` `reservoir` `disaster`
+**Weather & Environment** — `weather` `air-quality` `weather-alert` `reservoir` `disaster` `radiation` `water-quality`
 
 **Transportation** — `transit` `parking` `youbike` `traffic-accident` `garbage`
 
 **Finance** — `stock` `exchange-rate` `invoice` `budget` `tax` `customs`
 
-**Healthcare** — `hospital` `drug` `cdc` `food-safety` `insurance-calc`
+**Healthcare** — `hospital` `drug` `cdc` `food-safety` `insurance-calc` `food-nutrition`
 
 **Law & Politics** — `law` `judgment` `legislative` `procurement` `election`
 
 **Daily Life** — `company` `labor` `patent` `calendar` `demographics` `tourism` `sports` `education`
 
-**News** — `news` &nbsp;&nbsp; **Utilities** — `validator`
+**Culture & Entertainment** — `movie` `museum`
+
+**Agriculture & Fishery** — `agri-price` `fishery` `animal-shelter`
+
+**News** — `news` &nbsp;&nbsp; **Fire Services** — `fire-incident` &nbsp;&nbsp; **Utilities** — `validator`
 
 > All server names are prefixed with `taiwan-`, e.g. `taiwan-weather`, `taiwan-stock`.
 
@@ -68,7 +72,7 @@ packages/
   composer/   MCP Proxy, Namespace Routing
   ui/         Frontend (vanilla HTML/JS/CSS)
 servers/
-  taiwan-*/   39 MCP Servers
+  taiwan-*/   47 MCP Servers
 ```
 
 Stack: Cloudflare Workers + D1 + KV + R2 + Pages, TypeScript, Hono, Vitest
