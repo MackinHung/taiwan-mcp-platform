@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW" data-theme="dark">
+<html lang="zh-TW" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,6 +34,7 @@
     }
   }
   </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -80,25 +81,32 @@
     </div>
   </div>
 
-  <!-- Hero -->
-  <section class="hero">
-    <h1>Formosa MCP 市集</h1>
-    <p>探索、安裝、組合在地化 MCP 伺服器 — 讓 AI 助手使用台灣的資料與服務</p>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="stat-value" id="stat-servers">--</div>
-        <div class="stat-label">伺服器</div>
+  <!-- Hero Promax -->
+  <header class="hero-promax">
+    <div class="hero-promax-badge">
+      <span class="pulse-dot"></span> 全新 UIUXpromax 體驗
+    </div>
+    <h1 class="hero-promax-title">Formosa <br/>MCP 市集</h1>
+    <p class="hero-promax-desc">探索、安裝、組合在地化 MCP 伺服器。<br>讓 AI 助手無縫接軌<span class="text-gradient">台灣的資料與服務</span>。</p>
+    <div class="hero-promax-actions">
+      <a href="#server-grid" class="btn btn-primary btn-lg btn-glow">開始探索市集</a>
+      <a href="/my-mcp.html" class="btn btn-secondary btn-lg">我的 MCP 組合</a>
+    </div>
+    <div class="hero-promax-stats">
+      <div class="stat-box">
+        <div class="stat-val" id="stat-servers">--</div>
+        <div class="stat-lbl">伺服器</div>
       </div>
-      <div class="hero-stat">
-        <div class="stat-value" id="stat-tools">--</div>
-        <div class="stat-label">工具</div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat-tools">--</div>
+        <div class="stat-lbl">工具</div>
       </div>
-      <div class="hero-stat">
-        <div class="stat-value" id="stat-calls">--</div>
-        <div class="stat-label">累計呼叫</div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat-calls">--</div>
+        <div class="stat-lbl">累計呼叫</div>
       </div>
     </div>
-  </section>
+  </header>
 
   <!-- Onboarding Band — Quick Start -->
   <section class="onboarding-band" id="onboarding-band" aria-label="快速開始指南">
@@ -110,7 +118,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         Quick Start
       </p>
-      <h2 class="onboarding-headline">讓你的 AI 助手<span class="onboarding-highlight">直接使用台灣資料</span></h2>
+      <h2 class="onboarding-headline">讓你的 AI 助手<span class="onboarding-highlight text-gradient">直接使用台灣資料</span></h2>
       <p class="onboarding-subline">天氣、股價、法規、交通... 三步完成設定，無需寫程式</p>
       <div class="onboarding-steps">
         <div class="onboarding-step" data-step="1">
