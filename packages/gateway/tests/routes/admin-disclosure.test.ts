@@ -68,7 +68,7 @@ describe('Admin Disclosure Routes', () => {
       expect(res.status).toBe(400);
       const data = await res.json() as any;
       expect(data.success).toBe(false);
-      expect(data.error).toContain('Reason');
+      expect(data.error).toContain('原因');
     });
 
     it('should reject non-admin (403)', async () => {
@@ -99,7 +99,7 @@ describe('Admin Disclosure Routes', () => {
       expect(res.status).toBe(404);
       const data = await res.json() as any;
       expect(data.success).toBe(false);
-      expect(data.error).toContain('not found');
+      expect(data.error).toContain('不存在');
     });
   });
 
@@ -147,7 +147,7 @@ describe('Admin Disclosure Routes', () => {
       expect(res.status).toBe(400);
       const data = await res.json() as any;
       expect(data.success).toBe(false);
-      expect(data.error).toContain('Days must be 1-30');
+      expect(data.error).toContain('1-30');
     });
 
     it('should reject invalid days (31 exceeds max)', async () => {
@@ -194,7 +194,7 @@ describe('Admin Disclosure Routes', () => {
       expect(res.status).toBe(404);
       const data = await res.json() as any;
       expect(data.success).toBe(false);
-      expect(data.error).toContain('not found');
+      expect(data.error).toContain('不存在');
     });
   });
 });

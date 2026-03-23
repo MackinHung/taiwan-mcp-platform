@@ -69,7 +69,7 @@
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">1.</span> <strong>OAuth 委派認證</strong> — 登入透過 GitHub 或 Google 處理，平台不經手密碼。</li>
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">2.</span> <strong>唯讀代理架構</strong> — 資料直接來自政府 API，平台僅轉送，不儲存或修改查詢內容。</li>
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">3.</span> <strong>安全審查標示</strong> — 每個工具皆附有多維度安全評分，可快速判斷風險等級。</li>
-        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">4.</span> <strong>四層安全審查</strong> — 所有工具須通過 8 項靜態掃描、行為分析、OSV / VirusTotal / SBOM 供應鏈驗證，及人工審核後方可上架。</li>
+        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">4.</span> <strong>多層安全審查</strong> — 所有工具須通過 8 項靜態掃描、行為分析、OSV / SBOM / OpenSSF Scorecard 供應鏈驗證，及 5 天社群公示期後方可上架。</li>
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">5.</span> <strong>即時異常偵測</strong> — 系統持續監控工具濫用、錯誤率突增、未宣告 URL 等異常模式，自動記錄並通知管理員。</li>
         <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">6.</span> <strong>權限邊界監控</strong> — 組合器即時檢查每個工具呼叫是否符合宣告權限，違規行為完整記錄供審閱。</li>
       </ul>
@@ -324,7 +324,7 @@
     <div class="policy-section">
       <h2>技術文件</h2>
       <p style="color:var(--text-secondary);margin-bottom:16px;">
-        如需進一步了解三層掃描流程、五維度標章系統、
+        如需進一步了解多層掃描流程、五維度標章系統、
         風險防護對照表等技術層面的安全機制，請參閱：
       </p>
       <div style="display:flex;gap:12px;flex-wrap:wrap;">

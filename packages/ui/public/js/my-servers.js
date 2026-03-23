@@ -96,8 +96,8 @@ const myServers = {
             <div class="stat-label" style="font-size:0.7rem;">工具</div>
           </div>
           <div class="stat-card" style="padding:8px;">
-            <div class="stat-value" style="font-size:1rem;">${s.is_published ? '是' : '否'}</div>
-            <div class="stat-label" style="font-size:0.7rem;">已發布</div>
+            <div class="stat-value" style="font-size:1rem;">${s.is_published ? '✅ 已上架' : s.disclosed_at ? '⏳ 公示中' : '—'}</div>
+            <div class="stat-label" style="font-size:0.7rem;">狀態</div>
           </div>
         </div>
 
@@ -231,10 +231,12 @@ const myServers = {
 
       const scan = res.data?.scan;
       if (scan) {
-        const statusLabel = scan.status === 'scan_passed' ? '掃描通過 ✅' : '掃描失敗 ❌';
+        const passed = scan.status === 'scan_passed';
+        const statusLabel = passed ? '掃描通過 — 已進入公示期' : '掃描失敗 ❌';
         resultEl.innerHTML = `
-          <div class="alert ${scan.status === 'scan_passed' ? 'alert-info' : 'alert-warning'}">
+          <div class="alert ${passed ? 'alert-info' : 'alert-warning'}">
             <strong>${statusLabel}</strong><br/>
+            ${passed ? '<span class="text-xs text-muted">伺服器將於公示期結束後自動上架（新版本 5 天，小更新 2 天）。</span><br/>' : ''}
             ${scan.badges ? `徽章：${badges.render('external', scan.badges.badge_external || 'unverified')}` : ''}
           </div>
         `;

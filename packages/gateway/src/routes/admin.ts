@@ -20,8 +20,13 @@ adminRoutes.get('/review-queue', async (c) => {
   if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
 
   const { results } = await c.env.DB.prepare(
-    `SELECT * FROM servers WHERE review_status NOT IN ('approved', 'rejected')
-     ORDER BY created_at ASC`
+    `SELECT s.*,
+       (SELECT COUNT(*) FROM community_votes WHERE server_id = s.id AND vote = 'trust') as trust_votes,
+       (SELECT COUNT(*) FROM community_votes WHERE server_id = s.id AND vote = 'distrust') as distrust_votes,
+       (SELECT COUNT(*) FROM reports WHERE server_id = s.id AND type = 'security' AND status IN ('open','investigating')) as open_reports
+     FROM servers s
+     WHERE s.review_status NOT IN ('approved', 'rejected')
+     ORDER BY s.created_at ASC`
   ).all();
 
   return c.json({ success: true, data: results, error: null });
@@ -320,8 +325,8 @@ adminRoutes.post('/rescan', async (c) => {
 // POST /disclosure/:serverId/expedite -> immediately publish (bypass remaining disclosure)
 adminRoutes.post('/disclosure/:serverId/expedite', async (c) => {
   const result = requireAdmin(c);
-  if (result === null) return c.json({ success: false, error: 'Unauthorized', data: null }, 401);
-  if (result === 'forbidden') return c.json({ success: false, error: 'Forbidden', data: null }, 403);
+  if (result === null) return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
 
   const serverId = c.req.param('serverId');
 
@@ -330,13 +335,13 @@ adminRoutes.post('/disclosure/:serverId/expedite', async (c) => {
   ).bind(serverId).first<{ id: string; version: string }>();
 
   if (!server) {
-    return c.json({ success: false, error: 'Server not found or not in disclosure', data: null }, 404);
+    return c.json({ success: false, error: '伺服器不存在或不在公示期中', data: null }, 404);
   }
 
   const body = await c.req.json();
   const parsed = expediteSchema.safeParse(body);
   if (!parsed.success) {
-    return c.json({ success: false, error: 'Reason is required', data: null }, 400);
+    return c.json({ success: false, error: '請輸入快速上架原因', data: null }, 400);
   }
 
   const now = new Date().toISOString();
@@ -355,8 +360,8 @@ adminRoutes.post('/disclosure/:serverId/expedite', async (c) => {
 // POST /disclosure/:serverId/extend -> extend disclosure period by N days
 adminRoutes.post('/disclosure/:serverId/extend', async (c) => {
   const result = requireAdmin(c);
-  if (result === null) return c.json({ success: false, error: 'Unauthorized', data: null }, 401);
-  if (result === 'forbidden') return c.json({ success: false, error: 'Forbidden', data: null }, 403);
+  if (result === null) return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
 
   const serverId = c.req.param('serverId');
 
@@ -365,13 +370,13 @@ adminRoutes.post('/disclosure/:serverId/extend', async (c) => {
   ).bind(serverId).first<{ id: string; disclosure_ends_at: string }>();
 
   if (!server) {
-    return c.json({ success: false, error: 'Server not found or not in disclosure', data: null }, 404);
+    return c.json({ success: false, error: '伺服器不存在或不在公示期中', data: null }, 404);
   }
 
   const body = await c.req.json();
   const parsed = extendSchema.safeParse(body);
   if (!parsed.success) {
-    return c.json({ success: false, error: 'Days must be 1-30', data: null }, 400);
+    return c.json({ success: false, error: '天數必須在 1-30 之間', data: null }, 400);
   }
 
   const currentEnd = new Date(server.disclosure_ends_at);

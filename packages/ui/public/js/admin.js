@@ -118,7 +118,10 @@ const admin = {
                     ${badges.render('data', s.badge_data)}
                   </div>
                 </td>
-                <td><span class="badge ${reviewStatusClass(s.review_status)}">${reviewStatusLabels[s.review_status] || s.review_status}</span></td>
+                <td>
+                  <span class="badge ${reviewStatusClass(s.review_status)}">${reviewStatusLabels[s.review_status] || s.review_status}</span>
+                  ${s.disclosed_at && !s.is_published ? `<div class="text-xs text-muted" style="margin-top:2px;">👍 ${s.trust_votes || 0} 👎 ${s.distrust_votes || 0}${(s.open_reports || 0) > 0 ? ` <span style="color:var(--danger);">🚨 ${s.open_reports}</span>` : ''}</div>` : ''}
+                </td>
                 <td class="text-muted">${timeAgo(s.created_at)}</td>
                 <td>
                   <button class="btn btn-secondary btn-sm" onclick="admin.openReviewModal('${s.id}')">檢視</button>

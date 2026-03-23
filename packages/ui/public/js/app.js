@@ -516,7 +516,7 @@ const categoryLabels = {
 const reviewStatusLabels = {
   pending_scan: '等待掃描',
   scanning: '掃描中',
-  scan_passed: '掃描通過',
+  scan_passed: '公示期中',
   scan_failed: '掃描失敗',
   pending_review: '等待審核',
   human_review: '人工審查中',
@@ -525,9 +525,11 @@ const reviewStatusLabels = {
 };
 
 function reviewStatusClass(status) {
-  if (status === 'approved' || status === 'scan_passed') return 'badge-green';
+  if (status === 'approved') return 'badge-green';
+  if (status === 'scan_passed') return 'badge-blue';
   if (status === 'rejected' || status === 'scan_failed') return 'badge-red';
   if (status === 'scanning') return 'badge-blue';
+  if (status === 'human_review') return 'badge-amber';
   return 'badge-amber';
 }
 
