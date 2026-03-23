@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import type { Env } from '../env.js';
-import { reviewActionSchema } from '@shared/validation.js';
+import { reviewActionSchema, expediteSchema, extendSchema } from '@shared/validation.js';
 
 type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 
@@ -315,4 +315,72 @@ adminRoutes.post('/rescan', async (c) => {
   }
 
   return c.json({ success: true, data: summary, error: null });
+});
+
+// POST /disclosure/:serverId/expedite -> immediately publish (bypass remaining disclosure)
+adminRoutes.post('/disclosure/:serverId/expedite', async (c) => {
+  const result = requireAdmin(c);
+  if (result === null) return c.json({ success: false, error: 'Unauthorized', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: 'Forbidden', data: null }, 403);
+
+  const serverId = c.req.param('serverId');
+
+  const server = await c.env.DB.prepare(
+    `SELECT id, version FROM servers WHERE id = ? AND review_status = 'scan_passed' AND disclosed_at IS NOT NULL AND is_published = 0`
+  ).bind(serverId).first<{ id: string; version: string }>();
+
+  if (!server) {
+    return c.json({ success: false, error: 'Server not found or not in disclosure', data: null }, 404);
+  }
+
+  const body = await c.req.json();
+  const parsed = expediteSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json({ success: false, error: 'Reason is required', data: null }, 400);
+  }
+
+  const now = new Date().toISOString();
+
+  await c.env.DB.prepare(
+    `UPDATE servers SET review_status='approved', is_published=1, published_at=?, review_notes=?, reviewed_by=?, reviewed_at=?, updated_at=? WHERE id=?`
+  ).bind(now, parsed.data.reason, result.id, now, now, serverId).run();
+
+  await c.env.DB.prepare(
+    `UPDATE server_versions SET review_status='approved' WHERE server_id=? AND version=?`
+  ).bind(serverId, server.version).run();
+
+  return c.json({ success: true, data: { id: serverId, status: 'approved' }, error: null });
+});
+
+// POST /disclosure/:serverId/extend -> extend disclosure period by N days
+adminRoutes.post('/disclosure/:serverId/extend', async (c) => {
+  const result = requireAdmin(c);
+  if (result === null) return c.json({ success: false, error: 'Unauthorized', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: 'Forbidden', data: null }, 403);
+
+  const serverId = c.req.param('serverId');
+
+  const server = await c.env.DB.prepare(
+    `SELECT id, disclosure_ends_at FROM servers WHERE id = ? AND review_status = 'scan_passed' AND disclosed_at IS NOT NULL AND is_published = 0`
+  ).bind(serverId).first<{ id: string; disclosure_ends_at: string }>();
+
+  if (!server) {
+    return c.json({ success: false, error: 'Server not found or not in disclosure', data: null }, 404);
+  }
+
+  const body = await c.req.json();
+  const parsed = extendSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json({ success: false, error: 'Days must be 1-30', data: null }, 400);
+  }
+
+  const currentEnd = new Date(server.disclosure_ends_at);
+  const newEnd = new Date(currentEnd.getTime() + parsed.data.days * 86_400_000).toISOString();
+  const now = new Date().toISOString();
+
+  await c.env.DB.prepare(
+    `UPDATE servers SET disclosure_ends_at=?, updated_at=? WHERE id=?`
+  ).bind(newEnd, now, serverId).run();
+
+  return c.json({ success: true, data: { id: serverId, disclosure_ends_at: newEnd }, error: null });
 });

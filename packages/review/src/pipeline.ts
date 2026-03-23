@@ -10,8 +10,6 @@ import { runSandbox } from './sandbox/index.js';
 import type { SandboxResult } from './sandbox/index.js';
 import { generateSbom } from './sbom.js';
 import type { SbomDocument } from './sbom.js';
-import { scanWithVirusTotal } from './virustotal.js';
-import type { VtScanResult } from './virustotal.js';
 
 export interface PipelineInput {
   serverId: string;
@@ -31,7 +29,6 @@ export interface PipelineInput {
   totalStars: number;
   packageName?: string;
   packageVersion?: string;
-  virusTotalApiKey?: string;
   knownLicenses?: Record<string, string>;
 }
 
@@ -39,7 +36,6 @@ export interface PipelineResult {
   scanResult: ScanOutput;
   sandboxResult: SandboxResult;
   externalScan: ExternalScanResult;
-  vtScan: VtScanResult;
   sbom: SbomDocument;
   badges: AllBadges;
   report: ReviewReport;
@@ -67,14 +63,11 @@ export async function runReviewPipeline(
   });
 
   // Layer 1.5: External security scan (runs in parallel-safe, never blocks pipeline)
-  const [externalScan, vtScan] = await Promise.all([
-    runExternalScan(
-      input.dependencies,
-      input.packageName,
-      input.packageVersion
-    ),
-    scanWithVirusTotal(input.sourceCode, input.virusTotalApiKey),
-  ]);
+  const externalScan = await runExternalScan(
+    input.dependencies,
+    input.packageName,
+    input.packageVersion
+  );
 
   // Generate SBOM
   const sbom = generateSbom(
@@ -117,5 +110,5 @@ export async function runReviewPipeline(
     scanDurationMs,
   });
 
-  return { scanResult, sandboxResult, externalScan, vtScan, sbom, badges, report };
+  return { scanResult, sandboxResult, externalScan, sbom, badges, report };
 }

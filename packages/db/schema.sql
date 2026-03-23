@@ -96,6 +96,9 @@ CREATE TABLE IF NOT EXISTS servers (
   is_published INTEGER NOT NULL DEFAULT 0,
   is_official INTEGER NOT NULL DEFAULT 0,
   published_at TEXT,
+  -- Disclosure period
+  disclosed_at TEXT,
+  disclosure_ends_at TEXT,
   created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
   updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
 );
@@ -104,6 +107,8 @@ CREATE INDEX IF NOT EXISTS idx_servers_category ON servers(category);
 CREATE INDEX IF NOT EXISTS idx_servers_review_status ON servers(review_status);
 CREATE INDEX IF NOT EXISTS idx_servers_published ON servers(is_published);
 CREATE INDEX IF NOT EXISTS idx_servers_slug ON servers(slug);
+CREATE INDEX IF NOT EXISTS idx_servers_disclosure ON servers(disclosure_ends_at)
+  WHERE disclosed_at IS NOT NULL AND is_published = 0;
 
 -- ============================================================
 -- Tools (per-server tool definitions)
@@ -219,6 +224,19 @@ CREATE TABLE IF NOT EXISTS stars (
   created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
   PRIMARY KEY (user_id, server_id)
 );
+
+-- ============================================================
+-- Community Votes (disclosure period trust/distrust)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS community_votes (
+  id TEXT PRIMARY KEY,
+  server_id TEXT NOT NULL REFERENCES servers(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  vote TEXT NOT NULL CHECK (vote IN ('trust', 'distrust')),
+  created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+  UNIQUE(server_id, user_id)
+);
+CREATE INDEX IF NOT EXISTS idx_community_votes_server ON community_votes(server_id);
 
 -- ============================================================
 -- Reports (abuse / security / bug reports)

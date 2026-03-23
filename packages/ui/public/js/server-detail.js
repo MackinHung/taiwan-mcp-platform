@@ -63,6 +63,8 @@ const serverDetail = {
         <span>${safetySummary}</span>
       </div>
 
+      ${s.disclosed_at && !s.is_published ? this.renderDisclosureBar(s) : ''}
+
       <!-- Header -->
       <div class="detail-header">
         <div>
@@ -382,6 +384,53 @@ const serverDetail = {
       this.closeReportModal();
     } catch (e) {
       showToast('回報送出失敗，請稍後再試');
+    }
+  },
+
+  // ── Disclosure Period ──
+  renderDisclosureBar(s) {
+    const now = Date.now();
+    const start = new Date(s.disclosed_at).getTime();
+    const end = new Date(s.disclosure_ends_at).getTime();
+    const totalMs = end - start;
+    const elapsedMs = now - start;
+    const progress = Math.min(100, Math.max(0, (elapsedMs / totalMs) * 100));
+    const remaining = Math.max(0, end - now);
+    const daysLeft = Math.ceil(remaining / 86400000);
+    const hoursLeft = Math.ceil(remaining / 3600000);
+    const countdownText = remaining <= 0 ? '即將上架' : daysLeft > 0 ? `${daysLeft} 天後自動上架` : `${hoursLeft} 小時後自動上架`;
+
+    return `
+      <div class="alert mb-16" style="background:var(--card-bg);border:2px solid var(--primary);border-radius:12px;padding:1.25rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+          <div>
+            <strong style="color:var(--primary);">公示期中</strong>
+            <span class="text-secondary"> — ${countdownText}</span>
+          </div>
+          <div style="display:flex;gap:0.5rem;">
+            <button class="btn btn-sm btn-secondary" onclick="serverDetail.castVote('trust')">&#x1F44D; 信任</button>
+            <button class="btn btn-sm btn-ghost" onclick="serverDetail.castVote('distrust')">&#x1F44E; 不信任</button>
+          </div>
+        </div>
+        <div style="margin-top:0.75rem;height:6px;border-radius:3px;background:var(--border);">
+          <div style="height:100%;border-radius:3px;background:var(--primary);width:${progress}%;"></div>
+        </div>
+        <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--text-secondary);">
+          社群投票：&#x1F44D; ${s.trust_votes || 0} 信任 &middot; &#x1F44E; ${s.distrust_votes || 0} 不信任
+          ${(s.open_reports || 0) > 0 ? ` &middot; <span style="color:var(--danger);">&#x1F6A8; ${s.open_reports} 安全回報</span>` : ''}
+        </div>
+      </div>
+    `;
+  },
+
+  async castVote(vote) {
+    if (!auth.requireLogin()) return;
+    try {
+      await api.post(`/disclosure/${this.slug}/vote`, { vote });
+      showToast(vote === 'trust' ? '已投信任票' : '已投不信任票');
+      this.loadServerDetail(this.slug);
+    } catch (e) {
+      showToast('投票失敗，請稍後再試');
     }
   },
 

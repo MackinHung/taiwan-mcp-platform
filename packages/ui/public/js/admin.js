@@ -122,6 +122,10 @@ const admin = {
                 <td class="text-muted">${timeAgo(s.created_at)}</td>
                 <td>
                   <button class="btn btn-secondary btn-sm" onclick="admin.openReviewModal('${s.id}')">檢視</button>
+                  ${s.disclosed_at && !s.is_published ? `
+                    <button class="btn btn-sm" style="background:var(--primary);color:#fff;margin-left:4px;" onclick="admin.expediteServer('${s.id}')">快速上架</button>
+                    <button class="btn btn-ghost btn-sm" style="margin-left:2px;" onclick="admin.extendDisclosure('${s.id}')">延長</button>
+                  ` : ''}
                 </td>
               </tr>
             `).join('')}
@@ -557,6 +561,38 @@ const admin = {
   anomalyTypeClass(type) {
     const classes = { rate_exceeded: 'badge-red', auth_failed: 'badge-orange', geo_change: 'badge-amber' };
     return classes[type] || 'badge-gray';
+  },
+
+  // ── Disclosure Controls ──
+  async expediteServer(serverId) {
+    const reason = prompt('請輸入快速上架原因（至少 5 字）：');
+    if (!reason || reason.trim().length < 5) {
+      if (reason !== null) showToast('原因至少需要 5 個字');
+      return;
+    }
+    try {
+      await api.post(`/admin/disclosure/${serverId}/expedite`, { reason: reason.trim() });
+      showToast('已快速上架');
+      await Promise.all([this.loadReviewQueue(), this.renderStats()]);
+    } catch (e) {
+      showToast('快速上架失敗');
+    }
+  },
+
+  async extendDisclosure(serverId) {
+    const daysStr = prompt('延長天數（1-30）：', '3');
+    const days = parseInt(daysStr, 10);
+    if (!days || days < 1 || days > 30) {
+      if (daysStr !== null) showToast('天數必須在 1-30 之間');
+      return;
+    }
+    try {
+      await api.post(`/admin/disclosure/${serverId}/extend`, { days });
+      showToast(`已延長 ${days} 天`);
+      await this.loadReviewQueue();
+    } catch (e) {
+      showToast('延長公示期失敗');
+    }
   },
 
   // ── Recalculate Badges ──

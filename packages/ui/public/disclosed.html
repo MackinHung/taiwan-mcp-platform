@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>公示期 — Formosa MCP 市集</title>
+  <meta name="description" content="查看正在公示期的 MCP 伺服器，參與社群審查、信任投票與安全回報。" />
+  <link rel="canonical" href="https://tw-mcp.pages.dev/disclosed.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="公示期 — Formosa MCP 市集" />
+  <meta property="og:description" content="查看正在公示期的 MCP 伺服器，參與社群審查。" />
+  <meta property="og:url" content="https://tw-mcp.pages.dev/disclosed.html" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:site_name" content="Formosa MCP 市集" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">&#x1F1F9;&#x1F1FC; MCP &#x5E02;&#x96C6;</a>
+      <div class="nav-search">
+        <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." />
+      </div>
+      <div class="nav-links">
+        <a href="/">探索</a>
+        <a href="/#guide" class="hide-mobile">指南</a>
+        <a href="/my-mcp.html" class="hide-mobile">我的 MCP</a>
+        <a href="/my-servers.html" class="hide-mobile">我的伺服器</a>
+        <a href="/upload.html" class="hide-mobile">上架</a>
+        <a href="/disclosed.html" class="active hide-mobile">公示期</a>
+        <a href="/trust.html" class="hide-mobile">信任與安全</a>
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" onclick="theme.toggle()" title="切換主題"></button>
+        <button id="login-btn" class="btn btn-primary btn-sm" onclick="auth.login()">登入</button>
+        <div id="user-menu" style="display:none;">
+          <a href="/profile.html"><img id="user-avatar" src="" alt="avatar" /></a>
+          <span id="user-name"></span>
+        </div>
+        <button class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="選單"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-close"><button onclick="closeMobileMenu()" aria-label="關閉選單"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+    <div class="mobile-menu-links">
+      <a href="/">探索</a>
+      <a href="/#guide">指南</a>
+      <a href="/my-mcp.html">我的 MCP</a>
+      <a href="/my-servers.html">我的伺服器</a>
+      <a href="/upload.html">上架</a>
+      <a href="/disclosed.html" class="active">公示期</a>
+      <a href="/trust.html">信任與安全</a>
+      <a href="/transparency.html">安全透明</a>
+      <a href="/privacy.html">隱私政策</a>
+    </div>
+  </div>
+
+  <div class="policy-page">
+    <h1>公示期伺服器</h1>
+    <div class="info-card" style="margin-bottom:2rem;padding:1.5rem;border-radius:12px;background:var(--card-bg);border:1px solid var(--border);">
+      <h3 style="margin-top:0;">什麼是公示期？</h3>
+      <p>所有通過自動安全掃描的 MCP 伺服器，在正式上架前需經過 <strong>5 天公示期</strong>（小版本更新為 2 天）。在此期間：</p>
+      <ul style="margin:0.5rem 0;">
+        <li>社群成員可以檢視原始碼與掃描報告</li>
+        <li>任何人都可以投下「信任」或「不信任」票</li>
+        <li>可以提交安全回報，若有未解決的安全回報，伺服器將不會自動上架</li>
+      </ul>
+      <p style="margin-bottom:0;">公示期結束後，沒有安全疑慮的伺服器將自動上架至市集。</p>
+    </div>
+
+    <div id="disclosed-list">
+      <p class="loading-text">載入中...</p>
+    </div>
+
+    <div id="empty-state" style="display:none;text-align:center;padding:3rem;">
+      <p style="font-size:1.1rem;color:var(--text-secondary);">目前沒有伺服器在公示期中。</p>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/disclosed.js"></script>
+</body>
+</html>

@@ -9,6 +9,14 @@ type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 
 export const uploadRoutes = new Hono<HonoEnv>();
 
+function calculateDisclosureDays(currentVersion: string | null, newVersion: string): number {
+  if (!currentVersion || currentVersion === '0.1.0') return 5; // new server
+  const [cMaj, cMin] = currentVersion.split('.').map(Number);
+  const [nMaj, nMin] = newVersion.split('.').map(Number);
+  if (nMaj === cMaj && nMin === cMin) return 2; // patch only
+  return 5; // minor or major
+}
+
 const ROLE_HIERARCHY: Record<string, number> = { user: 0, developer: 1, admin: 2 };
 const MAX_SOURCE_SIZE = 500_000; // ~375KB decoded
 
@@ -82,7 +90,7 @@ async function runScanAndPersist(
     'UPDATE server_versions SET review_status = ? WHERE id = ?'
   ).bind(newStatus, versionId).run();
 
-  // If scan passed → update badges + auto-approve (Layer 1 only)
+  // If scan passed → update badges + enter disclosure period (NOT auto-approve)
   if (newStatus === 'scan_passed') {
     const b = pipelineResult.badges;
     await env.DB.prepare(
@@ -93,15 +101,17 @@ async function runScanAndPersist(
       now, serverId,
     ).run();
 
-    // Auto-approve version
-    await env.DB.prepare(
-      'UPDATE server_versions SET review_status = ? WHERE id = ?'
-    ).bind('approved', versionId).run();
+    // Calculate disclosure period based on version change
+    const currentServer = await env.DB.prepare(
+      'SELECT version FROM servers WHERE id = ?'
+    ).bind(serverId).first<{ version: string | null }>();
+    const days = calculateDisclosureDays(currentServer?.version ?? null, versionStr);
+    const disclosureEndsAt = new Date(Date.now() + days * 86_400_000).toISOString();
 
-    // Update server main record
+    // Enter disclosure period (NOT published yet)
     await env.DB.prepare(
-      'UPDATE servers SET version=?, review_status=?, is_published=1, published_at=?, updated_at=? WHERE id=?'
-    ).bind(versionStr, 'approved', now, now, serverId).run();
+      `UPDATE servers SET version=?, review_status='scan_passed', disclosed_at=?, disclosure_ends_at=?, updated_at=? WHERE id=?`
+    ).bind(versionStr, now, disclosureEndsAt, now, serverId).run();
   }
 
   return pipelineResult;

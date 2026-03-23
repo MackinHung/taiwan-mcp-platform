@@ -7,6 +7,8 @@ import { openclawConfigRoutes } from './routes/openclaw-config.js';
 import { compositionRoutes } from './routes/compositions.js';
 import { uploadRoutes } from './routes/upload.js';
 import { adminRoutes } from './routes/admin.js';
+import { disclosureRoutes } from './routes/disclosure.js';
+import { handleScheduled } from './scheduled.js';
 import { keyRoutes } from './routes/keys.js';
 import { privacyRoutes } from './routes/privacy.js';
 import { authMiddleware } from './middleware/auth.js';
@@ -71,10 +73,16 @@ app.route('/api/servers', serverRoutes);
 app.route('/api/compositions', compositionRoutes);
 app.route('/api/upload', uploadRoutes);
 app.route('/api/admin', adminRoutes);
+app.route('/api/disclosure', disclosureRoutes);
 app.route('/api/keys', keyRoutes);
 app.route('/api/privacy', privacyRoutes);
 
 // Health check
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
-export default app;
+export default {
+  fetch: app.fetch,
+  scheduled: async (event: ScheduledEvent, env: Env, ctx: ExecutionContext) => {
+    ctx.waitUntil(handleScheduled(env));
+  },
+};

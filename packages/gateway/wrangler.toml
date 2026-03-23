@@ -34,3 +34,6 @@ GITHUB_REDIRECT_URI = "https://<YOUR_PAGES_DOMAIN>/api/auth/github/callback"
 GOOGLE_CLIENT_ID = "<YOUR_GOOGLE_OAUTH_CLIENT_ID>"
 GOOGLE_REDIRECT_URI = "https://<YOUR_PAGES_DOMAIN>/api/auth/google/callback"
 FRONTEND_URL = "https://<YOUR_PAGES_DOMAIN>"
+
+[triggers]
+crons = ["0 * * * *"]

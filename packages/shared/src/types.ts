@@ -81,6 +81,9 @@ export interface Server {
   is_published: boolean;
   is_official: boolean;
   published_at: string | null;
+  // Disclosure period
+  disclosed_at: string | null;
+  disclosure_ends_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -156,6 +159,14 @@ export interface ReviewReport {
 export interface Star {
   user_id: string;
   server_id: string;
+  created_at: string;
+}
+
+export interface CommunityVote {
+  id: string;
+  server_id: string;
+  user_id: string;
+  vote: 'trust' | 'distrust';
   created_at: string;
 }
 

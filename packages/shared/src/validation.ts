@@ -70,3 +70,15 @@ export const reviewActionSchema = z.object({
   status: z.enum(['approved', 'rejected']),
   notes: z.string().max(2000).optional(),
 });
+
+export const voteSchema = z.object({
+  vote: z.enum(['trust', 'distrust']),
+});
+
+export const expediteSchema = z.object({
+  reason: z.string().min(5).max(2000),
+});
+
+export const extendSchema = z.object({
+  days: z.number().int().min(1).max(30),
+});
