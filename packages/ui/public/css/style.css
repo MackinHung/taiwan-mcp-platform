@@ -2578,6 +2578,17 @@ tr:hover td { background: var(--bg-surface-hover); }
 
 [data-tooltip]:hover::after { opacity: 1; }
 
+/* Template card tooltip — show below card */
+.template-card[data-tooltip]::after {
+  bottom: auto;
+  top: calc(100% + 6px);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border-color: var(--border);
+  transition: opacity 0.2s ease 0.15s;
+}
+
 /* ── Scroll to Top ────────────────────────────────────────── */
 .scroll-top-btn {
   position: fixed;
@@ -3204,6 +3215,127 @@ svg {
   position: relative;
   overflow: hidden;
 }
+
+/* ==========================================
+   Phase 4: Subpage Layout Overhauls (Bento Box / Tables)
+   ========================================== */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+.bento-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.bento-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--color-primary);
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+  box-shadow: 4px 4px 0 var(--border);
+}
+.bento-card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.bento-card p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Asymmetrical Trust Bento */
+@media (min-width: 1024px) {
+  .trust-bento {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(150px, auto);
+    gap: 24px;
+  }
+  .trust-bento .bento-card:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+  .trust-bento .bento-card:nth-child(2) { grid-column: span 2; grid-row: span 1; }
+  .trust-bento .bento-card:nth-child(3) { grid-column: span 1; grid-row: span 1; }
+  .trust-bento .bento-card:nth-child(4) { grid-column: span 1; grid-row: span 1; }
+  .trust-bento .bento-card:nth-child(5) { grid-column: span 2; grid-row: span 1; }
+  .trust-bento .bento-card:nth-child(6) { grid-column: span 2; grid-row: span 1; }
+}
+
+/* Modern Datagrid Table */
+.table-modern {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: var(--bg-surface);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+.table-modern th, .table-modern td {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+.table-modern th {
+  background: var(--bg-elevated);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.table-modern td {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+.table-modern tr:last-child td { border-bottom: none; }
+.table-modern tbody tr { transition: background 0.2s; }
+.table-modern tbody tr:hover { background: var(--bg-surface-hover); }
+
+/* Promax Empty States */
+.empty-state-promax {
+  text-align: center;
+  padding: 80px 24px;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+.empty-state-promax:hover {
+  border-color: var(--color-primary);
+  background: var(--bg-surface-hover);
+}
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  color: var(--text-muted);
+}
+.empty-state-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke-width: 1; /* Ultra-thin minimalist */
+}
+.empty-state-promax h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
 [data-theme="dark"] .hero-promax {
   background: radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
 }
@@ -3375,3 +3507,29 @@ svg {
   color: var(--color-primary);
 }
 
+
+/* Promax Logo Styles */
+.promax-logo svg { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.promax-logo:hover svg { transform: scale(1.05) translateY(-1px); }
+
+/* ── Step Cards (no hover/pointer) ─────────────────────────── */
+.step-card {
+  cursor: default;
+  user-select: none;
+  pointer-events: none;
+}
+.step-card:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: var(--border) !important;
+}
+.step-num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--border);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 16px;
+  transition: none;
+}

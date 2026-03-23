@@ -17,11 +17,27 @@
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="/" class="nav-logo">&#x1F1F9;&#x1F1FC; MCP &#x5E02;&#x96C6;</a>
-      <div class="nav-search">
-        <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
-        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." />
-      </div>
+                  <a href="/" class="nav-logo promax-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+        <svg height="26" viewBox="100 100 600 450" width="35" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="mGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#4A4A4A" />
+              <stop offset="40%" stop-color="#1A1A1A" />
+              <stop offset="100%" stop-color="#050505" />
+            </linearGradient>
+            <filter id="mShadow" x="-10%" y="-10%" width="120%" height="120%">
+              <feDropShadow dx="15" dy="10" stdDeviation="8" flood-color="#000000" flood-opacity="0.35"/>
+            </filter>
+          </defs>
+          <g transform="translate(100, 0) skewX(-18)">
+            <g filter="url(#mShadow)">
+              <path d="M 180 470 L 300 120 L 400 280 L 500 120 L 620 470 L 530 470 L 450 220 L 400 300 L 350 220 L 270 470 Z" fill="url(#mGradient)" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"/>
+              <polygon points="385,276 415,276 400,300" fill="#FFD500" />
+            </g>
+          </g>
+        </svg>
+        <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-0.02em;color:var(--text-primary);">Formosa<span style="color:var(--text-muted);font-weight:500;margin-left:4px;">MCP</span></span>
+      </a>
       <div class="nav-links">
         <a href="/">探索</a>
         <a href="/#guide" class="hide-mobile">指南</a>
@@ -58,25 +74,30 @@
     </div>
   </div>
 
-  <div class="policy-page">
-    <h1>公示期伺服器</h1>
-    <div class="info-card" style="margin-bottom:2rem;padding:1.5rem;border-radius:12px;background:var(--card-bg);border:1px solid var(--border);">
-      <h3 style="margin-top:0;">什麼是公示期？</h3>
-      <p>所有通過自動安全掃描的 MCP 伺服器，在正式上架前需經過 <strong>5 天公示期</strong>（小版本更新為 2 天）。在此期間：</p>
-      <ul style="margin:0.5rem 0;">
-        <li>社群成員可以檢視原始碼與掃描報告</li>
-        <li>任何人都可以投下「信任」或「不信任」票</li>
-        <li>可以提交安全回報，若有未解決的安全回報，伺服器將不會自動上架</li>
-      </ul>
-      <p style="margin-bottom:0;">公示期結束後，沒有安全疑慮的伺服器將自動上架至市集。</p>
+  <header class="page-header-promax">
+    <div class="container" style="text-align:center;">
+      <div class="hero-promax-badge" style="display:inline-block;margin-bottom:16px; border-color: var(--color-warning); color: var(--color-warning);">社群安全審查中</div>
+      <h1>公示期伺服器</h1>
+      <p style="margin:0 auto; max-width: 600px;">所有通過自動安全掃描的 MCP 伺服器，在正式發布前需經過 5 天的公開審閱。在此期間歡迎社群自由檢視原始碼並回報潛在安全問題。</p>
+      
+      <div class="hero-search-container" style="margin-top:32px;margin-bottom:0;text-align:left;">
+        <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <input type="text" id="global-search" placeholder="搜尋公示期中的伺服器..." />
+      </div>
     </div>
+  </header>
 
+  <div class="container page-content" style="max-width:960px;">
     <div id="disclosed-list">
-      <p class="loading-text">載入中...</p>
+      <div class="loading"><div class="spinner"></div></div>
     </div>
 
-    <div id="empty-state" style="display:none;text-align:center;padding:3rem;">
-      <p style="font-size:1.1rem;color:var(--text-secondary);">目前沒有伺服器在公示期中。</p>
+    <div id="empty-state" style="display:none;" class="empty-state-promax mt-24">
+      <div class="empty-state-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3>無待審查伺服器</h3>
+      <p>目前沒有任何伺服器處於公示期狀態。</p>
     </div>
   </div>
 

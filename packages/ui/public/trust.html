@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>信任與安全 — Formosa MCP 市集</title>
-  <meta name="description" content="了解Formosa MCP 市集如何保護你的資料 — 用最簡單的方式說明我們的安全設計、安全審查標示、信任等級" />
+  <meta name="description" content="Formosa MCP 市集的安全設計、信任等級說明與資料來源。" />
   <link rel="canonical" href="https://formosa-mcp-platform.pages.dev/trust.html" />
   <meta property="og:type" content="article" />
   <meta property="og:title" content="信任與安全 — Formosa MCP 市集" />
-  <meta property="og:description" content="了解Formosa MCP 市集如何保護你的資料 — 用最簡單的方式說明我們的安全設計" />
+  <meta property="og:description" content="Formosa MCP 市集的安全設計、信任等級說明與資料來源。" />
   <meta property="og:url" content="https://formosa-mcp-platform.pages.dev/trust.html" />
   <meta property="og:locale" content="zh_TW" />
   <meta property="og:site_name" content="Formosa MCP 市集" />
@@ -17,7 +17,27 @@
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+      <a href="/" class="nav-logo promax-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+        <svg height="26" viewBox="100 100 600 450" width="35" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="mGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#4A4A4A" />
+              <stop offset="40%" stop-color="#1A1A1A" />
+              <stop offset="100%" stop-color="#050505" />
+            </linearGradient>
+            <filter id="mShadow" x="-10%" y="-10%" width="120%" height="120%">
+              <feDropShadow dx="15" dy="10" stdDeviation="8" flood-color="#000000" flood-opacity="0.35"/>
+            </filter>
+          </defs>
+          <g transform="translate(100, 0) skewX(-18)">
+            <g filter="url(#mShadow)">
+              <path d="M 180 470 L 300 120 L 400 280 L 500 120 L 620 470 L 530 470 L 450 220 L 400 300 L 350 220 L 270 470 Z" fill="url(#mGradient)" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"/>
+              <polygon points="385,276 415,276 400,300" fill="#FFD500" />
+            </g>
+          </g>
+        </svg>
+        <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-0.02em;color:var(--text-primary);">Formosa<span style="color:var(--text-muted);font-weight:500;margin-left:4px;">MCP</span></span>
+      </a>
       <div class="nav-links">
         <a href="/">探索</a>
         <a href="/#guide" class="hide-mobile">指南</a>
@@ -54,240 +74,112 @@
     </div>
   </div>
 
+  <!-- Hero -->
   <header class="page-header-promax">
     <div class="container" style="text-align:center;">
-      <div class="hero-promax-badge" style="display:inline-block;margin-bottom:16px;">安全與透徹</div>
+      <div class="hero-promax-badge" style="display:inline-block;margin-bottom:16px;">平台承諾</div>
       <h1>信任與安全</h1>
-      <p style="margin:0 auto;">了解平台如何保障使用者資料與確保持續的運作安全。<br>運用無伺服器架構與多層次安全過濾，達成企業級防護標準。</p>
-      
-      <div class="hero-search-container" style="margin-top:32px;margin-bottom:0;text-align:left;">
-        <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
-        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." />
-      </div>
+      <p style="margin:0 auto;max-width:560px;">說清楚每個工具做什麼、碰什麼。讓使用者自己決定。</p>
     </div>
   </header>
 
-  <div class="container policy-page">
+  <div class="policy-page">
 
-    <!-- Summary -->
-    <div class="policy-summary">
-      <h2>安全概覽</h2>
-      <ul style="list-style:none;padding:0;margin:0;display:grid;gap:12px;">
-        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">1.</span> <strong>OAuth 委派認證</strong> — 登入透過 GitHub 或 Google 處理，平台不經手密碼。</li>
-        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">2.</span> <strong>唯讀代理架構</strong> — 資料直接來自政府 API，平台僅轉送，不儲存或修改查詢內容。</li>
-        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">3.</span> <strong>安全審查標示</strong> — 每個工具皆附有多維度安全評分，可快速判斷風險等級。</li>
-        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">4.</span> <strong>多層安全審查</strong> — 所有工具須通過 8 項靜態掃描、行為分析、OSV / SBOM / OpenSSF Scorecard 供應鏈驗證，及 5 天社群公示期後方可上架。</li>
-        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">5.</span> <strong>即時異常偵測</strong> — 系統持續監控工具濫用、錯誤率突增、未宣告 URL 等異常模式，自動記錄並通知管理員。</li>
-        <li style="display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--color-success);font-weight:bold;flex-shrink:0;">6.</span> <strong>權限邊界監控</strong> — 組合器即時檢查每個工具呼叫是否符合宣告權限，違規行為完整記錄供審閱。</li>
-      </ul>
-    </div>
-
-    <!-- Architecture overview -->
+    <!-- Security Principles Bento -->
     <div class="policy-section">
-      <h2>平台運作方式</h2>
-      <p style="color:var(--text-secondary);margin-bottom:12px;">
-        平台採用<strong>唯讀代理架構</strong>，將使用者的查詢請求轉發至台灣政府公開資料庫，回傳原始結果。整個過程中，平台不儲存查詢內容，也不修改政府的原始資料。
-      </p>
-      <div style="text-align:center;padding:16px 0;color:var(--text-muted);font-size:0.875rem;">
-        使用者 &rarr; MCP 平台（安全轉接）&rarr; 政府資料庫（原始資料）&rarr; 結果回傳
+      <h2>安全設計</h2>
+      <div class="bento-grid" style="margin-top:16px;">
+        <div class="bento-card step-card">
+          <p class="step-num" style="font-size:1.5rem;">透明</p>
+          <h3>每個工具都有說明</h3>
+          <p>每個 MCP 伺服器必須明確聲明資料存取範圍、使用的 API 來源，以及所需的權限。沒有隱藏行為。</p>
+        </div>
+        <div class="bento-card step-card">
+          <p class="step-num" style="font-size:1.5rem;">唯讀</p>
+          <h3>平台本身只讀取，不寫入</h3>
+          <p>所有平台 API 皆為唯讀設計。資料傳輸走 HTTPS，無法被中途篡改；平台不接受外部寫入指令，注入攻擊對只讀端點無從著力。</p>
+        </div>
+        <div class="bento-card step-card">
+          <p class="step-num" style="font-size:1.5rem;">分級</p>
+          <h3>信任等級可量化</h3>
+          <p>平台透過四個維度自動評分。等級由系統計算，開發者無法自行調整，確保結果客觀。</p>
+        </div>
+        <div class="bento-card step-card">
+          <p class="step-num" style="font-size:1.5rem;">回報</p>
+          <h3>問題可以被舉報</h3>
+          <p>任何人都可以在工具頁面回報問題，安全漏洞可透過 GitHub 私人回報直接聯繫。</p>
+        </div>
       </div>
-      <details style="margin-top:8px;">
-        <summary style="cursor:pointer;color:var(--text-muted);font-size:0.85rem;">技術細節：唯讀代理架構</summary>
-        <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:8px;padding-left:16px;border-left:2px solid var(--border-color);">
-          平台採用<strong>唯讀代理（Read-only Proxy）</strong>架構。所有 API 請求經由平台轉發至政府端點，回應直接回傳給使用者。平台不持久化查詢內容或回應資料，僅記錄匿名使用量統計。所有通訊透過 HTTPS/TLS 1.3 加密。
-        </p>
-      </details>
     </div>
 
-    <!-- Security features grid -->
+    <!-- Trust Grades -->
     <div class="policy-section">
-      <h2>安全防護機制</h2>
-      <p style="color:var(--text-secondary);margin-bottom:16px;">
-        平台提供以下安全防護措施，確保服務安全可靠。
-      </p>
-    </div>
-
-    <div class="trust-grid">
-      <div class="trust-card">
-        <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-        <h3>OAuth 委派認證</h3>
-        <p>
-          使用者透過 GitHub 或 Google 帳號登入，密碼由身分提供者管理，平台不接觸任何憑證。
-          僅授權基本帳號資訊，無需額外建立密碼。
-        </p>
-        <details style="margin-top:8px;">
-          <summary style="cursor:pointer;color:var(--text-muted);font-size:0.8rem;">技術細節</summary>
-          <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:4px;">
-            OAuth 2.0 + PKCE 授權碼流程，防止授權碼被攔截。Session 以 CSRF Token 保護，Cookie 設定 Secure + HttpOnly + SameSite=Lax，防止跨站腳本（XSS）竊取。
-          </p>
-        </details>
-      </div>
-
-      <div class="trust-card">
-        <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
-        <h3>金鑰雜湊儲存</h3>
-        <p>
-          API 金鑰經<strong>單向雜湊加密</strong>後儲存，即使資料庫遭不當存取，
-          亦無法還原原始金鑰。搭配分級速率限制機制，
-          防止大量濫用。
-        </p>
-        <details style="margin-top:8px;">
-          <summary style="cursor:pointer;color:var(--text-muted);font-size:0.8rem;">技術細節</summary>
-          <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:4px;">
-            API Key 以 SHA-256 雜湊儲存（不可逆）。Rate Limiting 分級：匿名 30 req/min、認證用戶 50-2000 req/min（依方案）。所有通訊強制 HTTPS 加密。
-          </p>
-        </details>
-      </div>
-
-      <div class="trust-card">
-        <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg></span>
-        <h3>無伺服器架構防護</h3>
-        <p>
-          平台部署於 Cloudflare 全球邊緣網路，具備企業級防火牆與 DDoS 防護。
-          採用無伺服器（Serverless）架構，消除傳統伺服器的 SSH 等攻擊面。
-        </p>
-        <details style="margin-top:8px;">
-          <summary style="cursor:pointer;color:var(--text-muted);font-size:0.8rem;">技術細節</summary>
-          <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:4px;">
-            Cloudflare Workers 無伺服器架構（Serverless），無 SSH 攻擊面。Cloudflare WAF（Web Application Firewall）+ 自動 DDoS 防護。基礎設施通過 ISO 27001、SOC 2 Type II 國際安全認證。
-          </p>
-        </details>
-      </div>
-
-      <div class="trust-card">
-        <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>
-        <h3>每個工具都有安全審查標示</h3>
-        <p>
-          每個 MCP 工具都有自己的<strong>安全審查報告</strong>，
-          包含四個維度：程式碼透明度、資料敏感度、權限範圍、社群信任。另有第三方驗證標章（OSV + OpenSSF Scorecard）。
-          透過顏色標示即可快速判斷風險等級。
-        </p>
-        <div style="margin-top:12px;">
-          <span class="badge badge-green"><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span> 開源已審計</span>
-          <span class="badge badge-green"><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></span> 公開資料</span>
-          <span class="badge badge-green"><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg></span> 唯讀</span>
-          <span class="badge badge-gold"><span class="icon icon-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span> 信賴</span>
-        </div>
-        <p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">
-          綠色 = 高度信任 &nbsp;&middot;&nbsp; 藍色 = 良好 &nbsp;&middot;&nbsp; 橘色 = 建議審閱 &nbsp;&middot;&nbsp; 紅色 = 風險較高
-        </p>
-      </div>
-
-      <div class="trust-card">
-        <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
-        <h3>異常行為自動攔截</h3>
-        <p>
-          系統即時監控 API 速率突增、跨地域存取異常、連續認證失敗等模式，
-          觸發時<strong>自動攔截並記錄</strong>，同時通知管理員處置。
-        </p>
-        <details style="margin-top:8px;">
-          <summary style="cursor:pointer;color:var(--text-muted);font-size:0.8rem;">技術細節</summary>
-          <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:4px;">
-            即時監控三種異常模式：API Key 速率突增（Rate Spike）、Session 地理跳躍（Geo Anomaly）、認證失敗連續累積（Brute Force Detection）。觸發時自動記錄 + 管理員告警。
-          </p>
-        </details>
-      </div>
-
-      <div class="trust-card">
-        <span class="trust-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22.54 12.43-1.42-.65-8.28 3.78a2 2 0 0 1-1.66 0l-8.29-3.78-1.42.65a1 1 0 0 0 0 1.84l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.85Z"/></svg></span>
-        <h3>符合台灣法規</h3>
-        <p>
-          平台遵守<strong>台灣個人資料保護法</strong>，使用者資料受法律保障。
-          如發生資料安全事件，承諾 72 小時內依法通報，
-          並啟動完整的事件回應流程。
-        </p>
-        <details style="margin-top:8px;">
-          <summary style="cursor:pointer;color:var(--text-muted);font-size:0.8rem;">技術細節</summary>
-          <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:4px;">
-            台灣個人資料保護法（PDPA）合規。APEC CBPR（亞太經合組織跨境隱私規則）保障跨境資料。72 小時資料外洩通報承諾。完整事件回應 SOP（三級分類 L1/L2/L3，含容器化、通知、復原流程）。
-          </p>
-        </details>
-      </div>
-    </div>
-
-    <!-- Trust Grade -->
-    <div class="policy-section" id="grade">
-      <h2>A～D 信任等級</h2>
-      <p style="color:var(--text-secondary);margin-bottom:16px;">
-        每個工具卡片標示 <strong>A、B、C、D 信任等級</strong>，由系統根據四個維度自動計算，開發者無法自行修改。
+      <h2>信任等級</h2>
+      <p style="color:var(--text-secondary);margin-bottom:20px;">
+        每個伺服器依四個維度各得 1~4 分，加總後換算為 A~D 等級。
       </p>
 
-      <div class="trust-grid" style="margin-bottom:24px;">
-        <div class="trust-card" style="border-left:4px solid #16a34a;">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-            <span class="trust-grade trust-grade-a">A</span>
-            <div>
-              <h3 style="margin:0;">高度信任</h3>
-              <span class="text-xs text-muted">14 ～ 16 分</span>
-            </div>
+      <div class="grade-bar" style="margin-bottom:24px;">
+        <div class="grade-bar-item grade-bar-a">
+          <span class="trust-grade trust-grade-a">A</span>
+          <div class="grade-bar-info">
+            <span class="grade-bar-label">高度信任</span>
+            <span class="grade-bar-score">14 ~ 16 分</span>
           </div>
-          <p>程式碼公開透明、僅存取公開資料、唯讀操作、具大量使用者驗證。安全性最高。</p>
         </div>
-        <div class="trust-card" style="border-left:4px solid #2563eb;">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-            <span class="trust-grade trust-grade-b">B</span>
-            <div>
-              <h3 style="margin:0;">良好</h3>
-              <span class="text-xs text-muted">11 ～ 13 分</span>
-            </div>
+        <div class="grade-bar-item grade-bar-b">
+          <span class="trust-grade trust-grade-b">B</span>
+          <div class="grade-bar-info">
+            <span class="grade-bar-label">良好</span>
+            <span class="grade-bar-score">11 ~ 13 分</span>
           </div>
-          <p>多數維度表現良好。可能需要帳號資料或具有限寫入權限。適合日常使用。</p>
         </div>
-        <div class="trust-card" style="border-left:4px solid #d97706;">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-            <span class="trust-grade trust-grade-c">C</span>
-            <div>
-              <h3 style="margin:0;">建議審閱</h3>
-              <span class="text-xs text-muted">8 ～ 10 分</span>
-            </div>
+        <div class="grade-bar-item grade-bar-c">
+          <span class="trust-grade trust-grade-c">C</span>
+          <div class="grade-bar-info">
+            <span class="grade-bar-label">建議審閱</span>
+            <span class="grade-bar-score">8 ~ 10 分</span>
           </div>
-          <p>可能存取個人資料或需要較大操作權限。建議先審閱安全聲明與標章內容。</p>
         </div>
-        <div class="trust-card" style="border-left:4px solid #dc2626;">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-            <span class="trust-grade trust-grade-d">D</span>
-            <div>
-              <h3 style="margin:0;">風險較高</h3>
-              <span class="text-xs text-muted">4 ～ 7 分</span>
-            </div>
+        <div class="grade-bar-item grade-bar-d">
+          <span class="trust-grade trust-grade-d">D</span>
+          <div class="grade-bar-info">
+            <span class="grade-bar-label">風險較高</span>
+            <span class="grade-bar-score">4 ~ 7 分</span>
           </div>
-          <p>程式碼未公開、可能接觸敏感資料、或需要較高權限。建議確認來源可信度後再使用。</p>
         </div>
       </div>
 
-      <h3 style="font-size:0.95rem;margin-bottom:12px;">信任等級計算方式</h3>
-      <p style="color:var(--text-secondary);margin-bottom:12px;font-size:0.9rem;">
-        系統依四個維度各評定 1～4 分，加總後得出總分（滿分 16 分）。各維度評分標準如下：
-      </p>
+      <h3 style="font-size:0.95rem;margin-bottom:12px;">評分維度</h3>
       <div class="table-wrapper">
-        <table>
+        <table class="table-modern">
           <thead>
-            <tr><th>面向</th><th>4 分（最好）</th><th>3 分</th><th>2 分</th><th>1 分（最低）</th></tr>
+            <tr><th>面向</th><th>4 分</th><th>3 分</th><th>2 分</th><th>1 分</th></tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>程式碼透明度</strong><br/><span class="text-xs text-muted">程式碼是否可公開檢閱</span></td>
-              <td>開源且<br/>通過審計</td>
+              <td><strong>程式碼透明度</strong><br/><span class="text-xs text-muted">是否可公開檢閱</span></td>
+              <td>開源且通過審計</td>
               <td>開源</td>
-              <td>已聲明<br/>但未公開</td>
+              <td>已聲明但未公開</td>
               <td>未聲明</td>
             </tr>
             <tr>
-              <td><strong>資料敏感度</strong><br/><span class="text-xs text-muted">存取資料的敏感程度</span></td>
+              <td><strong>資料敏感度</strong><br/><span class="text-xs text-muted">存取資料類型</span></td>
               <td>公開資料<br/>（如天氣）</td>
               <td>帳號資料<br/>（如 API Key）</td>
-              <td>個人資料<br/>（如姓名地址）</td>
+              <td>個人資料<br/>（如姓名）</td>
               <td>敏感資料<br/>（如身分證）</td>
             </tr>
             <tr>
-              <td><strong>權限範圍</strong><br/><span class="text-xs text-muted">可執行的操作範圍</span></td>
+              <td><strong>權限範圍</strong><br/><span class="text-xs text-muted">可執行的操作</span></td>
               <td>唯讀</td>
               <td>有限寫入</td>
-              <td>完整讀寫<br/>與刪除</td>
-              <td>系統層級<br/>操作</td>
+              <td>完整讀寫與刪除</td>
+              <td>系統層級操作</td>
             </tr>
             <tr>
-              <td><strong>社群信任</strong><br/><span class="text-xs text-muted">使用者數量與社群評價</span></td>
+              <td><strong>社群信任</strong><br/><span class="text-xs text-muted">使用量與評價</span></td>
               <td>萬人使用<br/>評價良好</td>
               <td>千人使用<br/>廣受採用</td>
               <td>百人使用<br/>持續成長</td>
@@ -296,43 +188,41 @@
           </tbody>
         </table>
       </div>
-      <p class="text-xs text-muted" style="margin-top:8px;">四個面向各 1～4 分相加，總分 4～16 分。等級由系統自動計算，開發者無法自行修改。</p>
+      <p class="text-xs text-muted" style="margin-top:8px;">四面向各 1~4 分相加，共 4~16 分。等級由系統自動計算。</p>
     </div>
 
-    <!-- Data sources -->
+    <!-- Data Sources -->
     <div class="policy-section">
       <h2>資料來源</h2>
-      <p style="color:var(--text-secondary);margin-bottom:16px;">
-        所有資料均來自<strong>台灣政府公開資料庫</strong>。
-        每次 API 回應皆於標頭（header）標示來源機關，可供查證。
-        以下為目前平台串接的政府資料來源：
+      <p style="color:var(--text-secondary);margin-bottom:8px;">
+        平台串接的所有資料均來自可公開查證的來源。每次 API 回應皆在標頭標示來源機關或服務名稱。
       </p>
+      <p class="text-xs text-muted" style="margin-bottom:16px;">來源不限於公部門，亦包含交易所、法人研究機構、商業 API 服務及其他第三方開放資料庫。</p>
       <div class="trust-sources-grid">
         <div class="trust-source-item">中央氣象署 (CWA)</div>
         <div class="trust-source-item">環境部 (MOENV)</div>
         <div class="trust-source-item">台灣電力公司 (Taipower)</div>
         <div class="trust-source-item">台灣證券交易所 (TWSE)</div>
-        <div class="trust-source-item">衛生福利部中央健康保險署 (NHI)</div>
-        <div class="trust-source-item">經濟部商業司 (GCIS)</div>
-        <div class="trust-source-item">交通部運輸資料流通服務 (TDX)</div>
+        <div class="trust-source-item">健保署 (NHI)</div>
+        <div class="trust-source-item">商業司 (GCIS)</div>
+        <div class="trust-source-item">交通運輸資料 (TDX)</div>
         <div class="trust-source-item">中央銀行 (BOT)</div>
-        <div class="trust-source-item">食品藥物管理署 (FDA)</div>
-        <div class="trust-source-item">財政部電子發票平台</div>
-        <div class="trust-source-item">政府資料開放平臺</div>
+        <div class="trust-source-item">食藥署 (FDA)</div>
+        <div class="trust-source-item">電子發票平台</div>
+        <div class="trust-source-item">財政資料開放平台</div>
         <div class="trust-source-item">財政部</div>
         <div class="trust-source-item">勞動部</div>
         <div class="trust-source-item">智慧財產局 (TIPO)</div>
-        <div class="trust-source-item">財政部關務署</div>
-        <div class="trust-source-item">各媒體 RSS 來源</div>
+        <div class="trust-source-item">關務署</div>
+        <div class="trust-source-item">+ 其他第三方來源</div>
       </div>
     </div>
 
-    <!-- Deeper: transparency link -->
+    <!-- Technical Docs -->
     <div class="policy-section">
       <h2>技術文件</h2>
       <p style="color:var(--text-secondary);margin-bottom:16px;">
-        如需進一步了解多層掃描流程、五維度標章系統、
-        風險防護對照表等技術層面的安全機制，請參閱：
+        多層掃描流程、五維度標章系統、風險防護對照表等技術細節：
       </p>
       <div style="display:flex;gap:12px;flex-wrap:wrap;">
         <a href="/transparency.html" class="btn btn-primary">安全透明（技術面）</a>
@@ -342,25 +232,20 @@
 
     <!-- Report -->
     <div class="policy-section" id="report">
-      <h2>安全問題回報</h2>
-      <p style="color:var(--text-secondary);">
-        如在使用過程中發現任何安全問題，歡迎透過以下方式回報：
-      </p>
+      <h2>問題回報</h2>
       <ul>
-        <li><strong>一般問題：</strong>於工具詳情頁面點選「回報問題」按鈕提交</li>
-        <li><strong>安全漏洞：</strong>請透過 GitHub 私人漏洞回報功能聯繫，將優先處理</li>
+        <li><strong>一般問題：</strong>在工具頁面點選「回報問題」提交</li>
+        <li><strong>安全漏洞：</strong>透過 GitHub 私人漏洞回報，會優先處理</li>
       </ul>
-      <p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px;">
-        感謝協助維護平台安全。
-      </p>
     </div>
+
   </div>
 
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-grid">
         <div class="footer-col">
-          <h4>🇹🇼 Formosa MCP 市集</h4>
+          <h4>Formosa MCP 市集</h4>
           <p>探索、安裝、組合在地化 MCP 伺服器 — 讓 AI 助手使用台灣的資料與服務。39+ 在地化伺服器，涵蓋天氣、交通、金融、法律等領域。</p>
         </div>
         <div class="footer-col">

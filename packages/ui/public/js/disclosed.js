@@ -49,38 +49,49 @@
     const tags = typeof server.tags === 'string' ? JSON.parse(server.tags) : (server.tags || []);
 
     return `
-      <div class="card" style="margin-bottom:1rem;padding:1.5rem;border-radius:12px;background:var(--card-bg);border:1px solid var(--border);">
-        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.5rem;">
+      <div class="card mb-16" style="padding:32px 24px; position: relative; overflow: hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:1.5rem;">
           <div>
-            <h3 style="margin:0;"><a href="/server.html?slug=${server.slug}" style="color:var(--text-primary);text-decoration:none;">${escapeHtml(server.name)}</a></h3>
-            <p style="margin:0.25rem 0;color:var(--text-secondary);font-size:0.9rem;">${escapeHtml(server.description || '')}</p>
+            <h3 style="margin:0; font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em;">
+              <a href="/server.html?slug=${server.slug}" style="color:var(--text-primary);text-decoration:none;">${escapeHtml(server.name)}</a>
+            </h3>
+            <p style="margin:0.5rem 0 0; color:var(--text-secondary); font-size:1rem; line-height: 1.5;">${escapeHtml(server.description || '')}</p>
           </div>
           <div style="text-align:right;">
-            <span class="badge" data-ends="${server.disclosure_ends_at}" style="font-weight:600;color:var(--primary);">${countdownText}</span>
-            <div style="font-size:0.8rem;color:var(--text-secondary);">v${escapeHtml(server.version)}</div>
+            <span class="badge" data-ends="${server.disclosure_ends_at}" style="font-weight:600; color:var(--bg); background: var(--text-primary); padding: 6px 16px; border-radius: 999px;">${countdownText}</span>
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-top: 8px; font-family: monospace;">v${escapeHtml(server.version)}</div>
           </div>
         </div>
 
         <!-- Progress bar -->
-        <div style="margin:1rem 0 0.75rem;height:6px;border-radius:3px;background:var(--border);">
-          <div style="height:100%;border-radius:3px;background:var(--primary);width:${progress}%;transition:width 1s;"></div>
+        <div style="margin:1.5rem 0; height:4px; border-radius:2px; background:var(--bg-elevated); overflow: hidden;">
+          <div style="height:100%; border-radius:2px; background:var(--text-primary); width:${progress}%; transition:width 1s cubic-bezier(0.4, 0, 0.2, 1);"></div>
         </div>
 
-        <!-- Votes & Reports -->
-        <div style="display:flex;gap:1.5rem;font-size:0.9rem;color:var(--text-secondary);flex-wrap:wrap;">
-          <span title="信任票">&#x1F44D; ${server.trust_votes || 0}</span>
-          <span title="不信任票">&#x1F44E; ${server.distrust_votes || 0}</span>
-          <span title="安全回報" style="${(server.open_reports || 0) > 0 ? 'color:var(--danger);font-weight:600;' : ''}">&#x1F6A8; ${server.open_reports || 0} 安全回報</span>
-          ${tags.length > 0 ? `<span>${tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join(' ')}</span>` : ''}
-          <span>by ${escapeHtml(server.owner_display_name || server.owner_username || 'unknown')}</span>
-        </div>
+        <!-- Votes & Reports & Badges -->
+        <div style="display:flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:16px;">
+          <div style="display:flex; gap:1.5rem; font-size:0.95rem; color:var(--text-secondary); align-items: center;">
+            <span title="信任票" style="display:flex; align-items:center; gap:6px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+              <strong>${server.trust_votes || 0}</strong>
+            </span>
+            <span title="不信任票" style="display:flex; align-items:center; gap:6px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+              <strong>${server.distrust_votes || 0}</strong>
+            </span>
+            <span title="安全回報" style="display:flex; align-items:center; gap:6px; ${(server.open_reports || 0) > 0 ? 'color:var(--color-danger);font-weight:700;' : ''}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <strong>${server.open_reports || 0}</strong> 待處理
+            </span>
+          </div>
 
-        <!-- Badges -->
-        <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-          ${badgeHtml('source', server.badge_source)}
-          ${badgeHtml('data', server.badge_data)}
-          ${badgeHtml('permission', server.badge_permission)}
-          ${server.badge_external ? badgeHtml('external', server.badge_external) : ''}
+          <!-- Badges -->
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            ${badgeHtml('source', server.badge_source)}
+            ${badgeHtml('data', server.badge_data)}
+            ${badgeHtml('permission', server.badge_permission)}
+            ${server.badge_external ? badgeHtml('external', server.badge_external) : ''}
+          </div>
         </div>
       </div>
     `;

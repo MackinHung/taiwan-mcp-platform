@@ -73,7 +73,27 @@
   
   <nav class="nav">
     <div class="nav-inner">
-      <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+                  <a href="/" class="nav-logo promax-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+        <svg height="26" viewBox="100 100 600 450" width="35" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="mGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#4A4A4A" />
+              <stop offset="40%" stop-color="#1A1A1A" />
+              <stop offset="100%" stop-color="#050505" />
+            </linearGradient>
+            <filter id="mShadow" x="-10%" y="-10%" width="120%" height="120%">
+              <feDropShadow dx="15" dy="10" stdDeviation="8" flood-color="#000000" flood-opacity="0.35"/>
+            </filter>
+          </defs>
+          <g transform="translate(100, 0) skewX(-18)">
+            <g filter="url(#mShadow)">
+              <path d="M 180 470 L 300 120 L 400 280 L 500 120 L 620 470 L 530 470 L 450 220 L 400 300 L 350 220 L 270 470 Z" fill="url(#mGradient)" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"/>
+              <polygon points="385,276 415,276 400,300" fill="#FFD500" />
+            </g>
+          </g>
+        </svg>
+        <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-0.02em;color:var(--text-primary);">Formosa<span style="color:var(--text-muted);font-weight:500;margin-left:4px;">MCP</span></span>
+      </a>
       <div class="nav-links">
         <a href="/" class="active">探索</a>
         <a href="/#guide" class="hide-mobile" onclick="event.preventDefault(); guide.scrollToGuide();">指南</a>
@@ -112,11 +132,36 @@
 
   <!-- Hero Promax -->
   <header class="hero-promax">
-    <div class="hero-promax-badge">
+    <div class="hero-promax-badge" style="margin-bottom:24px;">
       <span class="pulse-dot"></span> 全新 UIUXPROMAX 體驗
     </div>
-    <h1 class="hero-promax-title">Formosa <br/>MCP 市集</h1>
-    <p class="hero-promax-desc">探索、安裝、組合在地化 MCP 伺服器。<br>讓 AI 助手無縫接軌<span class="text-gradient">台灣的資料與服務</span>。</p>
+    
+    <div style="display:flex;justify-content:center;align-items:center;margin-bottom:12px;">
+      <svg height="72" viewBox="100 100 600 450" width="96" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.4));">
+        <defs>
+          <linearGradient id="mGradientBig" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4A4A4A" />
+            <stop offset="40%" stop-color="#1A1A1A" />
+            <stop offset="100%" stop-color="#050505" />
+          </linearGradient>
+          <filter id="mShadowBig" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="15" dy="10" stdDeviation="8" flood-color="#000000" flood-opacity="0.35"/>
+          </filter>
+        </defs>
+        <g transform="translate(100, 0) skewX(-18)">
+          <g filter="url(#mShadowBig)">
+            <path d="M 180 470 L 300 120 L 400 280 L 500 120 L 620 470 L 530 470 L 450 220 L 400 300 L 350 220 L 270 470 Z" fill="url(#mGradientBig)" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"/>
+            <polygon points="385,276 415,276 400,300" fill="#FFD500" />
+          </g>
+        </g>
+      </svg>
+    </div>
+    
+    <h1 class="hero-promax-title" style="margin-top:0;">
+      <span style="background:linear-gradient(135deg, #0ea5e9, #4f46e5);-webkit-background-clip:text;color:transparent;">Formosa</span> 
+      <br/>MCP 市集
+    </h1>
+    <p class="hero-promax-desc">探索、安裝、組合在地化 MCP 伺服器。<br>讓 AI 助手無縫接軌<span class="text-gradient">台灣的生態資料層</span>。</p>
     
     <div class="hero-search-container">
       <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
@@ -326,7 +371,7 @@
     <div class="footer-inner">
       <div class="footer-grid">
         <div class="footer-col">
-          <h4>🇹🇼 Formosa MCP 市集</h4>
+          <h4>Formosa MCP 市集</h4>
           <p>探索、安裝、組合在地化 MCP 伺服器 — 讓 AI 助手使用台灣的資料與服務。39+ 在地化伺服器，涵蓋天氣、交通、金融、法律等領域。</p>
         </div>
         <div class="footer-col">

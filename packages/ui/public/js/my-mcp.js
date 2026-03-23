@@ -40,11 +40,10 @@ const myMcp = {
     if (!auth.user) {
       const el = $('#compositions-list');
       if (el) el.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">🔒</div>
-          <h3>請先登入</h3>
-          <p class="text-muted mb-16">登入後即可管理您的 MCP 組合</p>
-          <button class="btn btn-primary" onclick="auth.login()">登入</button>
+        <div class="empty-state-promax" style="pointer-events:auto;">
+          <h3 style="font-size:2.25rem;font-weight:800;letter-spacing:-0.04em;color:var(--text-primary);margin-bottom:12px;">組合管理</h3>
+          <p class="mb-16" style="color:var(--text-secondary);max-width:380px;margin-left:auto;margin-right:auto;">登入後即可建立、管理您的 MCP 組合，並取得專屬連線端點。</p>
+          <button class="btn btn-primary btn-glow" onclick="auth.login()">登入</button>
         </div>`;
       return;
     }
@@ -93,11 +92,10 @@ const myMcp = {
 
     if (this.compositions.length === 0) {
       container.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">📦</div>
-          <h3>尚未建立任何組合</h3>
-          <p class="text-muted mb-16">建立組合將多個 MCP 伺服器合併為單一端點</p>
-          <button class="btn btn-primary" onclick="myMcp.openCreateModal()">建立第一個組合</button>
+        <div class="empty-state-promax">
+          <h3 style="font-size:2rem;letter-spacing:-0.03em;">建立第一個組合</h3>
+          <p class="mb-16">將多個 MCP 伺服器合併為單一端點，發揮完整的在地化 AI 功能</p>
+          <button class="btn btn-primary btn-glow" onclick="myMcp.openCreateModal()">建立第一個組合</button>
         </div>`;
       return;
     }
@@ -376,13 +374,12 @@ const myMcp = {
     if (!container) return;
 
     container.innerHTML = TEMPLATES.map((t, i) => `
-      <div class="template-card" onclick="myMcp.createFromTemplate(${i})">
-        <div class="template-icon">${t.icon}</div>
-        <div class="template-name">${escapeHtml(t.name)}</div>
-        <div class="template-desc">${escapeHtml(t.description)}</div>
-        <div class="template-servers">
+      <div class="template-card" onclick="myMcp.createFromTemplate(${i})" data-tooltip="點擊快速建立此組合">
+        <div class="template-servers" style="margin-bottom:12px;">
           ${t.servers.map(s => `<span class="tag">${escapeHtml(s.prefix)}</span>`).join('')}
         </div>
+        <div class="template-name">${escapeHtml(t.name)}</div>
+        <div class="template-desc">${escapeHtml(t.description)}</div>
       </div>
     `).join('');
   },

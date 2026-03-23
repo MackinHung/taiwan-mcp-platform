@@ -10,7 +10,27 @@
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
+                  <a href="/" class="nav-logo promax-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+                <svg height="26" viewBox="100 100 600 450" width="35" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="mGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#4A4A4A" />
+              <stop offset="40%" stop-color="#1A1A1A" />
+              <stop offset="100%" stop-color="#050505" />
+            </linearGradient>
+            <filter id="mShadow" x="-10%" y="-10%" width="120%" height="120%">
+              <feDropShadow dx="15" dy="10" stdDeviation="8" flood-color="#000000" flood-opacity="0.35"/>
+            </filter>
+          </defs>
+          <g transform="translate(100, 0) skewX(-18)">
+            <g filter="url(#mShadow)">
+              <path d="M 180 470 L 300 120 L 400 280 L 500 120 L 620 470 L 530 470 L 450 220 L 400 300 L 350 220 L 270 470 Z" fill="url(#mGradient)" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"/>
+              <polygon points="385,276 415,276 400,300" fill="#FFD500" />
+            </g>
+          </g>
+        </svg>
+        <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.2rem;letter-spacing:-0.02em;color:var(--text-primary);">Formosa<span style="color:var(--text-muted);font-weight:500;margin-left:4px;">MCP</span></span>
+      </a>
       <div class="nav-links">
         <a href="/">探索</a>
         <a href="/#guide" class="hide-mobile">指南</a>
@@ -67,34 +87,23 @@
 
   <div class="container page-content">
 
-    <!-- How-it-works stepper -->
-    <div class="onboard-steps mb-24">
-      <div class="onboard-step">
-        <div class="onboard-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        </div>
-        <div class="onboard-label">1. 瀏覽市集</div>
-        <div class="onboard-desc">在<a href="/">首頁</a>找到需要的 MCP 伺服器</div>
+    <!-- Steps: no hover, no icon -->
+    <h3 style="font-size:1.15rem;font-weight:600;margin-bottom:16px;">組合三步驟</h3>
+    <div class="bento-grid mb-24">
+      <div class="bento-card step-card">
+        <p class="step-num">01</p>
+        <h3>瀏覽市集</h3>
+        <p>在首頁找到適合的伺服器，確認安全等級後加入清單。</p>
       </div>
-      <div class="onboard-arrow">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      <div class="bento-card step-card">
+        <p class="step-num">02</p>
+        <h3>建立組合</h3>
+        <p>將多個伺服器合為一個組合，取得專屬端點。</p>
       </div>
-      <div class="onboard-step">
-        <div class="onboard-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
-        </div>
-        <div class="onboard-label">2. 建立組合</div>
-        <div class="onboard-desc">把多個伺服器合併為一個端點</div>
-      </div>
-      <div class="onboard-arrow">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      </div>
-      <div class="onboard-step">
-        <div class="onboard-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-        </div>
-        <div class="onboard-label">3. 貼入設定</div>
-        <div class="onboard-desc">複製 JSON 設定到 Claude Desktop</div>
+      <div class="bento-card step-card">
+        <p class="step-num">03</p>
+        <h3>貼入設定</h3>
+        <p>複製 JSON 設定，匯入 Claude Desktop 即完成。</p>
       </div>
     </div>
 
@@ -191,7 +200,7 @@
     <div class="footer-inner">
       <div class="footer-grid">
         <div class="footer-col">
-          <h4>🇹🇼 Formosa MCP 市集</h4>
+          <h4>Formosa MCP 市集</h4>
           <p>探索、安裝、組合在地化 MCP 伺服器 — 讓 AI 助手使用台灣的資料與服務。39+ 在地化伺服器，涵蓋天氣、交通、金融、法律等領域。</p>
         </div>
         <div class="footer-col">
