@@ -38,13 +38,42 @@
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
+  <!-- UIUXpromax Exclusive Cold Start -->
+  <div id="cold-start" style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity 0.8s cubic-bezier(0.85, 0, 0.15, 1), visibility 0.8s;">
+    <div style="text-align:center;">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+        <style>
+          .cs-path1 { stroke-dasharray: 65; stroke-dashoffset: 65; animation: csDraw 1.2s cubic-bezier(0.85, 0, 0.15, 1) forwards; }
+          .cs-path2 { stroke-dasharray: 45; stroke-dashoffset: 45; animation: csDraw 1s cubic-bezier(0.85, 0, 0.15, 1) forwards 0.3s; }
+          .cs-text { opacity: 0; transform: translateY(10px); animation: csFadeUp 0.8s cubic-bezier(0.85, 0, 0.15, 1) forwards 1s; }
+          @keyframes csDraw { to { stroke-dashoffset: 0; } }
+          @keyframes csFadeUp { to { opacity: 1; transform: translateY(0); } }
+        </style>
+        <path class="cs-path1" d="M12 2L2 22h20L12 2z" />
+        <path class="cs-path2" d="M12 10l5 10H7l5-10z" />
+      </svg>
+      <h2 class="cs-text" style="font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:900;letter-spacing:0.3em;text-transform:uppercase;margin-top:24px;color:var(--text-primary);">Formosa</h2>
+      <p class="cs-text" style="font-size:0.75rem;letter-spacing:0.1em;color:var(--text-muted);margin-top:8px;text-transform:uppercase;">MCP Platform</p>
+    </div>
+  </div>
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const cs = document.getElementById('cold-start');
+        if(cs) {
+          cs.style.opacity = '0';
+          cs.style.visibility = 'hidden';
+          document.body.style.overflow = 'auto';
+        }
+      }, 2400); // Wait for animation to finish
+    });
+    // Prevent scrolling while cold start is active
+    document.write('<style>body { overflow: hidden; }</style>');
+  </script>
+  
   <nav class="nav">
     <div class="nav-inner">
       <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
-      <div class="nav-search">
-        <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
-        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." oninput="marketplace.handleSearch(this.value)" />
-      </div>
       <div class="nav-links">
         <a href="/" class="active">探索</a>
         <a href="/#guide" class="hide-mobile" onclick="event.preventDefault(); guide.scrollToGuide();">指南</a>
@@ -84,10 +113,16 @@
   <!-- Hero Promax -->
   <header class="hero-promax">
     <div class="hero-promax-badge">
-      <span class="pulse-dot"></span> 全新 UIUXpromax 體驗
+      <span class="pulse-dot"></span> 全新 UIUXPROMAX 體驗
     </div>
     <h1 class="hero-promax-title">Formosa <br/>MCP 市集</h1>
     <p class="hero-promax-desc">探索、安裝、組合在地化 MCP 伺服器。<br>讓 AI 助手無縫接軌<span class="text-gradient">台灣的資料與服務</span>。</p>
+    
+    <div class="hero-search-container">
+      <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+      <input type="text" id="global-search" placeholder="搜尋市集裡的 MCP 伺服器、指令或資料..." oninput="marketplace.handleSearch(this.value)" />
+    </div>
+
     <div class="hero-promax-actions">
       <a href="#server-grid" class="btn btn-primary btn-lg btn-glow">開始探索市集</a>
       <a href="/my-mcp.html" class="btn btn-secondary btn-lg">我的 MCP 組合</a>

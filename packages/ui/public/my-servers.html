@@ -11,10 +11,6 @@
   <nav class="nav">
     <div class="nav-inner">
       <a href="/" class="nav-logo">🇹🇼 MCP 市集</a>
-      <div class="nav-search">
-        <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
-        <input type="text" id="global-search" placeholder="搜尋 MCP 伺服器..." />
-      </div>
       <div class="nav-links">
         <a href="/">探索</a>
         <a href="/#guide" class="hide-mobile">指南</a>
@@ -51,11 +47,19 @@
     </div>
   </div>
 
-  <div class="container page-content" style="max-width:960px;">
-    <div class="flex items-center justify-between mb-24">
-      <h1 style="font-size:1.5rem;font-weight:700;">我的伺服器</h1>
-      <a href="/upload.html" class="btn btn-primary">+ 上架新伺服器</a>
+  <header class="page-header-promax">
+    <div class="container" style="text-align:center;">
+      <div class="hero-promax-badge" style="display:inline-block;margin-bottom:16px;">伺服器管理</div>
+      <h1>我的伺服器</h1>
+      <p style="margin:0 auto; max-width: 600px;">管理您上架的 MCP 伺服器，查看發布狀態與版本紀錄。</p>
+      
+      <div style="margin-top: 32px; display:flex; gap:16px; justify-content:center;">
+        <a href="/upload.html" class="btn btn-primary btn-glow">+ 上架新伺服器</a>
+      </div>
     </div>
+  </header>
+
+  <div class="container page-content" style="max-width:960px;">
     <div id="my-servers-content">
       <div class="loading"><div class="spinner"></div></div>
     </div>
