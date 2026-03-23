@@ -153,17 +153,21 @@ const serverDetail = {
               <tr>
                 <th>名稱</th>
                 <th>說明</th>
+                <th>行為標註</th>
                 <th>輸入參數</th>
               </tr>
             </thead>
             <tbody>
-              ${tools.map(t => `
+              ${tools.map(t => {
+                const ann = typeof t.annotations === 'string' ? JSON.parse(t.annotations || '{}') : (t.annotations || {});
+                return `
                 <tr>
                   <td><code>${escapeHtml(t.name)}</code>${t.display_name ? `<br><span class="text-xs text-muted">${escapeHtml(t.display_name)}</span>` : ''}</td>
                   <td class="text-secondary">${escapeHtml(t.description)}</td>
+                  <td>${serverDetail.renderAnnotations(ann)}</td>
                   <td><code class="text-xs">${escapeHtml(typeof t.input_schema === 'string' ? t.input_schema : JSON.stringify(t.input_schema || {}))}</code></td>
-                </tr>
-              `).join('')}
+                </tr>`;
+              }).join('')}
             </tbody>
           </table>
         </div>` : '<p class="text-muted">尚無工具資訊</p>'}
@@ -385,6 +389,19 @@ const serverDetail = {
     } catch (e) {
       showToast('回報送出失敗，請稍後再試');
     }
+  },
+
+  // ── Tool Annotations ──
+  renderAnnotations(ann) {
+    if (!ann || Object.keys(ann).length === 0) return '<span class="text-xs text-muted">—</span>';
+    const tags = [];
+    if (ann.readOnlyHint === true) tags.push('<span class="badge badge-green" title="此工具不修改環境">唯讀</span>');
+    if (ann.readOnlyHint === false) tags.push('<span class="badge badge-amber" title="此工具可能修改環境">可寫入</span>');
+    if (ann.destructiveHint === true) tags.push('<span class="badge badge-red" title="此工具可能執行破壞性操作">破壞性</span>');
+    if (ann.idempotentHint === true) tags.push('<span class="badge badge-blue" title="相同參數重複呼叫結果一致">冪等</span>');
+    if (ann.openWorldHint === true) tags.push('<span class="badge badge-amber" title="此工具會存取外部服務">外部存取</span>');
+    if (ann.openWorldHint === false) tags.push('<span class="badge badge-green" title="此工具僅在封閉環境運作">封閉環境</span>');
+    return tags.length > 0 ? `<div class="badge-group" style="gap:4px;">${tags.join('')}</div>` : '<span class="text-xs text-muted">—</span>';
   },
 
   // ── Disclosure Period ──

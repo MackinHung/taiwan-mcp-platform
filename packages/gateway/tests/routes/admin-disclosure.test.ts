@@ -197,4 +197,94 @@ describe('Admin Disclosure Routes', () => {
       expect(data.error).toContain('不存在');
     });
   });
+
+  describe('PATCH /api/admin/servers/:id/official', () => {
+    it('should toggle is_official to true', async () => {
+      const env = createMockEnv({
+        DB: createMockDB({
+          firstFn: () => ({ id: 'srv-1', is_official: 0 }),
+          runFn: () => ({ success: true, meta: { changes: 1 } }),
+        }),
+      });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/servers/srv-1/official', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_official: true }),
+      }, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.success).toBe(true);
+      expect(data.data.id).toBe('srv-1');
+      expect(data.data.is_official).toBe(true);
+    });
+
+    it('should toggle is_official to false', async () => {
+      const env = createMockEnv({
+        DB: createMockDB({
+          firstFn: () => ({ id: 'srv-1', is_official: 1 }),
+          runFn: () => ({ success: true, meta: { changes: 1 } }),
+        }),
+      });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/servers/srv-1/official', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_official: false }),
+      }, env);
+      expect(res.status).toBe(200);
+      const data = await res.json() as any;
+      expect(data.success).toBe(true);
+      expect(data.data.is_official).toBe(false);
+    });
+
+    it('should reject non-admin (403)', async () => {
+      const env = createMockEnv();
+      const app = await createApp(env, regularUser);
+
+      const res = await app.request('/api/admin/servers/srv-1/official', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_official: true }),
+      }, env);
+      expect(res.status).toBe(403);
+    });
+
+    it('should return 404 when server not found', async () => {
+      const env = createMockEnv({
+        DB: createMockDB({
+          firstFn: () => null,
+        }),
+      });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/servers/nonexistent/official', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_official: true }),
+      }, env);
+      expect(res.status).toBe(404);
+      const data = await res.json() as any;
+      expect(data.success).toBe(false);
+      expect(data.error).toContain('不存在');
+    });
+
+    it('should reject invalid body', async () => {
+      const env = createMockEnv({
+        DB: createMockDB({
+          firstFn: () => ({ id: 'srv-1', is_official: 0 }),
+        }),
+      });
+      const app = await createApp(env, adminUser);
+
+      const res = await app.request('/api/admin/servers/srv-1/official', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_official: 'yes' }),
+      }, env);
+      expect(res.status).toBe(400);
+    });
+  });
 });

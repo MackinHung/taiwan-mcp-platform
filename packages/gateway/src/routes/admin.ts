@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import type { Env } from '../env.js';
-import { reviewActionSchema, expediteSchema, extendSchema } from '@shared/validation.js';
+import { reviewActionSchema, expediteSchema, extendSchema, officialToggleSchema } from '@shared/validation.js';
 
 type HonoEnv = { Bindings: Env; Variables: { user: any; session: any } };
 
@@ -388,4 +388,36 @@ adminRoutes.post('/disclosure/:serverId/extend', async (c) => {
   ).bind(newEnd, now, serverId).run();
 
   return c.json({ success: true, data: { id: serverId, disclosure_ends_at: newEnd }, error: null });
+});
+
+// PATCH /servers/:id/official -> toggle is_official flag
+adminRoutes.patch('/servers/:id/official', async (c) => {
+  const result = requireAdmin(c);
+  if (result === null) return c.json({ success: false, error: '未授權，請先登入', data: null }, 401);
+  if (result === 'forbidden') return c.json({ success: false, error: '權限不足', data: null }, 403);
+
+  const serverId = c.req.param('id');
+
+  const server = await c.env.DB.prepare(
+    'SELECT id, is_official FROM servers WHERE id = ?'
+  ).bind(serverId).first<{ id: string; is_official: number }>();
+
+  if (!server) {
+    return c.json({ success: false, error: '伺服器不存在', data: null }, 404);
+  }
+
+  const body = await c.req.json();
+  const parsed = officialToggleSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json({ success: false, error: 'is_official 必須為布林值', data: null }, 400);
+  }
+
+  const newValue = parsed.data.is_official ? 1 : 0;
+  const now = new Date().toISOString();
+
+  await c.env.DB.prepare(
+    'UPDATE servers SET is_official = ?, updated_at = ? WHERE id = ?'
+  ).bind(newValue, now, serverId).run();
+
+  return c.json({ success: true, data: { id: serverId, is_official: parsed.data.is_official }, error: null });
 });

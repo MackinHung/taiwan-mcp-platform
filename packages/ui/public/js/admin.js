@@ -125,6 +125,7 @@ const admin = {
                 <td class="text-muted">${timeAgo(s.created_at)}</td>
                 <td>
                   <button class="btn btn-secondary btn-sm" onclick="admin.openReviewModal('${s.id}')">檢視</button>
+                  <button class="btn btn-sm ${s.is_official ? 'btn-ghost' : ''}" style="margin-left:4px;${s.is_official ? 'background:var(--success);color:#fff;' : ''}" onclick="admin.toggleOfficial('${s.id}', ${s.is_official ? 'false' : 'true'})" title="${s.is_official ? '取消官方標記' : '設為官方'}">${s.is_official ? '★ 官方' : '☆ 設為官方'}</button>
                   ${s.disclosed_at && !s.is_published ? `
                     <button class="btn btn-sm" style="background:var(--primary);color:#fff;margin-left:4px;" onclick="admin.expediteServer('${s.id}')">快速上架</button>
                     <button class="btn btn-ghost btn-sm" style="margin-left:2px;" onclick="admin.extendDisclosure('${s.id}')">延長</button>
@@ -595,6 +596,19 @@ const admin = {
       await this.loadReviewQueue();
     } catch (e) {
       showToast('延長公示期失敗');
+    }
+  },
+
+  // ── Official Toggle ──
+  async toggleOfficial(serverId, isOfficial) {
+    const action = isOfficial ? '設為官方' : '取消官方標記';
+    if (!confirm(`確定要${action}此伺服器？`)) return;
+    try {
+      await api.patch(`/admin/servers/${serverId}/official`, { is_official: isOfficial });
+      showToast(`已${action}`);
+      await this.loadReviewQueue();
+    } catch (e) {
+      showToast(`${action}失敗`);
     }
   },
 
