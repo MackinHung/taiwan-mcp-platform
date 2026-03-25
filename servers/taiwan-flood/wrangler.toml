@@ -1,0 +1,8 @@
+name = "taiwan-flood-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+SERVER_NAME = "taiwan-flood"
+SERVER_VERSION = "1.0.0"
