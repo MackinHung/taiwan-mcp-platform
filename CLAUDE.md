@@ -18,7 +18,7 @@
 **Repo**: `MackinHung/taiwan-mcp-platform`, branch `master`
 **Stack**: Cloudflare Workers + D1 + KV + R2 + Pages, 全 TypeScript, Hono, Vitest
 **Brand**: `@formosa-mcp` (npm scope), Formosa MCP 市集
-**Current**: 4,411 tests, 47 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3 + 8 Batch 4), npm packaging + distribution ready, tsc --noEmit clean
+**Current**: 4,754 tests, 51 servers (17 Batch 1 + 14 Batch 2 + 8 Batch 3 + 8 Batch 4 + 4 Batch 5), npm packaging + distribution ready, tsc --noEmit clean
 
 ---
 
@@ -83,6 +83,11 @@ servers/
   taiwan-museum/       → 5 MOC museum/exhibition tools (75 tests)
   taiwan-animal-shelter/ → 5 MOA animal shelter tools (98 tests)
   taiwan-fishery/      → 5 MOA fishery tools (84 tests)
+  # Batch 5 (4 servers) — 完成於 2026-03-25 (家偵探整合)
+  taiwan-realestate/   → 5 MOI actual price registration tools (95 tests)
+  taiwan-geology/      → 5 geological hazard/fault/liquefaction tools (77 tests)
+  taiwan-flood/        → 5 WRA flood/reservoir/rainfall tools (71 tests)
+  taiwan-zoning/       → 5 urban planning/zoning tools (100 tests)
 skills/
   taiwan-*/SKILL.md    → 47 ClawHub skill definitions (YAML frontmatter + usage)
 scripts/
