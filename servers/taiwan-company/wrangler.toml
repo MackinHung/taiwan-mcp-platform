@@ -1,6 +1,7 @@
 name = "taiwan-company"
 main = "src/index.ts"
 compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
 
 [vars]
 SERVER_NAME = "taiwan-company"
