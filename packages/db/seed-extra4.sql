@@ -7,48 +7,56 @@ INSERT OR IGNORE INTO servers (
   id, owner_id, slug, name, description, version, category, tags,
   endpoint_url, declared_data_sensitivity, declared_permissions,
   declared_external_urls, is_open_source, review_status, is_published,
-  is_official, data_source_agency, published_at, created_at, updated_at
+  is_official, data_source_agency, data_update_frequency, license, github_url, data_source_license,
+  published_at, created_at, updated_at
 ) VALUES (
   'srv054', 'admin001', 'taiwan-announce', '政府公告', '行政院全國公告查詢', '1.0.0', 'government', '["公告","政府","announcement"]',
   'https://taiwan-announce-mcp.watermelom5404.workers.dev/', 'public', 'readonly',
   '[]', 1, 'approved', 1,
-  1, '全國法規資料庫', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z'
+  1, '全國法規資料庫', 'daily', 'AGPL-3.0', 'https://github.com/MackinHung/taiwan-mcp-platform/tree/master/servers/taiwan-announce', '政府資料開放授權條款-第1版',
+  '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z'
 );
 
 INSERT OR IGNORE INTO servers (
   id, owner_id, slug, name, description, version, category, tags,
   endpoint_url, declared_data_sensitivity, declared_permissions,
   declared_external_urls, is_open_source, review_status, is_published,
-  is_official, data_source_agency, published_at, created_at, updated_at
+  is_official, data_source_agency, data_update_frequency, license, github_url, data_source_license,
+  published_at, created_at, updated_at
 ) VALUES (
   'srv055', 'admin001', 'taiwan-foreign-trade', '國際貿易', '國際貿易局貿易政策、全球商機、進口規定', '1.0.0', 'government', '["貿易","進出口","trade","commerce"]',
   'https://taiwan-foreign-trade-mcp.watermelom5404.workers.dev/', 'public', 'readonly',
   '[]', 1, 'approved', 1,
-  1, '經濟部國際貿易署', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z'
+  1, '經濟部國際貿易署', 'daily', 'AGPL-3.0', 'https://github.com/MackinHung/taiwan-mcp-platform/tree/master/servers/taiwan-foreign-trade', '政府資料開放授權條款-第1版',
+  '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z'
 );
 
 INSERT OR IGNORE INTO servers (
   id, owner_id, slug, name, description, version, category, tags,
   endpoint_url, declared_data_sensitivity, declared_permissions,
   declared_external_urls, is_open_source, review_status, is_published,
-  is_official, data_source_agency, published_at, created_at, updated_at
+  is_official, data_source_agency, data_update_frequency, license, github_url, data_source_license,
+  published_at, created_at, updated_at
 ) VALUES (
   'srv056', 'admin001', 'taiwan-gazette', '行政院公報', '行政院公報查詢、草案預告、公報統計', '1.0.0', 'government', '["公報","法規","gazette","regulation"]',
   'https://taiwan-gazette-mcp.watermelom5404.workers.dev/', 'public', 'readonly',
   '[]', 1, 'approved', 1,
-  1, '行政院公報資訊網', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z'
+  1, '行政院公報資訊網', 'daily', 'AGPL-3.0', 'https://github.com/MackinHung/taiwan-mcp-platform/tree/master/servers/taiwan-gazette', '政府資料開放授權條款-第1版',
+  '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z'
 );
 
 INSERT OR IGNORE INTO servers (
   id, owner_id, slug, name, description, version, category, tags,
   endpoint_url, declared_data_sensitivity, declared_permissions,
   declared_external_urls, is_open_source, review_status, is_published,
-  is_official, data_source_agency, published_at, created_at, updated_at
+  is_official, data_source_agency, data_update_frequency, license, github_url, data_source_license,
+  published_at, created_at, updated_at
 ) VALUES (
   'srv057', 'admin001', 'taiwan-local-announce', '地方公告', '六都地方政府公告查詢與統計', '1.0.0', 'government', '["公告","地方政府","六都","local"]',
   'https://taiwan-local-announce-mcp.watermelom5404.workers.dev/', 'public', 'readonly',
   '[]', 1, 'approved', 1,
-  1, '六都政府公開資訊', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z'
+  1, '六都政府公開資訊', 'daily', 'AGPL-3.0', 'https://github.com/MackinHung/taiwan-mcp-platform/tree/master/servers/taiwan-local-announce', '政府資料開放授權條款-第1版',
+  '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z', '2026-03-26T00:00:00Z'
 );
 
 -- === TOOLS ===
