@@ -26,6 +26,10 @@ beforeEach(() => {
   mockFetchAllAlerts.mockReset();
 });
 
+// Use dynamic dates so tests don't break after 7 days
+const today = new Date();
+const hoursAgo = (h: number) => new Date(today.getTime() - h * 3600_000).toISOString().slice(0, 19);
+
 const sampleAlerts = [
   {
     alertId: 'A001',
@@ -35,12 +39,12 @@ const sampleAlerts = [
     area: '花蓮縣',
     description: '花蓮近海發生規模5.2地震',
     sender: '中央氣象署',
-    effective: '2026-03-18T08:00:00',
-    expires: '2026-03-18T10:00:00',
+    effective: hoursAgo(2),
+    expires: hoursAgo(0),
     magnitude: '5.2',
     depth: '15',
     epicenter: '花蓮近海',
-    updateTime: '2026-03-18T08:05:00',
+    updateTime: hoursAgo(2),
   },
   {
     alertId: 'A002',
@@ -50,12 +54,12 @@ const sampleAlerts = [
     area: '臺北市',
     description: '臺北市發布豪雨特報',
     sender: '中央氣象署',
-    effective: '2026-03-18T06:00:00',
-    expires: '2026-03-18T18:00:00',
+    effective: hoursAgo(4),
+    expires: hoursAgo(0),
     magnitude: '',
     depth: '',
     epicenter: '',
-    updateTime: '2026-03-18T06:05:00',
+    updateTime: hoursAgo(4),
   },
   {
     alertId: 'A003',
@@ -65,12 +69,12 @@ const sampleAlerts = [
     area: '新北市',
     description: '新北市烏來區土石流警戒',
     sender: '水土保持署',
-    effective: '2026-03-17T12:00:00',
-    expires: '2026-03-18T12:00:00',
+    effective: hoursAgo(24),
+    expires: hoursAgo(12),
     magnitude: '',
     depth: '',
     epicenter: '',
-    updateTime: '2026-03-17T12:05:00',
+    updateTime: hoursAgo(24),
   },
 ];
 
